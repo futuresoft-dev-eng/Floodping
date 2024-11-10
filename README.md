@@ -4,6 +4,7 @@
 **FloodPing: IoT-Based Flood Monitoring and Alert System**
 
    2. RATIONALE
+      
 Flooding creates a significant and growing threat in Barangay Bagbag, worsening due
 to climate change, inadequate drainage infrastructure, and rapid urbanization. The barangay
 frequently faces the challenge of consecutive typhoons, which lead to heavy rainfall and
@@ -53,15 +54,18 @@ documents.
 1. The system will implement user-level access to enhance confidentiality and privacy,
 ensuring various users only access relevant information to their roles and
 permissions.
+
 **FloodPing System Admin -** They can manage the accounts of Local
 Authorities, which allows the admin to add, update, archive user accounts, and
 set working shifts. They can also manage resident lists, such as adding,
 updating, and archiving residents. Furthermore, they can monitor Local
 Authorities' activity logs.
+
 **Local Authorities -** Receive alerts about flood risks, manage flood messages,
 and oversee the dissemination of flood alerts to residents. Monitor real-time
 water levels, own activity logs, and access flood history logs to support
 decision-making during flood events.
+
 **Residents -** Receive timely SMS about flood risks in their area, ensuring they
 are informed and can take appropriate actions. They can access basic
 real-time data regarding flood conditions without requiring an access level to
