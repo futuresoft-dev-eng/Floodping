@@ -114,6 +114,12 @@ include_once('../db/connection.php');
 
 <main class="main-content">
     <div class="container">
+        <!-- Import Form (Hidden) -->
+        <form id="importForm" action="import_excel.php" method="post" enctype="multipart/form-data" style="display: none;">
+            <input type="file" name="file" id="fileInput" accept=".xls, .xlsx" required onchange="document.getElementById('importForm').submit();">
+        </form>
+
+
         <!-- Table container -->
         <div class="table-container">
             <table id="residentTable" class="table table-bordered">
@@ -171,6 +177,15 @@ $(document).ready(function() {
             <span class="material-symbols-rounded">upload</span> IMPORT DATA
         </button>
     `);
+     // Click event for the IMPORT DATA button
+     $('.import-btn').on('click', function() {
+        $('#fileInput').click(); // Open the file input
+    });
+
+    // Event to automatically submit the form when a file is selected
+    $('#fileInput').on('change', function() {
+        $('#importForm').submit(); // Submit the form
+    });
 });
 
 </script>
