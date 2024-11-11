@@ -218,7 +218,7 @@
     <!-- Sidebar -->
     <nav class="sidebar d-none d-md-flex flex-column p-0">
         <div class="sidebar-logo">
-            <img src="images/Floodpinglogo.png" alt="floodping">
+            <img src="images\Floodpinglogo.png" alt="floodping">
             <div class="sidebar-logo-text" style="font-size: 19px; font-weight: bold;">FLOODPING</div>
         </div>
 
