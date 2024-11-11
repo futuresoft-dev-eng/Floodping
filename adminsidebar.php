@@ -208,22 +208,19 @@
 <body>
   <!-- Top bar -->
 <div class="top-bar d-md-none">
-    <a href="/floodping/LA/la.php" class="nav-link">
+    <a href="/floodping/ADMIN/admin.php" class="nav-link">
         <span class="material-symbols-rounded">dashboard</span>
     </a>
-    <a href="/floodping/LA/reports.php" class="nav-link">
+    <a href="/floodping/ADMIN/activitylog.php" class="nav-link">
         <span class="material-symbols-rounded">article</span>
     </a>
-    <a href="/floodping/LA/livecam.php" class="nav-link">
+    <a href="/floodping/ADMIN/livecam.php" class="nav-link">
         <span class="material-symbols-rounded">videocam</span>
     </a>
-    <a href="/floodping/LA/floodalerts.php" class="nav-link">
-        <span class="material-symbols-rounded">notifications_active</span>
+    <a href="/floodping/ADMIN/accountservices.php" class="nav-link">
+        <span class="material-symbols-rounded">manage_accounts</span>
     </a>
-    <a href="/floodping/LA/smsalerts.php" class="nav-link">
-        <span class="material-symbols-rounded">sms</span>
-    </a>
-    <a href="/floodping/LA/floodhistory.php" class="nav-link">
+    <a href="/floodping/ADMIN/shiftmanagement.php" class="nav-link">
         <span class="material-symbols-rounded">history</span>
     </a>
     <a href="#" class="nav-link">
@@ -251,38 +248,34 @@
         <div class="sidebar-content">
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
-                    <a href="/floodping/LA/la.php" class="nav-link">
+                    <a href="/floodping/ADMIN/admin.php" class="nav-link">
                         <span class="material-symbols-rounded">dashboard</span> <span class="icon-text">Dashboard</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/floodping/LA/reports.php" class="nav-link">
-                        <span class="material-symbols-rounded">article</span> <span class="icon-text">Reports</span>
+                    <a href="/floodping/ADMIN/activitylog.php" class="nav-link">
+                        <span class="material-symbols-rounded">article</span> <span class="icon-text">Activity Logs</span>
                     </a>
                 </li>
 
                 <div class="section-title">Flood Monitoring</div>
                 <li class="nav-item">
-                    <a href="/floodping/LA/livecam.php" class="nav-link">
+                    <a href="/floodping/ADMIN/livecam.php" class="nav-link">
                         <span class="material-symbols-rounded">videocam</span> <span class="icon-text">Live Camera Feed</span>
                     </a>
                 </li>
 
-                <div class="section-title">Alerts Management</div>
+                <div class="section-title">User Management</div>
                 <li class="nav-item">
-                    <a href="/floodping/LA/floodalerts.php" class="nav-link">
-                        <span class="material-symbols-rounded">notifications_active</span> <span class="icon-text">Flood Alerts</span>
+                    <a href="/floodping/ADMIN/accountservices.php" class="nav-link">
+                        <span class="material-symbols-rounded">manage_accounts</span> <span class="icon-text">Account Services</span>
                     </a>
                 </li>
 
+                <div class="section-title">Workforce Manager</div>
                 <li class="nav-item">
-                    <a href="/floodping/LA/smsalerts.php" class="nav-link">
-                        <span class="material-symbols-rounded">sms</span> <span class="icon-text">SMS Alerts</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/floodping/LA/floodhistory.php" class="nav-link">
-                        <span class="material-symbols-rounded">history</span> <span class="icon-text">Flood History Logs</span>
+                    <a href="/floodping/ADMIN/shiftmanagement.php" class="nav-link">
+                        <span class="material-symbols-rounded">history</span> <span class="icon-text">Shift Management</span>
                     </a>
                 </li>
             </ul>
@@ -293,8 +286,8 @@
     <a href="#" class="user-link">
         <span class="material-symbols-rounded user-icon">account_circle</span>
         <div>
-            <div class="user-name">JUNGWON YANG</div>
-            <div class="user-role">Local Authority</div>
+            <div class="user-name">KIM TAEHYUNG</div>
+            <div class="user-role">Admin</div>
         </div>
     </a>
     <span class="material-symbols-rounded logout-button">chevron_right</span>
