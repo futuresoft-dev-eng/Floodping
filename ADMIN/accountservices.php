@@ -35,7 +35,8 @@ include_once('../db/connection.php');
 .import-btn {
     display: flex;
     align-items: center;
-    background-color: #28a745; /* Green color */
+    background-color: #59C447;
+    ; 
     color: white;
     padding: 8px 16px;
     border: none;
