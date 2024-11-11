@@ -36,9 +36,11 @@
             width: 40px;
             margin-bottom: 5px;
         }
+
         .sidebar-content {
             margin-top: 20px;
         }
+
         .time-section {
             color: white;
             padding: 15px;
@@ -156,6 +158,7 @@
         .logout-button:hover {
             color: #02476A;
         }
+
         h2 {
             font-size: 14px;
             color: #02476A;
@@ -163,62 +166,101 @@
             margin: 100px 0px 0px 10px;
         }
 
-        
+        /* Responsive styling */
+        @media (max-width: 992px) {
+            .sidebar {
+                display: none; 
+            }
+
+            .top-bar {
+                display: flex; 
+                position: fixed;
+                top: 0;
+                width: 100%;
+                height: 50px;
+                background-color: #02476A;
+                color: white;
+                justify-content: space-around;
+                align-items: center;
+                z-index: 2;
+            }
+        }
+
+        @media (max-width: 575px) {
+            .top-bar .icon-text {
+                display: none; 
+            }
+        }
     </style>
 </head>
 
 <body>
-    <nav class="sidebar d-flex flex-column p-0">
+    <!-- Top bar -->
+    <div class="top-bar d-md-none">
+        <span class="material-symbols-rounded">dashboard</span>
+        <span class="material-symbols-rounded">article</span>
+        <span class="material-symbols-rounded">videocam</span>
+        <span class="material-symbols-rounded">notifications_active</span>
+        <span class="material-symbols-rounded">sms</span>
+        <span class="material-symbols-rounded">history</span>
+        <span class="material-symbols-rounded">account_circle</span>
+        <span class="material-symbols-rounded logout-icon">logout</span>
+
+    </div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar d-none d-md-flex flex-column p-0">
         <div class="sidebar-logo">
             <img src="images/Floodpinglogo.png" alt="floodping">
-            <div class="sidebar-logo-text" style="font-size: 19px;  font-weight: bold;">FLOODPING</div>
+            <div class="sidebar-logo-text" style="font-size: 19px; font-weight: bold;">FLOODPING</div>
         </div>
-        
+
         <div class="time-section">
             <div class="time" id="current-time"></div>
             <div class="date" id="current-date"></div>
-        
-        
+       
+
         <div class="station">DARIUS STATION</div>
         </div>
         <div class="sidebar-content">
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <span class="material-symbols-rounded">dashboard</span> <span>Dashboard</span>
+                        <span class="material-symbols-rounded">dashboard</span> <span class="icon-text">Dashboard</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <span class="material-symbols-rounded">article</span> <span>Reports</span>
+                        <span class="material-symbols-rounded">article</span> <span class="icon-text">Reports</span>
                     </a>
                 </li>
 
                 <div class="section-title">Flood Monitoring</div>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <span class="material-symbols-rounded">videocam</span> <span>Live Camera Feed</span>
+                        <span class="material-symbols-rounded">videocam</span> <span class="icon-text">Live Camera Feed</span>
                     </a>
                 </li>
 
                 <div class="section-title">Alerts Management</div>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <span class="material-symbols-rounded">notifications_active</span> <span>Flood Alerts</span>
+                        <span class="material-symbols-rounded">notifications_active</span> <span class="icon-text">Flood Alerts</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <span class="material-symbols-rounded">sms</span> <span>SMS Alerts</span>
+                        <span class="material-symbols-rounded">sms</span> <span class="icon-text">SMS Alerts</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <span class="material-symbols-rounded">history</span> <span>Flood History Logs</span>
+                        <span class="material-symbols-rounded">history</span> <span class="icon-text">Flood History Logs</span>
                     </a>
                 </li>
             </ul>
         </div>
+        
         <h2>Logged in as:</h2>
         <div class="user-info">
             <a href="#" class="user-link">
@@ -235,24 +277,16 @@
     <script>
         function updateTimeAndDate() {
             const now = new Date();
-            
             let hours = now.getHours();
             let minutes = now.getMinutes();
             const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12;
-            hours = hours ? hours : 12; 
+            hours = hours % 12 || 12;
             minutes = minutes < 10 ? '0' + minutes : minutes;
-            const timeString = `${hours}:${minutes} ${ampm}`;
-            
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const dateString = now.toLocaleDateString(undefined, options);
-            
-            document.getElementById('current-time').textContent = timeString;
-            document.getElementById('current-date').textContent = dateString;
+            document.getElementById('current-time').textContent = `${hours}:${minutes} ${ampm}`;
+            document.getElementById('current-date').textContent = now.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         }
-        
         setInterval(updateTimeAndDate, 1000);
-        updateTimeAndDate(); 
+        updateTimeAndDate();
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
