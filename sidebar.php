@@ -32,15 +32,18 @@
         }
 
         .sidebar-logo {
-            text-align: center;
+            display: flex;
+            align-items: center; 
+            justify-content: center;
             padding: 20px 0;
             background-color: #02476A;
             color: white;
+            gap: 10px; 
         }
 
         .sidebar-logo img {
             width: 40px;
-            margin-bottom: 5px;
+            margin: 0;
         }
 
         .sidebar-content {
