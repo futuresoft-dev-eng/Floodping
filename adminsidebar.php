@@ -10,41 +10,51 @@
     <style>
         body {
             font-family: Poppins, sans-serif;
-            background: var(--body-color);
             margin: 0;
-            padding-top: 0;  
-            overflow: hidden;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden; 
+
         }
 
         .sidebar {
             display: flex;
-            flex-direction: column; 
+            flex-direction: column;
             height: 100vh;
             background-color: #E8F3F8;
             padding-top: 20px;
             width: 250px;
+            min-width: 250px; 
             position: fixed;
             z-index: 1;
-            overflow: hidden;
+            overflow-y: auto;
             transition: width 0.9s ease;
+        }
+
+        .main-content {
+            margin-left: 250px; 
+            padding: 20px;
+            flex-grow: 1;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+            box-sizing: border-box;
             overflow-y: auto; 
-            scroll-behavior: smooth; 
-            
+
         }
 
         .sidebar-logo {
             display: flex;
-            align-items: center; 
+            align-items: center;
             justify-content: center;
             padding: 20px 0;
             background-color: #02476A;
             color: white;
-            gap: 10px; 
+            gap: 10px;
         }
 
         .sidebar-logo img {
             width: 40px;
-            margin: 0;
         }
 
         .sidebar-content {
@@ -107,7 +117,7 @@
             padding: 10px 20px;
             border-radius: 0 10px 10px 0;
             transition: background-color 0.3s ease, padding 0.3s ease;
-            margin: 0px 0px 10px 0px;
+            margin: 0 0 10px 0;
             font-size: 16px;
         }
 
@@ -171,18 +181,18 @@
         h2 {
             font-size: 14px;
             color: #02476A;
-            font-weight: 500px;
-            margin: 100px 0px 0px 10px;
+            font-weight: 500;
+            margin: 100px 0 0 10px;
         }
 
-        /* Responsive styling */
+        /* Responsive  */
         @media (max-width: 992px) {
             .sidebar {
-                display: none; 
+                display: none;
             }
 
             .top-bar {
-                display: flex; 
+                display: flex;
                 position: fixed;
                 top: 0;
                 width: 100%;
@@ -193,43 +203,46 @@
                 align-items: center;
                 z-index: 2;
             }
+
+            .main-content {
+                margin-left: 0;
+                padding-top: 50px;
+            }
         }
 
         @media (max-width: 575px) {
             .top-bar .icon-text {
-                display: none; 
+                display: none;
             }
         }
-
-
     </style>
 </head>
 
 <body>
-  <!-- Top bar -->
-<div class="top-bar d-md-none">
-    <a href="/floodping/ADMIN/admin.php" class="nav-link">
-        <span class="material-symbols-rounded">dashboard</span>
-    </a>
-    <a href="/floodping/ADMIN/activitylog.php" class="nav-link">
-        <span class="material-symbols-rounded">article</span>
-    </a>
-    <a href="/floodping/ADMIN/livecam.php" class="nav-link">
-        <span class="material-symbols-rounded">videocam</span>
-    </a>
-    <a href="/floodping/ADMIN/accountservices.php" class="nav-link">
-        <span class="material-symbols-rounded">manage_accounts</span>
-    </a>
-    <a href="/floodping/ADMIN/shiftmanagement.php" class="nav-link">
-        <span class="material-symbols-rounded">history</span>
-    </a>
-    <a href="#" class="nav-link">
-        <span class="material-symbols-rounded">account_circle</span>
-    </a>
-    <a href="/logout" class="nav-link">
-        <span class="material-symbols-rounded logout-icon">chevron_right</span>
-    </a>
-</div>
+    <!-- Top bar  -->
+    <div class="top-bar d-md-none">
+        <a href="/floodping/ADMIN/admin.php" class="nav-link">
+            <span class="material-symbols-rounded">dashboard</span>
+        </a>
+        <a href="/floodping/ADMIN/activitylog.php" class="nav-link">
+            <span class="material-symbols-rounded">article</span>
+        </a>
+        <a href="/floodping/ADMIN/livecam.php" class="nav-link">
+            <span class="material-symbols-rounded">videocam</span>
+        </a>
+        <a href="/floodping/ADMIN/accountservices.php" class="nav-link">
+            <span class="material-symbols-rounded">manage_accounts</span>
+        </a>
+        <a href="/floodping/ADMIN/shiftmanagement.php" class="nav-link">
+            <span class="material-symbols-rounded">history</span>
+        </a>
+        <a href="#" class="nav-link">
+            <span class="material-symbols-rounded">account_circle</span>
+        </a>
+        <a href="/logout" class="nav-link">
+            <span class="material-symbols-rounded logout-icon">chevron_right</span>
+        </a>
+    </div>
 
     <!-- Sidebar -->
     <nav class="sidebar d-none d-md-flex flex-column p-0">
@@ -241,10 +254,9 @@
         <div class="time-section">
             <div class="time" id="current-time"></div>
             <div class="date" id="current-date"></div>
-       
-
-        <div class="station">DARIUS STATION</div>
+            <div class="station">DARIUS STATION</div>
         </div>
+
         <div class="sidebar-content">
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
@@ -282,19 +294,23 @@
         </div>
 
         <h2>Logged in as:</h2>
-<div class="user-info-container">
-    <a href="#" class="user-link">
-        <span class="material-symbols-rounded user-icon">account_circle</span>
-        <div>
-            <div class="user-name">KIM TAEHYUNG</div>
-            <div class="user-role">Admin</div>
+        <div class="user-info-container">
+            <a href="#" class="user-link">
+                <span class="material-symbols-rounded user-icon">account_circle</span>
+                <div>
+                    <div class="user-name">KIM TAEHYUNG</div>
+                    <div class="user-role">Admin</div>
+                </div>
+            </a>
+            <span class="material-symbols-rounded logout-button">chevron_right</span>
         </div>
-    </a>
-    <span class="material-symbols-rounded logout-button">chevron_right</span>
-</div>
+    </nav>
 
+    <!-- content area -->
+    <main class="main-content">
         
-        
+    </main>
+
     <script>
         function updateTimeAndDate() {
             const now = new Date();
