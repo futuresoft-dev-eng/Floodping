@@ -2,6 +2,7 @@
 include_once('../adminsidebar.php');
 include_once('../db/connection.php');
 ?>
+    <title>Residents List</title>
 
 <!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
@@ -31,27 +32,65 @@ include_once('../db/connection.php');
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Customize DataTables search bar */
+.import-btn {
+    display: flex;
+    align-items: center;
+    background-color: #28a745; /* Green color */
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.import-btn .material-symbols-rounded {
+    margin-right: 5px;
+    font-size: 18px;
+}
+
+.dataTables_filter {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+
+}
+
 .dataTables_filter input {
-    width: 350px;          /* Set width */
-    padding: 8px;          /* Add padding for better appearance */
-    border-radius: 5px;    /* Rounded corners */
+    width: 350px;
+    padding: 8px 12px 8px 30px; 
+    border-radius: 5px;
     border: 1px solid #e0e0e0;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Optional: Adjust the search label styling */
-.dataTables_filter label {
-    color: #02476A;
-    font-weight: bold;
+.dataTables_filter::before {
+    content: '\e8b6'; 
+    font-family: 'Material Symbols Rounded';
+    position: absolute;
+    left: 170px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #aaa;
+    pointer-events: none;
 }
+
 
 .table th {
     color: #02476A;
     background-color: #E8F3F8;
     font-weight: bold;
 }
+.table tbody td:last-child {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
 
+/* Edit button styling */
 .edit-btn {
     color: white;
     background-color: #4597C0;
@@ -61,12 +100,15 @@ include_once('../db/connection.php');
     font-size: 14px;
     display: flex;
     align-items: center;
+    text-align: center;
+    vertical-align: middle;
 }
 
 .edit-btn .material-symbols-rounded {
     font-size: 18px;
     margin-right: 5px;
 }
+
 </style>
 
 <main class="main-content">
@@ -116,6 +158,18 @@ include_once('../db/connection.php');
 
 <script>
 $(document).ready(function() {
-    $('#residentTable').DataTable();
+    $('#residentTable').DataTable({
+        language: {
+            search: "", 
+            searchPlaceholder: "     Search..." 
+        }
+    });
+
+    $("div.dataTables_filter").prepend(`
+        <button class="import-btn">
+            <span class="material-symbols-rounded">upload</span> IMPORT DATA
+        </button>
+    `);
 });
+
 </script>
