@@ -12,9 +12,12 @@
             background: var(--body-color);
             margin: 0;
             padding-top: 0;  
+            overflow: hidden;
         }
 
         .sidebar {
+            display: flex;
+            flex-direction: column; 
             height: 100vh;
             background-color: #E8F3F8;
             padding-top: 20px;
@@ -23,6 +26,9 @@
             z-index: 1;
             overflow: hidden;
             transition: width 0.9s ease;
+            overflow-y: auto; 
+            scroll-behavior: smooth; 
+            
         }
 
         .sidebar-logo {
@@ -38,6 +44,7 @@
         }
 
         .sidebar-content {
+            flex-grow: 1;
             margin-top: 20px;
         }
 
@@ -112,10 +119,8 @@
             font-size: 20px;
         }
 
-        .user-info {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
+        .user-info-container {
+            margin-top: auto;
             background-color: #d6e7f0;
             padding: 10px;
             display: flex;
@@ -191,6 +196,8 @@
                 display: none; 
             }
         }
+
+
     </style>
 </head>
 
@@ -260,20 +267,21 @@
                 </li>
             </ul>
         </div>
-        
-        <h2>Logged in as:</h2>
-        <div class="user-info">
-            <a href="#" class="user-link">
-                <span class="material-symbols-rounded user-icon">account_circle</span>
-                <div>
-                    <div class="user-name">JUNGWON YANG</div>
-                    <div class="user-role">Local Authority</div>
-                </div>
-            </a>
-            <span class="material-symbols-rounded logout-button">chevron_right</span>
-        </div>
-    </nav>
 
+        <h2>Logged in as:</h2>
+<div class="user-info-container">
+    <a href="#" class="user-link">
+        <span class="material-symbols-rounded user-icon">account_circle</span>
+        <div>
+            <div class="user-name">JUNGWON YANG</div>
+            <div class="user-role">Local Authority</div>
+        </div>
+    </a>
+    <span class="material-symbols-rounded logout-button">chevron_right</span>
+</div>
+
+        
+        
     <script>
         function updateTimeAndDate() {
             const now = new Date();
