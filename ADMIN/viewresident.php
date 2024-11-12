@@ -22,6 +22,27 @@ if (isset($_GET['resident_id'])) {
     echo "<p>No resident ID specified.</p>";
     exit();
 }
+
+// Handle profile photo upload
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
+    if ($_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = '../uploads/'; // Ensure this directory exists and is writable
+        $fileName = basename($_FILES['profile_photo']['name']);
+        $targetPath = $uploadDir . $fileName;
+
+        // Move uploaded file to target directory
+        if (move_uploaded_file($_FILES['profile_photo']['tmp_name'], $targetPath)) {
+            // Store file path in the database
+            $query = "UPDATE residents SET profile_photo_path = ? WHERE resident_id = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("ss", $targetPath, $resident_id);
+            $stmt->execute();
+
+            // Update resident data with the new photo path
+            $resident['profile_photo_path'] = $targetPath;
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -68,7 +89,7 @@ if (isset($_GET['resident_id'])) {
         .header h2 {
             margin: 0;
             color: #02476A;
-            font-size: 18PX;
+            font-size: 18px;
             font-weight: bold;
         }
 
@@ -129,9 +150,22 @@ if (isset($_GET['resident_id'])) {
         }
 
     </style>
+        <script>
+        // JavaScript function to trigger file selection and form submission
+        function uploadPhoto() {
+            const fileInput = document.getElementById('profile_photo');
+            fileInput.click(); // Open file dialog
+
+            fileInput.onchange = function() {
+                // Submit the form automatically once a file is selected
+                if (fileInput.files.length > 0) {
+                    document.getElementById('photoUploadForm').submit();
+                }
+            };
+        }
+    </script>
 </head>
 <body>
-
 
 <div class="container">
     <div class="header">
@@ -139,6 +173,14 @@ if (isset($_GET['resident_id'])) {
         <h2>RESIDENT DETAILS</h2>
     </div>
     <hr>
+
+    <!-- Profile Photo Upload Form -->
+    <form id="photoUploadForm" method="post" enctype="multipart/form-data">
+        <label for="profile_photo" style="display: none;">Upload Profile Photo:</label>
+        <input type="file" name="profile_photo" id="profile_photo" accept="image/*" style="display: none;">
+        <button type="button" class="btn btn-update" onclick="uploadPhoto()">Upload</button>
+    </form>
+
     <div class="profile-container">
         <div class="profile-info">
             <h3>Profile</h3>
@@ -206,11 +248,11 @@ if (isset($_GET['resident_id'])) {
             </div>
         </div>
         <div class="profile-photo">
-            <img src="/path/to/photo.jpg" alt="Resident Photo">
+            <img src="<?php echo htmlspecialchars($resident['profile_photo_path']); ?>" alt="Resident Photo">
             <p><?php echo htmlspecialchars($resident['resident_id']); ?></p>
         </div>
     </div>
-    
+
     <div class="status-container">
         <span class="status"><?php echo htmlspecialchars($resident['account_status']); ?></span>
         <div class="action-buttons">
