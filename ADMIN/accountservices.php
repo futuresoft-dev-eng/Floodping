@@ -4,13 +4,9 @@ include_once('../db/connection.php');
 ?>
     <title>Residents List</title>
 
-<!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-<!-- Material Symbols for icons -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Rounded" rel="stylesheet">
-<!-- jQuery (required for DataTables) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- DataTables JS -->
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 
 <style>
@@ -32,11 +28,23 @@ include_once('../db/connection.php');
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.import-btn {
+.create-btn {
+    background-color: #59C447;
+    color: white;
+    padding: 13px 16px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-right: 10px;
+    text-decoration: none;
+
+}
+
+ .import-btn {
     display: flex;
     align-items: center;
-    background-color: #59C447;
-    ; 
+    background-color: #4597C0;
     color: white;
     padding: 8px 16px;
     border: none;
@@ -44,6 +52,7 @@ include_once('../db/connection.php');
     font-size: 14px;
     cursor: pointer;
     margin-right: 10px;
+    text-decoration: none;
 }
 
 .import-btn .material-symbols-rounded {
@@ -114,11 +123,16 @@ include_once('../db/connection.php');
 
 <main class="main-content">
     <div class="container">
-        <!-- Import Form (Hidden) -->
         <form id="importForm" action="/floodping/ADMIN/import_excel.php" method="post" enctype="multipart/form-data" style="display: none;">
             <input type="file" name="file" id="fileInput" accept=".xls, .xlsx" required onchange="document.getElementById('importForm').submit();">
         </form>
 
+
+        <div class="button-container">
+            <!-- Create New resident -->
+            <a href="/floodping/ADMIN/addresident.php" class="create-btn">
+                <span class="material-symbols-rounded">add</span> CREATE NEW
+            </a>
 
         <!-- Table container -->
         <div class="table-container">
@@ -177,14 +191,13 @@ $(document).ready(function() {
             <span class="material-symbols-rounded">upload</span> IMPORT DATA
         </button>
     `);
-     // Click event for the IMPORT DATA button
      $('.import-btn').on('click', function() {
-        $('#fileInput').click(); // Open the file input
+        $('#fileInput').click(); 
     });
 
-    // Event to automatically submit the form when a file is selected
+
     $('#fileInput').on('change', function() {
-        $('#importForm').submit(); // Submit the form
+        $('#importForm').submit(); 
     });
 });
 

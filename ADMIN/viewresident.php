@@ -23,6 +23,26 @@ if (isset($_GET['resident_id'])) {
     exit();
 }
 
+// Function to fetch categories by type
+function fetchCategories($conn, $type) {
+    $stmt = $conn->prepare("SELECT category_value FROM categories WHERE category_type = ?");
+    $stmt->bind_param("s", $type);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $options = [];
+    while ($row = $result->fetch_assoc()) {
+        $options[] = $row['category_value'];
+    }
+    return $options;
+}
+
+// Fetch options for each dropdown
+$civilStatusOptions = fetchCategories($conn, 'civil_status');
+$socioeconomicCategoryOptions = fetchCategories($conn, 'socioeconomic_category');
+$healthStatusOptions = fetchCategories($conn, 'health_status');
+$sexOptions = fetchCategories($conn, 'sex');
+
+
 // profile photo upload
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
     if ($_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
@@ -363,7 +383,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
 
         .profile-photo {
             text-align: center;
-            width: 200px;
+            width: 250px;
             height: 200px;
             overflow: hidden;
             border: 2px solid #02476A;
@@ -382,19 +402,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
         }
 
         .resident-id-box input {
-            width: 100px;
+            width: 150px;
             text-align: center;
             border: 1px solid #ccc;
             border-radius: 5px;
             padding: 5px;
             font-size: 17px;
-            color: #333;
+            color: #525252;
             
         }
 
         .resident-id-box p {
             font-size: 17px;
-            color: #333;
+            color: ##000000;
             margin-top: 5px;
             font-weight: bold;
         }
@@ -402,7 +422,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
         .info-group {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 40px;
         }
 
         .info-item label {
@@ -462,6 +482,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
         .btn-update {
             background-color: #2196F3;
         }
+        .info-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #fff;
+    border: 1px solid #9DB6C1;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 14px;
+    color: #3C5364;
+    width: 100%;
+    max-width: 100%;
+    cursor: pointer;
+    padding-right: 24px; /* space for arrow */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="%239DB6C1"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+}
+
+.info-group select:disabled {
+    color: #9DB6C1;
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
     </style>
     <script>
         function uploadPhoto() {
@@ -506,77 +552,116 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
         </div>
 </form>
 
-        <div class="profile-info">
-            <h3>Personal Information</h3>
-            <div class="info-group">
-                <!-- First row -->
-                <div class="info-item">
-                    <label>First Name</label>
-                    <input type="text" value="<?php echo htmlspecialchars($resident['first_name']); ?>" readonly>
-                </div>
-                <div class="info-item">
-                    <label>Middle Name (Optional)</label>
-                    <input type="text" value="<?php echo htmlspecialchars($resident['middle_name']); ?>" readonly>
-                </div>
-                <div class="info-item">
-                    <label>Last Name</label>
-                    <input type="text" value="<?php echo htmlspecialchars($resident['last_name']); ?>" readonly>
-                </div>
-                <div class="info-item">
-                    <label>Suffix (Optional)</label>
-                    <input type="text" value="<?php echo htmlspecialchars($resident['suffix']); ?>" readonly>
-                </div>
 
-                <!-- Second row -->
-                <div class="info-item">
-                    <label>Sex</label>
-                    <input type="text" value="<?php echo htmlspecialchars($resident['sex']); ?>" readonly>
-                </div>
-                <div class="info-item">
-                    <label>Birthday</label>
-                    <input type="text" value="<?php echo htmlspecialchars($resident['date_of_birth']); ?>" readonly>
-                </div>
-                <div class="info-item">
-                    <label>Mobile Number</label>
-                    <input type="text" value="<?php echo htmlspecialchars($resident['mobile_number']); ?>" readonly>
-                </div>
-                <div class="info-item">
-                    <label>Email Address</label>
-                    <input type="text" value="<?php echo htmlspecialchars($resident['email_address']); ?>" readonly>
-                </div>
+<div class="profile-info">
+    <h3>Personal Information</h3>
+    <div class="info-group">
+        <!-- First row -->
+        <div class="info-item">
+            <label>First Name</label>
+            <input type="text" value="<?php echo htmlspecialchars($resident['first_name']); ?>" readonly>
+        </div>
+        <div class="info-item">
+            <label>Middle Name (Optional)</label>
+            <input type="text" value="<?php echo htmlspecialchars($resident['middle_name']); ?>" readonly>
+        </div>
+        <div class="info-item">
+            <label>Last Name</label>
+            <input type="text" value="<?php echo htmlspecialchars($resident['last_name']); ?>" readonly>
+        </div>
+        <div class="info-item">
+            <label>Suffix (Optional)</label>
+            <input type="text" value="<?php echo htmlspecialchars($resident['suffix']); ?>" readonly>
+        </div>
 
-                <!-- Third row -->
-                <div class="info-item">
-                    <label>Civil Status</label>
-                    <input type="text" value="<?php echo htmlspecialchars($resident['civil_status']); ?>" readonly>
-                </div>
-                <div class="info-item">
-                    <label>Socioeconomic Category</label>
-                    <input type="text" value="<?php echo htmlspecialchars($resident['socioeconomic_category']); ?>" readonly>
-                </div>
-                <div class="info-item">
-                    <label>Health Status</label>
-                    <input type="text" value="<?php echo htmlspecialchars($resident['health_status']); ?>" readonly>
-                </div>
+        <!-- Second row -->
+        <div class="info-item">
+            <label>Sex</label>
+            <select>
+                <?php foreach ($sexOptions as $option): ?>
+                    <option value="<?php echo $option; ?>" <?php echo ($resident['sex'] === $option) ? 'selected' : ''; ?>>
+                        <?php echo ucfirst($option); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="info-item">
+            <label>Birthday</label>
+            <input type="text" value="<?php echo htmlspecialchars($resident['date_of_birth']); ?>" readonly>
+        </div>
+        <div class="info-item">
+            <label>Mobile Number</label>
+            <input type="text" value="<?php echo htmlspecialchars($resident['mobile_number']); ?>" readonly>
+        </div>
+        <div class="info-item">
+            <label>Email Address</label>
+            <input type="text" value="<?php echo htmlspecialchars($resident['email_address']); ?>" readonly>
+        </div>
 
-                <!-- Fourth row -->
-                <div class="info-item">
-                    <label>House/Lot Number</label>
-                    <input type="text" value="<?php echo htmlspecialchars($resident['house_lot_number']); ?>" readonly>
-                </div>
-                <div class="info-item">
-                    <label>Street/Subdivision Name</label>
-                    <input type="text" value="<?php echo htmlspecialchars($resident['street_subdivision_name']); ?>" readonly>
-                </div>
-                <div class="info-item">
-                    <label>Barangay</label>
-                    <input type="text" value="<?php echo htmlspecialchars($resident['barangay']); ?>" readonly>
-                </div>
-                <div class="info-item">
-                    <label>Municipality</label>
-                    <input type="text" value="<?php echo htmlspecialchars($resident['municipality']); ?>" readonly>
-                </div>
-            </div>
+        <!-- Third row -->
+        <div class="info-item">
+            <label>Civil Status</label>
+            <select>
+                <?php foreach ($civilStatusOptions as $option): ?>
+                    <option value="<?php echo $option; ?>" <?php echo ($resident['civil_status'] === $option) ? 'selected' : ''; ?>>
+                        <?php echo ucfirst($option); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="info-item">
+            <label>Socioeconomic Category</label>
+            <select>
+                <?php foreach ($socioeconomicCategoryOptions as $option): ?>
+                    <option value="<?php echo $option; ?>" <?php echo ($resident['socioeconomic_category'] === $option) ? 'selected' : ''; ?>>
+                        <?php echo ucfirst($option); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="info-item">
+            <label>Health Status</label>
+            <select>
+                <?php foreach ($healthStatusOptions as $option): ?>
+                    <option value="<?php echo $option; ?>" <?php echo ($resident['health_status'] === $option) ? 'selected' : ''; ?>>
+                        <?php echo ucfirst($option); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+        <!-- Fourth row -->
+        <div class="info-item">
+            <label>House/Lot Number</label>
+            <input type="text" value="<?php echo htmlspecialchars($resident['house_lot_number']); ?>" readonly>
+        </div>
+        <div class="info-item">
+            <label>Street/Subdivision Name</label>
+            <input type="text" value="<?php echo htmlspecialchars($resident['street_subdivision_name']); ?>" readonly>
+        </div>
+        <div class="info-item">
+            <label>Barangay</label>
+            <input type="text" value="<?php echo htmlspecialchars($resident['barangay']); ?>" readonly>
+        </div>
+        <div class="info-item">
+            <label>Municipality</label>
+            <input type="text" value="<?php echo htmlspecialchars($resident['municipality']); ?>" readonly>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
 <hr>
     <div class="status-container">
