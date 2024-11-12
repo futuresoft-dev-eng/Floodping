@@ -74,141 +74,138 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Add New Resident</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Symbols+Rounded">
     <style>
-        .form-container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            font-weight: bold;
-        }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .submit-btn {
-            background-color: #4597C0;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .submit-btn:hover {
-            background-color: #357a99;
-        }
+       <style>
+        .main-content { margin-left: 200px; padding: 20px; }
+        .container { max-width: 100%; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif; }
+        
+        .header { display: flex; align-items: center; background-color: #4597C0; color: white; padding: 15px; border-radius: 8px; }
+        .header h2 { margin: 0; font-size: 24px; font-weight: bold; }
+        
+        .profile-container { display: flex; gap: 30px; padding: 20px; border-radius: 8px; }
+        
+        .profile-info { flex: 2; color: #02476A; font-size: 17px; }
+        .info-group { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .info-item label { font-size: 14px; font-weight: bold; color: black; }
+        .info-item input, .info-item select { width: 100%; padding: 8px; border: 1px solid #02476A; border-radius: 4px; font-size: 14px; }
+        
+        .profile-photo { text-align: center; width: 250px; height: 250px; border: 2px solid #02476A; border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .profile-photo img { width: 100%; height: 100%; object-fit: cover; }
+        .upload-photo-button { background-color: #4597C0; color: white; border: none; padding: 8px 16px; border-radius: 5px; font-size: 14px; margin-top: 10px; }
+        
+        .submit-btn { background-color: #2196F3; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    </style>
     </style>
 </head>
 <body>
 
-<div class="form-container">
-    <h2>Add New Resident</h2>
-    <form action="addresident.php" method="POST" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="first_name">First Name:</label>
-            <input type="text" name="first_name" required>
-        </div>
-        <div class="form-group">
-            <label for="middle_name">Middle Name:</label>
-            <input type="text" name="middle_name">
-        </div>
-        <div class="form-group">
-            <label for="last_name">Last Name:</label>
-            <input type="text" name="last_name" required>
-        </div>
-        <div class="form-group">
-            <label for="suffix">Suffix:</label>
-            <input type="text" name="suffix">
-        </div>
-        <div class="form-group">
-            <label for="sex">Sex:</label>
-            <select name="sex" required>
-                <?php while ($row = mysqli_fetch_assoc($sexResult)) : ?>
-                    <option value="<?php echo htmlspecialchars($row['category_id']); ?>"><?php echo htmlspecialchars($row['category_value']); ?></option>
-                    <?php endwhile; ?>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="date_of_birth">Date of Birth:</label>
-            <input type="date" name="date_of_birth" required>
-        </div>
-        <div class="form-group">
-            <label for="mobile_number">Mobile Number:</label>
-            <input type="text" name="mobile_number">
-        </div>
-        <div class="form-group">
-            <label for="email_address">Email Address:</label>
-            <input type="email" name="email_address">
-        </div>
-        <div class="form-group">
-            <label for="civil_status">Civil Status:</label>
-            <select name="civil_status" required>
-                <?php while ($row = mysqli_fetch_assoc($civilStatusResult)) : ?>
-                    <option value="<?php echo htmlspecialchars($row['category_id']); ?>"><?php echo htmlspecialchars($row['category_value']); ?></option>
-                <?php endwhile; ?>
-            </select>
-        </div>
+<div class="container">
+    <div class="header">
+        <h2>Add New Resident</h2>
+    </div>
+    
+    <div class="profile-container">
 
-        <div class="form-group">
-            <label for="socioeconomic_category">Socioeconomic Category:</label>
-            <select name="socioeconomic_category">
-                <?php while ($row = mysqli_fetch_assoc($socioeconomicResult)) : ?>
-                    <option value="<?php echo htmlspecialchars($row['category_id']); ?>"><?php echo htmlspecialchars($row['category_value']); ?></option>
-                <?php endwhile; ?>
-            </select>
-        </div>
+        <!-- Resident Information Form -->
+        <div class="profile-info">
+            <form action="addresident.php" method="POST" enctype="multipart/form-data">
+                <div class="info-group">
+                    <div class="info-item">
+                        <label for="first_name">First Name:</label>
+                        <input type="text" name="first_name" required>
+                    </div>
+                    <div class="info-item">
+                        <label for="middle_name">Middle Name:</label>
+                        <input type="text" name="middle_name">
+                    </div>
+                    <div class="info-item">
+                        <label for="last_name">Last Name:</label>
+                        <input type="text" name="last_name" required>
+                    </div>
+                    <div class="info-item">
+                        <label for="suffix">Suffix:</label>
+                        <input type="text" name="suffix">
+                    </div>
+                    <div class="info-item">
+                        <label for="sex">Sex:</label>
+                        <select name="sex" required>
+                            <?php while ($row = mysqli_fetch_assoc($sexResult)) : ?>
+                                <option value="<?php echo htmlspecialchars($row['category_id']); ?>"><?php echo htmlspecialchars($row['category_value']); ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="info-item">
+                        <label for="date_of_birth">Date of Birth:</label>
+                        <input type="date" name="date_of_birth" required>
+                    </div>
+                    <div class="info-item">
+                        <label for="mobile_number">Mobile Number:</label>
+                        <input type="text" name="mobile_number">
+                    </div>
+                    <div class="info-item">
+                        <label for="email_address">Email Address:</label>
+                        <input type="email" name="email_address">
+                    </div>
+                    <div class="info-item">
+                        <label for="civil_status">Civil Status:</label>
+                        <select name="civil_status" required>
+                            <?php while ($row = mysqli_fetch_assoc($civilStatusResult)) : ?>
+                                <option value="<?php echo htmlspecialchars($row['category_id']); ?>"><?php echo htmlspecialchars($row['category_value']); ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="info-item">
+                        <label for="socioeconomic_category">Socioeconomic Category:</label>
+                        <select name="socioeconomic_category">
+                            <?php while ($row = mysqli_fetch_assoc($socioeconomicResult)) : ?>
+                                <option value="<?php echo htmlspecialchars($row['category_id']); ?>"><?php echo htmlspecialchars($row['category_value']); ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="info-item">
+                        <label for="health_status">Health Status:</label>
+                        <select name="health_status">
+                            <?php while ($row = mysqli_fetch_assoc($healthStatusResult)) : ?>
+                                <option value="<?php echo htmlspecialchars($row['category_id']); ?>"><?php echo htmlspecialchars($row['category_value']); ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="info-item">
+                        <label for="house_lot_number">House/Lot Number:</label>
+                        <input type="text" name="house_lot_number">
+                    </div>
+                    <div class="info-item">
+                        <label for="street_subdivision_name">Street/Subdivision Name:</label>
+                        <input type="text" name="street_subdivision_name">
+                    </div>
+                    <div class="info-item">
+                        <label for="barangay">Barangay:</label>
+                        <input type="text" name="barangay" value="Bagbag">
+                    </div>
+                    <div class="info-item">
+                        <label for="municipality">Municipality:</label>
+                        <input type="text" name="municipality" value="Quezon City">
+                    </div>
+                    <div class="info-item">
+                        <label for="account_status">Account Status:</label>
+                        <select name="account_status">
+                            <?php while ($row = mysqli_fetch_assoc($accountStatusResult)) : ?>
+                                <option value="<?php echo htmlspecialchars($row['category_id']); ?>"><?php echo htmlspecialchars($row['category_value']); ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                </div>
 
-        <div class="form-group">
-            <label for="health_status">Health Status:</label>
-            <select name="health_status">
-                <?php while ($row = mysqli_fetch_assoc($healthStatusResult)) : ?>
-                    <option value="<?php echo htmlspecialchars($row['category_id']); ?>"><?php echo htmlspecialchars($row['category_value']); ?></option>
-                <?php endwhile; ?>
-            </select>
+                <button type="submit" class="submit-btn">Add Resident</button>
+            </form>
         </div>
-
-        <div class="form-group">
-            <label for="house_lot_number">House/Lot Number:</label>
-            <input type="text" name="house_lot_number">
+         <!-- Profile Photo Section -->
+         <div class="profile-photo">
+            <input type="file" name="profile_photo" accept="image/*" id="profile_photo" style="display: none;">
+            <label for="profile_photo" class="upload-photo-button">UPLOAD A PHOTO</label>
         </div>
-        <div class="form-group">
-            <label for="street_subdivision_name">Street/Subdivision Name:</label>
-            <input type="text" name="street_subdivision_name">
-        </div>
-        <div class="form-group">
-            <label for="barangay">Barangay:</label>
-            <input type="text" name="barangay" value="Bagbag">
-        </div>
-        <div class="form-group">
-            <label for="municipality">Municipality:</label>
-            <input type="text" name="municipality" value="Quezon City">
-        </div>
-        <div class="form-group">
-        <label for="account_status">Account Status:</label>
-        <select name="account_status">
-            <?php while ($row = mysqli_fetch_assoc($accountStatusResult)) : ?>
-                <option value="<?php echo htmlspecialchars($row['category_id']); ?>"><?php echo htmlspecialchars($row['category_value']); ?></option>
-            <?php endwhile; ?>
-        </select>
-        </div>
-
-        <div class="form-group">
-            <label for="profile_photo">Upload Profile Photo:</label>
-            <input type="file" name="profile_photo" accept="image/*">
-        </div>
-        <button type="submit" class="submit-btn">Add Resident</button>
-    </form>
+    </div>
 </div>
 
 <?php mysqli_close($conn); ?>
