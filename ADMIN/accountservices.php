@@ -91,8 +91,8 @@ include_once('../db/connection.php');
     justify-content: center;
 }
 
-/* Edit button styling */
-.edit-btn {
+.view-btn {
+    text-decoration: none;
     color: white;
     background-color: #4597C0;
     padding: 5px 10px;
@@ -105,7 +105,7 @@ include_once('../db/connection.php');
     vertical-align: middle;
 }
 
-.edit-btn .material-symbols-rounded {
+.view-btn .material-symbols-rounded {
     font-size: 18px;
     margin-right: 5px;
 }
@@ -115,7 +115,7 @@ include_once('../db/connection.php');
 <main class="main-content">
     <div class="container">
         <!-- Import Form (Hidden) -->
-        <form id="importForm" action="import_excel.php" method="post" enctype="multipart/form-data" style="display: none;">
+        <form id="importForm" action="/floodping/ADMIN/import_excel.php" method="post" enctype="multipart/form-data" style="display: none;">
             <input type="file" name="file" id="fileInput" accept=".xls, .xlsx" required onchange="document.getElementById('importForm').submit();">
         </form>
 
@@ -130,7 +130,7 @@ include_once('../db/connection.php');
                         <th>Middle Name</th>
                         <th>Last Name</th>
                         <th>Suffix</th>
-                        <th>Contact No.</th>
+                        <th>Mobile Number</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -150,7 +150,7 @@ include_once('../db/connection.php');
                             echo "<td>{$residentRow['suffix']}</td>";
                             echo "<td>{$residentRow['mobile_number']}</td>";
                             echo "<td>{$residentRow['status']}</td>";
-                            echo "<td><button class='edit-btn'><span class='material-symbols-rounded'>edit</span>EDIT</button></td>";
+                            echo "<td><a href='/floodping/ADMIN/viewresident.php?resident_id={$residentRow['resident_id']}' class='view-btn'><span class='material-symbols-rounded'>visibility</span>VIEW</a></td>";
                             echo "</tr>";
                         }
                     } else {
