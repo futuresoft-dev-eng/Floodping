@@ -23,22 +23,20 @@ if (isset($_GET['resident_id'])) {
     exit();
 }
 
-// Handle profile photo upload
+// profile photo upload
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
     if ($_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = '../uploads/'; // Ensure this directory exists and is writable
+        $uploadDir = '../uploads/'; 
         $fileName = basename($_FILES['profile_photo']['name']);
         $targetPath = $uploadDir . $fileName;
 
-        // Move uploaded file to target directory
+
         if (move_uploaded_file($_FILES['profile_photo']['tmp_name'], $targetPath)) {
-            // Store file path in the database
             $query = "UPDATE residents SET profile_photo_path = ? WHERE resident_id = ?";
             $stmt = $conn->prepare($query);
             $stmt->bind_param("ss", $targetPath, $resident_id);
             $stmt->execute();
 
-            // Update resident data with the new photo path
             $resident['profile_photo_path'] = $targetPath;
         }
     }
@@ -52,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
     <title>Resident Details</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Symbols+Rounded">
     <style>
-       .main-content {
+        .main-content {
             margin-left: 200px;
             padding: 20px;
         }
@@ -71,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
             background-color: white;
             padding: 10px;
             border-radius: 8px;
-            color: #02476A;
+            color: white;
             gap: 15px;
         }
 
@@ -88,21 +86,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
 
         .header h2 {
             margin: 0;
-            color: #02476A;
             font-size: 18px;
             font-weight: bold;
         }
 
         .profile-container {
-            background-color: #E8F3F8;
             padding: 20px;
             border-radius: 8px;
             display: flex;
+            flex-direction: row-reverse; 
+            gap: 30px;
+        }
+
+        .title-container {
+            display: flex;
             justify-content: space-between;
+            align-items: center;
+            background-color: #4597C0;
+            padding: 10px;
+            border-radius: 8px;
+            color: white;
+        }
+
+        .title-container h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .upload-photo-button {
+            background-color: #4597C0;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .profile-info, .profile-photo {
             flex: 1;
+            color:#02476A;
+            font-size: 17px;
+        }
+
+        .profile-photo {
+            text-align: center;
         }
 
         .profile-photo img {
@@ -110,6 +142,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
             width: 150px;
             height: 180px;
             margin-bottom: 10px;
+        }
+
+        .info-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .info-item label {
+            font-size: 14px;
+            font-weight: bold;
+            color: black;
+        }
+
+        .info-item input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #02476A;
+            border-radius: 4px;
+            font-size: 14px;
         }
 
         .status-container {
@@ -148,16 +200,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
         .btn-update {
             background-color: #2196F3;
         }
-
     </style>
-        <script>
-        // JavaScript function to trigger file selection and form submission
+    <script>
         function uploadPhoto() {
             const fileInput = document.getElementById('profile_photo');
-            fileInput.click(); // Open file dialog
+            fileInput.click(); 
 
             fileInput.onchange = function() {
-                // Submit the form automatically once a file is selected
                 if (fileInput.files.length > 0) {
                     document.getElementById('photoUploadForm').submit();
                 }
@@ -174,92 +223,109 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
     </div>
     <hr>
 
-    <!-- Profile Photo Upload Form -->
-    <form id="photoUploadForm" method="post" enctype="multipart/form-data">
-        <label for="profile_photo" style="display: none;">Upload Profile Photo:</label>
-        <input type="file" name="profile_photo" id="profile_photo" accept="image/*" style="display: none;">
-        <button type="button" class="btn btn-update" onclick="uploadPhoto()">Upload</button>
-    </form>
+
+     <div class="title-container">
+        <h3>PROFILE</h3>
+        <button type="button" class="upload-photo-button" onclick="uploadPhoto()">
+            <span class="material-symbols-rounded">file_upload</span> UPLOAD A PHOTO
+        </button>
+    </div>
 
     <div class="profile-container">
+        <form id="photoUploadForm" method="post" enctype="multipart/form-data" style="display: inline;">
+            <input type="file" name="profile_photo" id="profile_photo" accept="image/*" style="display: none;">
+            <div class="profile-photo">
+                <img src="<?php echo htmlspecialchars($resident['profile_photo_path']); ?>" alt="Resident Photo">
+                <p>Resident ID: <?php echo htmlspecialchars($resident['resident_id']); ?></p>
+            </div>
+        </form>
+
         <div class="profile-info">
-            <h3>Profile</h3>
-            <div class="info-group">
+        <h3>Personal Information</h3>
+        <div class="info-group">
                 <div class="info-item">
                     <label>First Name</label>
-                    <p><?php echo htmlspecialchars($resident['first_name']); ?></p>
+                    <input type="text" value="<?php echo htmlspecialchars($resident['first_name']); ?>" readonly>
                 </div>
                 <div class="info-item">
                     <label>Middle Name (Optional)</label>
-                    <p><?php echo htmlspecialchars($resident['middle_name']); ?></p>
+                    <input type="text" value="<?php echo htmlspecialchars($resident['middle_name']); ?>" readonly>
                 </div>
                 <div class="info-item">
                     <label>Last Name</label>
-                    <p><?php echo htmlspecialchars($resident['last_name']); ?></p>
+                    <input type="text" value="<?php echo htmlspecialchars($resident['last_name']); ?>" readonly>
                 </div>
                 <div class="info-item">
                     <label>Suffix (Optional)</label>
-                    <p><?php echo htmlspecialchars($resident['suffix']); ?></p>
+                    <input type="text" value="<?php echo htmlspecialchars($resident['suffix']); ?>" readonly>
                 </div>
                 <div class="info-item">
                     <label>Sex</label>
-                    <p><?php echo htmlspecialchars($resident['sex']); ?></p>
+                    <input type="text" value="<?php echo htmlspecialchars($resident['sex']); ?>" readonly>
                 </div>
                 <div class="info-item">
                     <label>Birthday</label>
-                    <p><?php echo htmlspecialchars($resident['date_of_birth']); ?></p>
+                    <input type="text" value="<?php echo htmlspecialchars($resident['date_of_birth']); ?>" readonly>
                 </div>
                 <div class="info-item">
                     <label>Mobile Number</label>
-                    <p><?php echo htmlspecialchars($resident['mobile_number']); ?></p>
+                    <input type="text" value="<?php echo htmlspecialchars($resident['mobile_number']); ?>" readonly>
                 </div>
                 <div class="info-item">
                     <label>Email Address</label>
-                    <p><?php echo htmlspecialchars($resident['email_address']); ?></p>
+                    <input type="text" value="<?php echo htmlspecialchars($resident['email_address']); ?>" readonly>
                 </div>
                 <div class="info-item">
                     <label>Civil Status</label>
-                    <p><?php echo htmlspecialchars($resident['civil_status']); ?></p>
+                    <input type="text" value="<?php echo htmlspecialchars($resident['civil_status']); ?>" readonly>
                 </div>
                 <div class="info-item">
                     <label>Socioeconomic Category</label>
-                    <p><?php echo htmlspecialchars($resident['socioeconomic_category']); ?></p>
+                    <input type="text" value="<?php echo htmlspecialchars($resident['socioeconomic_category']); ?>" readonly>
                 </div>
                 <div class="info-item">
                     <label>Health Status</label>
-                    <p><?php echo htmlspecialchars($resident['health_status']); ?></p>
+                    <input type="text" value="<?php echo htmlspecialchars($resident['health_status']); ?>" readonly>
                 </div>
                 <div class="info-item">
                     <label>House/Lot Number</label>
-                    <p><?php echo htmlspecialchars($resident['house_lot_number']); ?></p>
+                    <input type="text" value="<?php echo htmlspecialchars($resident['house_lot_number']); ?>" readonly>
                 </div>
                 <div class="info-item">
                     <label>Street/Subdivision Name</label>
-                    <p><?php echo htmlspecialchars($resident['street_subdivision_name']); ?></p>
+                    <input type="text" value="<?php echo htmlspecialchars($resident['street_subdivision_name']); ?>" readonly>
                 </div>
-                <div class="info-item">
+                <div class="info-item
                     <label>Barangay</label>
-                    <p><?php echo htmlspecialchars($resident['barangay']); ?></p>
+                    <input type="text" value="<?php echo htmlspecialchars($resident['barangay']); ?>" readonly>
                 </div>
                 <div class="info-item">
                     <label>Municipality</label>
-                    <p><?php echo htmlspecialchars($resident['municipality']); ?></p>
+                    <input type="text" value="<?php echo htmlspecialchars($resident['municipality']); ?>" readonly>
+                </div>
+                <div class="info-item">
+                    <label>Account Status</label>
+                    <input type="text" value="<?php echo htmlspecialchars($resident['account_status']); ?>" readonly>
                 </div>
             </div>
-        </div>
-        <div class="profile-photo">
-            <img src="<?php echo htmlspecialchars($resident['profile_photo_path']); ?>" alt="Resident Photo">
-            <p><?php echo htmlspecialchars($resident['resident_id']); ?></p>
         </div>
     </div>
 
     <div class="status-container">
-        <span class="status"><?php echo htmlspecialchars($resident['account_status']); ?></span>
+        <div class="status">
+            <?php echo ucfirst($resident['account_status']); ?>
+        </div>
+
         <div class="action-buttons">
-            <button class="btn btn-deactivate">DEACTIVATE</button>
-            <button class="btn btn-update">UPDATE</button>
+            <button class="btn btn-update" onclick="window.location.href='updateresident.php?resident_id=<?php echo htmlspecialchars($resident['resident_id']); ?>'">
+                UPDATE
+            </button>
+            <button class="btn btn-deactivate" onclick="window.location.href='deactivateresident.php?resident_id=<?php echo htmlspecialchars($resident['resident_id']); ?>'">
+                DEACTIVATE
+            </button>
         </div>
     </div>
 </div>
+
 </body>
 </html>
