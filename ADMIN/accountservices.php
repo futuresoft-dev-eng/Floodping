@@ -193,51 +193,42 @@ include_once('../db/connection.php');
 </main>
 
 <script>
-$(document).ready(function() {
+$(document).ready(function () {
     const table = $('#residentTable').DataTable({
         language: {
             search: "",
-            searchPlaceholder: "     Search..."
-        }
+            searchPlaceholder: "     Search...",
+        },
     });
 
     if (!$('.import-btn').length) {
         $("div.dataTables_filter").prepend(`
-            <button class="import-btn">
+            <button type="button" class="import-btn">
                 <span class="material-symbols-rounded">upload</span> IMPORT DATA
             </button>
         `);
     }
-    
-    $(document).ready(function() {
-    $('.import-btn').on('click', function() {
-        $('#fileInput').click(); // Trigger file input
-    });
 
-    $('#fileInput').on('change', function() {
-        $('#importForm').submit(); // Submit the form
-    });
-});
-
-
-    $('.import-btn').off('click').on('click', function() {
+    $('.import-btn').off('click').on('click', function () {
         $('#fileInput').click();
     });
 
-    $('#fileInput').off('change').on('change', function() {
-        $('#importForm').submit();
+    $('#fileInput').off('change').on('change', function () {
+        if (this.files.length > 0) {
+            $('#importForm').submit(); 
+        }
     });
 
-    $('#statusFilter').on('change', function() {
+    $('#statusFilter').on('change', function () {
         const selectedStatus = $(this).val();
         table.column(7).search(selectedStatus).draw();
     });
 
-    $('#selectAll').on('click', function() {
+    $('#selectAll').on('click', function () {
         $('.rowCheckbox').prop('checked', this.checked);
     });
 
-    $('.rowCheckbox').on('click', function() {
+    $('.rowCheckbox').on('click', function () {
         $('#selectAll').prop('checked', $('.rowCheckbox:checked').length === $('.rowCheckbox').length);
     });
 });
