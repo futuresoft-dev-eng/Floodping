@@ -505,7 +505,7 @@ function showSuccessDeleteModal() {
             <!-- First row -->
             <div class="info-item">
                 <label>First Name</label>
-                <input type="text" name="first_name" value="<?php echo htmlspecialchars($resident['first_name']); ?>" readonly>
+                <input type="text" name="first_name" value="<?php echo htmlspecialchars($resident['first_name']); ?>" readonly style="background-color: #F5F5F5;">
             </div>
             <div class="info-item">
                 <label>Middle Name (Optional)</label>
@@ -609,7 +609,7 @@ function showSuccessDeleteModal() {
 <!-- Account Status -->
 <div class="info-item">
     <label for="account_status">Account Status:</label>
-    <input type="text" id="account_status" name="account_status" value="<?php echo htmlspecialchars($account_status); ?>" readonly>
+    <input type="text" id="account_status" name="account_status" value="<?php echo htmlspecialchars($account_status); ?>" readonly style="background-color: #F5F5F5;">
     <form method="POST" style="display:inline;">
         <input type="hidden" name="resident_id" value="<?php echo htmlspecialchars($resident_id); ?>">
         <button type="submit" name="update_account_status" value="<?php echo $button_action; ?>">
