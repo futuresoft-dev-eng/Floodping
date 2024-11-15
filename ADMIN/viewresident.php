@@ -122,18 +122,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_resident'])) {
 
     if ($stmt->execute()) {
         echo "<script>
-            document.addEventListener('DOMContentLoaded', () => {
-                showSuccessDeleteModal(() => {
-                    window.location.href = 'http://localhost/floodping/ADMIN/accountservices.php?status=success';
-                });
-            });
-        </script>";
+        document.addEventListener('DOMContentLoaded', function() {
+            showSuccessDeleteModal(); 
+        });
+    </script>";
     } else {
         echo "<script>alert('Error deleting record: {$stmt->error}');</script>";
     }
 
     $stmt->close();
-    exit; 
 }
 
 ?>
@@ -149,14 +146,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_resident'])) {
             padding: 20px;
         }
 
-
         .container {
             max-width: 100%;
             margin: 0 auto;
             padding: 20px;
             font-family: Arial, sans-serif;
         }
-
 
         .header {
             display: flex;
@@ -168,7 +163,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_resident'])) {
             border-radius: 8px;
             gap: 15px;
         }
-
 
         .back-button {
             background-color: #0073AC;
@@ -182,22 +176,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_resident'])) {
             text-decoration: none;
         }
 
-
         .header h2 {
             margin: 0;
             font-size: 18px;
             font-weight: bold;
         }
 
-
         .profile-container {
             padding: 20px;
             border-radius: 8px;
             display: flex;
-            flex-direction: row-reverse;
+            flex-direction: row-reverse; 
             gap: 30px;
         }
-
 
         .title-container {
             display: flex;
@@ -209,13 +200,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_resident'])) {
             color: white;
         }
 
-
         .title-container h3 {
             margin: 0;
             font-size: 16px;
             font-weight: bold;
         }
-
 
         .upload-photo-button {
             background-color: #4597C0;
@@ -230,13 +219,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_resident'])) {
             gap: 5px;
         }
 
-
         .profile-info, .profile-photo {
             flex: 1;
             color:#02476A;
             font-size: 17px;
         }
-
 
         .profile-photo {
             text-align: center;
@@ -248,7 +235,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_resident'])) {
             display: inline-block;
         }
 
-
         .profile-photo img {
             width: 100%;
             height: 100%;
@@ -259,7 +245,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_resident'])) {
             margin-top: 10px;
         }
 
-
         .resident-id-box input {
             width: 150px;
             text-align: center;
@@ -268,9 +253,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_resident'])) {
             padding: 5px;
             font-size: 17px;
             color: #525252;
-           
+            
         }
-
 
         .resident-id-box p {
             font-size: 17px;
@@ -279,20 +263,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_resident'])) {
             font-weight: bold;
         }
 
-
         .info-group {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 40px;
         }
 
-
         .info-item label {
             font-size: 14px;
             font-weight: bold;
             color: black;
         }
-
 
         .info-item input {
             width: 100%;
@@ -301,7 +282,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_resident'])) {
             border-radius: 4px;
             font-size: 14px;
         }
-   
+    
         hr {
             border: 1px solid #e0e0e0;
             margin: 20px 0;
@@ -313,7 +294,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_resident'])) {
             justify-content: space-between;
         }
 
-
         .status {
             background-color: #e0f3e9;
             padding: 8px 12px;
@@ -321,7 +301,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_resident'])) {
             color: #4CAF50;
             font-weight: bold;
         }
-
 
         .info-group select {
             appearance: none;
@@ -336,26 +315,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_resident'])) {
             width: 100%;
             max-width: 100%;
             cursor: pointer;
-            padding-right: 24px;
+            padding-right: 24px; 
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="%239DB6C1"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>');
             background-repeat: no-repeat;
             background-position: right 8px center;
             background-size: 16px;
         }
 
-
 .info-group select:disabled {
     color: #9DB6C1;
     background-color: #f8f9fa;
     cursor: not-allowed;
 }
-
-
 .info-item button {
         color: white;
         background-color: #4597C0;
-        border: none;
-        cursor: pointer;
+        border: none; 
+        cursor: pointer; 
         padding: 10px 20px;
         border: none;
         border-radius: 5px;
@@ -364,11 +340,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_resident'])) {
         cursor: pointer;
     }
 
-
     .info-item button:hover {
-        text-decoration: none;
-    }
-
+        text-decoration: none; 
+    } 
 
 /* Modal styles */
 .modal {
@@ -384,7 +358,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_resident'])) {
     align-items: center;
 }
 
-
 .modal-content {
     margin: 15% auto;
     text-align: center;
@@ -397,12 +370,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_resident'])) {
     font-family: Arial, sans-serif;
 }
 
-
 .modal-content p {
     font-size: 16px;
     margin-bottom: 20px;
 }
-
 
 .btn {
     padding: 10px 20px;
@@ -412,21 +383,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_resident'])) {
     margin: 5px;
 }
 
-
 .btn-yes {
     background-color: #4597C0;
     color: #fff;
 }
-
 
 .btn-no {
     background-color: #EA3323;
     color: #000;
 }
 
-
     </style>
-
       <script>
         function uploadPhoto() {
             const fileInput = document.getElementById('profile_photo');
@@ -464,7 +431,6 @@ function closeDeleteModal() {
     document.getElementById('deleteModal').style.display = 'none';
 }
 
-
 function showSuccessModal() {
     const modal = document.getElementById('successModal');
     modal.style.display = 'flex';
@@ -472,25 +438,12 @@ function showSuccessModal() {
 function refreshPage() {
     window.location.reload();
 }
-function showSuccessDeleteModal(callback) {
-    const modal = document.getElementById('successDeleteModal'); // Assuming you have a modal element with this ID
-    const okButton = modal.querySelector('.ok-button'); // Button class for 'OK'
-
-    // Show the modal
-    modal.style.display = 'block';
-
-    // Handle the click event of the OK button
-    okButton.addEventListener('click', function () {
-        // Hide the modal
-        modal.style.display = 'none';
-
-        // Execute the callback function (e.g., redirect)
-        if (typeof callback === 'function') {
-            callback();
-        }
-    });
+function showSuccessDeleteModal() {
+    document.getElementById('successdeleteModal').style.display = 'flex';
 }
 
+
+</script>
 
     </script>
 </head>
@@ -675,13 +628,18 @@ function showSuccessDeleteModal(callback) {
 </div>
 
 <!-- SUCCESS DELETE MODAL -->
-<div id="successdeleteModal" class="modal">
+<div id="successdeleteModal" class="modal" style="display: none;">
     <div class="modal-content">
-        <p>Resident successfully deleted!</p>
-        <button type="button" onclick="redirectToAccountServices()">OK</button>
+        <div class="modal-header">
+            <span class="material-symbols-rounded" style="color: green;">check_circle</span>
+            Resident Deleted Successfully
+        </div>
+        <p>The resident profile has been deleted.</p>
+        <div class="modal-buttons">
+        <a href="http://localhost/floodping/ADMIN/accountservices.php" class="btn btn-yes">OK</a>
+        </div>
     </div>
 </div>
-
 
 
 </form>
