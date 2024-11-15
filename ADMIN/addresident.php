@@ -160,6 +160,67 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background-color: #59C447; color: white; 
             padding: 10px 20px; border: none; border-radius: 5px; 
             cursor: pointer; font-weight: bold; }
+
+
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 500px;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        .modal-header {
+            font-size: 18px;
+            font-weight: bold;
+            color: #02476A;
+        }
+        .modal-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+        }
+        .modal-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal-button.no {
+            background-color: #EA3323;
+            color: white;
+        }
+        .modal-button.yes {
+            background-color: #59C447;
+            color: white;
+        }
+        .modal-content h3 {
+            display: flex;
+            align-items: center;
+            font-size: 1.2em;
+            }
+
+        .help-icon {
+            font-size: 125px; 
+            margin-left: 8px; 
+            color: #02476A; 
+            cursor: pointer;
+        }
+
     </style>
  <script>
         function uploadPhoto() {
@@ -178,6 +239,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             };
         }
+
+        function confirmCreation(event) {
+            event.preventDefault();
+            document.getElementById('confirmationModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('confirmationModal').style.display = 'none';
+        }
+
+        function submitForm() {
+            document.querySelector('form[action="addresident.php"]').submit();
+        }
+
     </script>
 
 </head>
@@ -302,11 +377,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <hr>
                 <div>
-                <button type="submit" class="submit-btn">CREATE</button>
+                <button type="button" class="submit-btn" onclick="confirmCreation(event)">CREATE</button>
                 </div>     
             </form>
         </div>     
     </div>
+
+    <!-- Modal -->
+<div id="confirmationModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+        <span class="material-symbols-rounded help-icon" title="Need help?">
+      help
+    </span>
+            Are you sure you want to create this resident?
+        </div>
+        <p>Creating this resident's profile will make them receive SMS alerts and notifications.</p>
+        <div class="modal-buttons">
+            <button class="modal-button no" onclick="closeModal()">No</button>
+            <button class="modal-button yes" onclick="submitForm()">Yes</button>
+        </div>
+    </div>
+</div>
+
 </div>
 
 <?php mysqli_close($conn); ?>
