@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         $data = $sheet->toArray();
 
         foreach ($data as $index => $row) {
-            if ($index === 0) continue;
+            if ($index === 0) continue; 
 
             $resident_id = $row[0];
             $first_name = $row[1];
@@ -32,14 +32,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
             $street_subdivision_name = $row[9];
             $barangay = $row[10] ?? 'Bagbag';
             $municipality = $row[11] ?? 'Quezon City';
-            $account_status_id = $row[12];
+            $account_status_id = $row[12] ?? 1; 
             $civil_status_id = $row[13];
             $health_status_id = $row[14];
             $sex_id = $row[15];
             $socioeconomic_category_id = $row[16];
 
             $fkColumns = [
-                'account_status_id' => $account_status_id,
                 'civil_status_id' => $civil_status_id,
                 'health_status_id' => $health_status_id,
                 'sex_id' => $sex_id,
