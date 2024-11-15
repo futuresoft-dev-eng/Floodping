@@ -15,6 +15,8 @@ $socioeconomicResult = mysqli_query($conn, $socioeconomicQuery);
 $healthStatusQuery = "SELECT category_id, category_value FROM categories WHERE category_type = 'health_status'";
 $healthStatusResult = mysqli_query($conn, $healthStatusQuery);
 
+$isResidentAdded = false; 
+
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $required_fields = ['first_name', 'last_name', 'sex', 'date_of_birth', 'mobile_number', 'email_address', 'civil_status', 'socioeconomic_category', 'health_status', 'house_lot_number', 'street_subdivision_name'];
@@ -62,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("ssssississssssiss", $first_name, $middle_name, $last_name, $suffix, $sex, $date_of_birth, $mobile_number, $email_address, $civil_status, $socioeconomic_category, $health_status, $house_lot_number, $street_subdivision_name, $barangay, $municipality, $account_status, $profile_photo_path);
 
         if ($stmt->execute()) {
-            echo "New resident added successfully!";
+            $isResidentAdded = true; // Set success flag
         } else {
             echo "Error: " . $stmt->error;
         }
@@ -308,6 +310,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         function submitForm() {
             document.querySelector('form[action="addresident.php"]').submit();
         }
+
+        function showModalAndRedirect() {
+            const modal = document.getElementById('successModal');
+            modal.style.display = 'flex';
+
+            setTimeout(() => {
+                window.location.href = "http://localhost/floodping/ADMIN/accountservices.php";
+            }, 5000);
+        }
     </script>
 
 </head>
@@ -442,7 +453,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>     
     </div>
 
-    <!-- Modal -->
+    <!-- Modal 1 -->
 <div id="confirmationModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -458,6 +469,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 </div>
+
+ <!-- Modal 2 -->
+ <div id="successModal" class="modal">
+            <div class="modal-content">
+                <h2>New resident added successfully!</h2>
+                <p>You will be redirected shortly...</p>
+            </div>
+        </div>
+
+        <?php if ($isResidentAdded): ?>
+            <script>
+                document.addEventListener('DOMContentLoaded', showModalAndRedirect);
+            </script>
+        <?php endif; ?>
 
 </div>
 
