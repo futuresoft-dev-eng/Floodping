@@ -293,19 +293,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="info-group">
                     <div class="info-item">
                         <label for="first_name">First Name:</label>
-                        <input type="text" name="first_name" required>
+                        <input type="text" name="first_name" placeholder="Enter first name" required>
                     </div>
                     <div class="info-item">
                         <label for="middle_name">Middle Name:</label>
-                        <input type="text" name="middle_name">
+                        <input type="text" name="middle_name" placeholder="Enter middle name">
+
                     </div>
                     <div class="info-item">
                         <label for="last_name">Last Name:</label>
-                        <input type="text" name="last_name" required>
+                        <input type="text" name="last_name" placeholder="Enter last name" required>
                     </div>
                     <div class="info-item">
                         <label for="suffix">Suffix:</label>
-                        <input type="text" name="suffix">
+                        <input type="text" name="suffix" placeholder="Enter suffix">
                     </div>
 
                     <div class="info-item">
@@ -327,11 +328,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                     <div class="info-item">
                         <label for="mobile_number">Mobile Number:</label>
-                        <input type="text" name="mobile_number">
+                        <input type="text" name="mobile_number"placeholder="Enter mobile number" required>
                     </div>
                     <div class="info-item">
                         <label for="email_address">Email Address:</label>
-                        <input type="email" name="email_address">
+                        <input type="email" name="email_address"  placeholder="Enter email address" required>
                     </div>
                     <div class="info-item">
                         <label for="civil_status">Civil Status:</label>
@@ -343,7 +344,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                     <div class="info-item">
                         <label for="socioeconomic_category">Socioeconomic Category:</label>
-                        <select name="socioeconomic_category">
+                        <select name="socioeconomic_category" required>
                             <?php while ($row = mysqli_fetch_assoc($socioeconomicResult)) : ?>
                                 <option value="<?php echo htmlspecialchars($row['category_id']); ?>"><?php echo htmlspecialchars($row['category_value']); ?></option>
                             <?php endwhile; ?>
@@ -351,7 +352,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                     <div class="info-item">
                         <label for="health_status">Health Status:</label>
-                        <select name="health_status">
+                        <select name="health_status" required>
                             <?php while ($row = mysqli_fetch_assoc($healthStatusResult)) : ?>
                                 <option value="<?php echo htmlspecialchars($row['category_id']); ?>"><?php echo htmlspecialchars($row['category_value']); ?></option>
                             <?php endwhile; ?>
@@ -359,11 +360,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                     <div class="info-item">
                         <label for="house_lot_number">House/Lot Number:</label>
-                        <input type="text" name="house_lot_number">
+                        <input type="text" name="house_lot_number"  placeholder="Enter house/lot number" required>
                     </div>
                     <div class="info-item">
                         <label for="street_subdivision_name">Street/Subdivision Name:</label>
-                        <input type="text" name="street_subdivision_name">
+                        <input type="text" name="street_subdivision_name" placeholder="Enter street/subdivision name" required>
+
                     </div>
                    <div class="info-item">
                         <label for="barangay">Barangay:</label>
