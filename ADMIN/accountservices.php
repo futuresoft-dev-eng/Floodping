@@ -114,6 +114,23 @@ include_once('../db/connection.php');
         font-size: 18px;
         margin-right: 5px;
     }
+    .export-btn {
+    background-color: #0288D1;
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-right: 10px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+.export-btn .material-symbols-rounded {
+    margin-right: 5px;
+    font-size: 18px;
+}
 </style>
 
 <main class="main-content">
@@ -127,6 +144,12 @@ include_once('../db/connection.php');
             <a href="/floodping/ADMIN/addresident.php" class="create-btn">
                 <span class="material-symbols-rounded">add</span> CREATE NEW
             </a>
+
+             <!-- Export Data -->
+            <a href="/floodping/ADMIN/export_residents.php" class="export-btn">
+                <span class="material-symbols-rounded">download</span> EXPORT DATA
+            </a>
+
 
             <label for="statusFilter">Filter by Status:</label>
             <select id="statusFilter">
