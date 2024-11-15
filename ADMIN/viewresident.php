@@ -6,23 +6,35 @@ $resident_id = isset($_GET['resident_id']) ? $_GET['resident_id'] : null;
 
 if ($resident_id) {
     $sql = "SELECT r.*, c1.category_value AS sex, c2.category_value AS civil_status, 
-                   c3.category_value AS socioeconomic_category, c4.category_value AS health_status 
+                   c3.category_value AS socioeconomic_category, c4.category_value AS health_status, 
+                   a.category_value AS account_status
             FROM residents r
             LEFT JOIN categories c1 ON r.sex_id = c1.category_id
             LEFT JOIN categories c2 ON r.civil_status_id = c2.category_id
             LEFT JOIN categories c3 ON r.socioeconomic_category_id = c3.category_id
             LEFT JOIN categories c4 ON r.health_status_id = c4.category_id
+            LEFT JOIN categories a ON r.account_status_id = a.category_id
             WHERE r.resident_id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $resident_id); 
+    $stmt->bind_param("s", $resident_id);
     $stmt->execute();
     $result = $stmt->get_result();
     $resident = $result->fetch_assoc();
     $stmt->close();
+
+    // Set account status if available
+    $account_status = isset($resident['account_status']) ? $resident['account_status'] : 'Unknown';
 } else {
     echo "Resident ID not provided.";
     exit;
 }
+
+// Determine button label and action based on account status
+$button_label = $account_status === 'Active' ? 'DEACTIVATE' : 'REACTIVATE';
+$button_action = $account_status === 'Active' ? 'deactivate' : 'reactivate';
+
+
+
 
 //  update resident
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_resident'])) {
@@ -128,6 +140,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_resident'])) {
     </script>";
     } else {
         echo "<script>alert('Error deleting record: {$stmt->error}');</script>";
+    }
+
+    $stmt->close();
+}
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_account_status'])) {
+    $action = $_POST['update_account_status'];
+    $resident_id = $_POST['resident_id'];
+    
+    $new_status_id = ($action === 'deactivate') ? 2 : 1; // Assuming 1 = Active, 2 = Deactivated
+
+    $sql = "UPDATE residents SET account_status_id = ? WHERE resident_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("is", $new_status_id, $resident_id);
+
+    if ($stmt->execute()) {
+        echo "<script>
+            alert('Account status successfully updated.');
+            window.location.href = 'viewresident.php?resident_id={$resident_id}';
+        </script>";
+    } else {
+        echo "<script>alert('Error updating account status: {$stmt->error}');</script>";
     }
 
     $stmt->close();
@@ -286,20 +320,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_resident'])) {
         hr {
             border: 1px solid #e0e0e0;
             margin: 20px 0;
-        }
-        .status-container {
-            margin-top: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .status {
-            background-color: #e0f3e9;
-            padding: 8px 12px;
-            border-radius: 5px;
-            color: #4CAF50;
-            font-weight: bold;
         }
 
         .info-group select {
@@ -586,17 +606,30 @@ function showSuccessDeleteModal() {
             
            
 <hr>
-    <div class="status-container">
-        <div class="status">
-            <?php echo ucfirst($resident['account_status']); ?>
-        </div>
-    
 
-            <div class="info-item">
-            <button type="button" id="deleteButton" onclick="showDeleteModal()">DELETE</button>
-            <button type="button" id="editButton" onclick="enableEdit()">EDIT</button>
-                <button type="button" id="updateButton" style="display: none;" onclick="showModal()">UPDATE</button>
-                </div>
+
+<!-- Account Status -->
+<div class="info-item">
+    <label for="account_status">Account Status:</label>
+    <input type="text" id="account_status" name="account_status" value="<?php echo htmlspecialchars($account_status); ?>" readonly>
+    <form method="POST" style="display:inline;">
+        <input type="hidden" name="resident_id" value="<?php echo htmlspecialchars($resident_id); ?>">
+        <button type="submit" name="update_account_status" value="<?php echo $button_action; ?>">
+            <?php echo $button_label; ?>
+        </button>
+    </form>
+</div>
+
+
+
+
+
+
+<div class="info-item">
+<button type="button" id="deleteButton" onclick="showDeleteModal()">DELETE</button>
+<button type="button" id="editButton" onclick="enableEdit()">EDIT</button>
+    <button type="button" id="updateButton" style="display: none;" onclick="showModal()">UPDATE</button>
+    </div>
 
         <!-- Modal -->
 <div id="confirmationModal" class="modal">
