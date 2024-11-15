@@ -15,10 +15,6 @@ $socioeconomicResult = mysqli_query($conn, $socioeconomicQuery);
 $healthStatusQuery = "SELECT category_id, category_value FROM categories WHERE category_type = 'health_status'";
 $healthStatusResult = mysqli_query($conn, $healthStatusQuery);
 
-$accountStatusQuery = "SELECT category_id, category_value FROM categories WHERE category_type = 'account_status'";
-$accountStatusResult = mysqli_query($conn, $accountStatusQuery);
-
-
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $first_name = $_POST['first_name'];
@@ -48,15 +44,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // Insert new resident's 
+    // Insert new resident's information into the residents table
     $sql = "INSERT INTO residents (first_name, middle_name, last_name, suffix, sex_id, date_of_birth, mobile_number, email_address, civil_status_id, socioeconomic_category_id, health_status_id, house_lot_number, street_subdivision_name, barangay, municipality, account_status_id, profile_photo_path)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param( "ssssississssssiss", $first_name, $middle_name, $last_name, $suffix, $sex, $date_of_birth, $mobile_number, $email_address, $civil_status,               
-        $socioeconomic_category, $health_status, $house_lot_number, $street_subdivision_name, $barangay, $municipality, $account_status, $profile_photo_path        
-    );
-    
+    $stmt->bind_param("ssssississssssiss", $first_name, $middle_name, $last_name, $suffix, $sex, $date_of_birth, $mobile_number, $email_address, $civil_status, $socioeconomic_category, $health_status, $house_lot_number, $street_subdivision_name, $barangay, $municipality, $account_status, $profile_photo_path);
+
     if ($stmt->execute()) {
         echo "New resident added successfully!";
     } else {
@@ -153,7 +147,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .profile-photo img { 
             width: 100%; height: 100%; object-fit: cover; }
         .resident-id-box {
-            text-align: center; margin-top: 10px;}
+            margin-top: 10px;}
         .resident-id-box input {
             width: 150px; text-align: center;
             border: 1px solid #ccc; border-radius: 5px;
@@ -167,18 +161,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             padding: 10px 20px; border: none; border-radius: 5px; 
             cursor: pointer; font-weight: bold; }
     </style>
-<script>
+ <script>
         function uploadPhoto() {
             const fileInput = document.getElementById('profile_photo');
-            fileInput.click(); 
+            fileInput.click();
 
             fileInput.onchange = function() {
                 if (fileInput.files.length > 0) {
-                    document.getElementById('photoUploadForm').submit();
+                    // Display the selected image without submitting the form
+                    const previewImage = document.querySelector('.profile-photo img');
+                    const fileReader = new FileReader();
+                    fileReader.onload = function(event) {
+                        previewImage.src = event.target.result;
+                    };
+                    fileReader.readAsDataURL(fileInput.files[0]);
                 }
             };
         }
     </script>
+
 </head>
 <body>
 
@@ -193,15 +194,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <div class="title-container">
         <h3>PROFILE</h3>
-        <button type="button" class="upload-photo-button" onclick="document.getElementById('profile_photo').click();">
+        <button type="button" class="upload-photo-button"  onclick="uploadPhoto()">
             <span class="material-symbols-rounded">file_upload</span> UPLOAD A PHOTO
         </button>
     </div>
 
 
     <div class="profile-container">
-        <form id="photoUploadForm" method="post" enctype="multipart/form-data" style="display: inline;">
-            <input type="file" name="profile_photo" id="profile_photo" accept="image/*" style="display: none;">
+    <form action="addresident.php" method="POST" enctype="multipart/form-data" style="display: inline;">
+        <input type="file" name="profile_photo" id="profile_photo" accept="image/*" style="display: none;">
            
             <div class="profile-photo">
                 <img src="<?php echo htmlspecialchars($resident['profile_photo_path']); ?>" alt="Resident Photo">
@@ -211,12 +212,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="text" class="read-only" value="" readonly>
             <p>Resident ID</p>
         </div>
-</form>
 
-
-        <!-- Resident Information Form -->
         <div class="profile-info">
-            <form action="addresident.php" method="POST" enctype="multipart/form-data">
+        <h3>Personal Information</h3>
                 <div class="info-group">
                     <div class="info-item">
                         <label for="first_name">First Name:</label>

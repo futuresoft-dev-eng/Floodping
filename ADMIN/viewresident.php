@@ -23,7 +23,7 @@ if (isset($_GET['resident_id'])) {
     exit();
 }
 
-// Function to fetch categories by type
+// fetch categories by type
 function fetchCategories($conn, $type) {
     $stmt = $conn->prepare("SELECT category_value FROM categories WHERE category_type = ?");
     $stmt->bind_param("s", $type);
@@ -43,14 +43,13 @@ $healthStatusOptions = fetchCategories($conn, 'health_status');
 $sexOptions = fetchCategories($conn, 'sex');
 
 
-// profile photo upload
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
     if ($_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = '../uploads/'; 
         $fileName = basename($_FILES['profile_photo']['name']);
         $targetPath = $uploadDir . $fileName;
 
-
+   
         if (move_uploaded_file($_FILES['profile_photo']['tmp_name'], $targetPath)) {
             $query = "UPDATE residents SET profile_photo_path = ? WHERE resident_id = ?";
             $stmt = $conn->prepare($query);
@@ -103,6 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            text-decoration: none;
         }
 
         .header h2 {
@@ -213,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
         }
     
         hr {
-            border: 10px solid #e0e0e0;
+            border: 1px solid #e0e0e0;
             margin: 20px 0;
         }
         .status-container {
@@ -253,24 +253,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
             background-color: #2196F3;
         }
         .info-group select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-color: #fff;
-    border: 1px solid #9DB6C1;
-    border-radius: 4px;
-    padding: 8px;
-    font-size: 14px;
-    color: #3C5364;
-    width: 100%;
-    max-width: 100%;
-    cursor: pointer;
-    padding-right: 24px; /* space for arrow */
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="%239DB6C1"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>');
-    background-repeat: no-repeat;
-    background-position: right 8px center;
-    background-size: 16px;
-}
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-color: #fff;
+            border: 1px solid #9DB6C1;
+            border-radius: 4px;
+            padding: 8px;
+            font-size: 14px;
+            color: #3C5364;
+            width: 100%;
+            max-width: 100%;
+            cursor: pointer;
+            padding-right: 24px; 
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="%239DB6C1"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 16px;
+        }
 
 .info-group select:disabled {
     color: #9DB6C1;
@@ -279,12 +279,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
 }
 
     </style>
-    <script>
+      <script>
+        // JavaScript function to trigger file selection and form submission
         function uploadPhoto() {
             const fileInput = document.getElementById('profile_photo');
-            fileInput.click(); 
-
+            fileInput.click(); // 
             fileInput.onchange = function() {
+                // Submit the form automatically once a file is selected
                 if (fileInput.files.length > 0) {
                     document.getElementById('photoUploadForm').submit();
                 }
@@ -296,20 +297,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
 
 <div class="container">
     <div class="header">
-        <span class="material-symbols-rounded back-button">arrow_back</span>
+    <a href="http://localhost/floodping/ADMIN/accountservices.php" class="back-button">
+    <span class="material-symbols-rounded">arrow_back</span>
+</a>
         <h2>RESIDENT DETAILS</h2>
     </div>
     <hr>
 
     <div class="title-container">
         <h3>PROFILE</h3>
-        <button type="button" class="upload-photo-button" onclick="document.getElementById('profile_photo').click();">
+        <button type="button" class="upload-photo-button"  onclick="uploadPhoto()">
             <span class="material-symbols-rounded">file_upload</span> UPLOAD A PHOTO
         </button>
     </div>
 
     <div class="profile-container">
-        <form id="photoUploadForm" method="post" enctype="multipart/form-data" style="display: inline;">
+    <form id="photoUploadForm" method="post" enctype="multipart/form-data" style="display: inline;">
             <input type="file" name="profile_photo" id="profile_photo" accept="image/*" style="display: none;">
            
             <div class="profile-photo">
