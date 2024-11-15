@@ -36,8 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $street_subdivision_name = $_POST['street_subdivision_name'];
     $barangay = $_POST['barangay'];
     $municipality = $_POST['municipality'];
-    $account_status = $_POST['account_status'];
-
+    $account_status = 1;
 
     $profile_photo_path = '';
     if (!empty($_FILES['profile_photo']['name'])) {
@@ -77,35 +76,143 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Symbols+Rounded">
     <style>
        <style>
-        .main-content { margin-left: 200px; padding: 20px; }
-        .container { max-width: 100%; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif; }
-        
-        .header { display: flex; align-items: center; background-color: #4597C0; color: white; padding: 15px; border-radius: 8px; }
-        .header h2 { margin: 0; font-size: 24px; font-weight: bold; }
-        
-        .profile-container { display: flex; gap: 30px; padding: 20px; border-radius: 8px; }
-        
-        .profile-info { flex: 2; color: #02476A; font-size: 17px; }
-        .info-group { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-        .info-item label { font-size: 14px; font-weight: bold; color: black; }
-        .info-item input, .info-item select { width: 100%; padding: 8px; border: 1px solid #02476A; border-radius: 4px; font-size: 14px; }
-        
-        .profile-photo { text-align: center; width: 250px; height: 250px; border: 2px solid #02476A; border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .profile-photo img { width: 100%; height: 100%; object-fit: cover; }
-        .upload-photo-button { background-color: #4597C0; color: white; border: none; padding: 8px 16px; border-radius: 5px; font-size: 14px; margin-top: 10px; }
-        
-        .submit-btn { background-color: #2196F3; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .main-content { 
+            margin-left: 200px; 
+            padding: 20px; }
+        .container { 
+            max-width: 100%; margin: 0 auto; 
+            padding: 20px;
+            font-family: Arial, sans-serif; }
+        .header { 
+            display: flex;  align-items: center; 
+            margin-bottom: 20px;  padding: 10px; 
+            background-color: white; color: white; 
+            border-radius: 8px;  gap: 15px; }
+        .back-button {
+            background-color: #0073AC; color: white;
+            padding: 8px  20px; border-radius: 15%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; text-decoration: none; }            
+        .header h2 { 
+            margin: 0; 
+            font-size: 18px;  font-weight: bold; }       
+        .profile-container { 
+            padding: 20px; border-radius: 8px;
+            display: flex; flex-direction: row-reverse; 
+            gap: 30px; }
+        .title-container {
+            display: flex; justify-content: space-between;
+            align-items: center;
+            background-color: #4597C0; color: white;
+            padding: 10px; border-radius: 8px; }
+        .title-container h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .upload-photo-button {
+            background-color: #4597C0; color: white;
+            border: none;  border-radius: 5px;
+            padding: 10px 20px; cursor: pointer;
+            font-size: 14px;  gap: 5px;
+            display: flex; align-items: center;
+        }
+        .profile-info, .profile-photo { flex: 1; color: #02476A; font-size: 17px; }
+        .info-group { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
+        .info-item label { font-size: 14px; font-weight: bold; color: black;  margin-right: 50px;  }
+        .info-item input, .info-group select {
+             width: 100%; padding: 8px; 
+             border: 1px solid #02476A; 
+             border-radius: 4px; font-size: 14px; }  
+        .radio-group {
+            display: flex; gap: 40px; 
+        }
+        .radio-option {
+            display: flex; align-items: center;
+            font-size: 20px; color: #02476A; 
+        }
+        .radio-option input[type="radio"] {
+            margin-right: 5px; 
+        }
+        .read-only {
+            background-color: #C5C5C5;
+            color: #525252; 
+            border: 1px solid #C5C5C5; 
+            pointer-events: none; 
+        }
+
+        hr {
+            border: 1px solid #e0e0e0;
+            margin: 20px 0;
+        }   
+        .profile-photo { 
+            text-align: center; cursor: pointer;
+            width: 250px; height: 200px; 
+            border: 2px solid #02476A; 
+            overflow: hidden; display: inline-block; }
+        .profile-photo img { 
+            width: 100%; height: 100%; object-fit: cover; }
+        .resident-id-box {
+            text-align: center; margin-top: 10px;}
+        .resident-id-box input {
+            width: 150px; text-align: center;
+            border: 1px solid #ccc; border-radius: 5px;
+            padding: 5px; font-size: 17px;
+            color: #525252; }
+        .resident-id-box p {
+            font-size: 17px; color: ##000000;
+            margin-top: 5px;font-weight: bold; }
+        .submit-btn { 
+            background-color: #59C447; color: white; 
+            padding: 10px 20px; border: none; border-radius: 5px; 
+            cursor: pointer; font-weight: bold; }
     </style>
-    </style>
+<script>
+        function uploadPhoto() {
+            const fileInput = document.getElementById('profile_photo');
+            fileInput.click(); 
+
+            fileInput.onchange = function() {
+                if (fileInput.files.length > 0) {
+                    document.getElementById('photoUploadForm').submit();
+                }
+            };
+        }
+    </script>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h2>Add New Resident</h2>
+    <a href="http://localhost/floodping/ADMIN/accountservices.php" class="back-button">
+    <span class="material-symbols-rounded">arrow_back</span>
+</a>
+        <h2>RESIDENT PROFILE CREATION</h2>
     </div>
-    
+    <hr>
+
+    <div class="title-container">
+        <h3>PROFILE</h3>
+        <button type="button" class="upload-photo-button" onclick="document.getElementById('profile_photo').click();">
+            <span class="material-symbols-rounded">file_upload</span> UPLOAD A PHOTO
+        </button>
+    </div>
+
+
     <div class="profile-container">
+        <form id="photoUploadForm" method="post" enctype="multipart/form-data" style="display: inline;">
+            <input type="file" name="profile_photo" id="profile_photo" accept="image/*" style="display: none;">
+           
+            <div class="profile-photo">
+                <img src="<?php echo htmlspecialchars($resident['profile_photo_path']); ?>" alt="Resident Photo">
+            </div>
+           
+            <div class="resident-id-box">
+            <input type="text" class="read-only" value="" readonly>
+            <p>Resident ID</p>
+        </div>
+</form>
+
 
         <!-- Resident Information Form -->
         <div class="profile-info">
@@ -127,14 +234,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <label for="suffix">Suffix:</label>
                         <input type="text" name="suffix">
                     </div>
+
                     <div class="info-item">
                         <label for="sex">Sex:</label>
-                        <select name="sex" required>
+                        <div class="radio-group">
                             <?php while ($row = mysqli_fetch_assoc($sexResult)) : ?>
-                                <option value="<?php echo htmlspecialchars($row['category_id']); ?>"><?php echo htmlspecialchars($row['category_value']); ?></option>
+                                <label class="radio-option">
+                                    <input type="radio" name="sex" value="<?php echo htmlspecialchars($row['category_id']); ?>" required>
+                                    <?php echo htmlspecialchars($row['category_value']); ?>
+                                </label>
                             <?php endwhile; ?>
-                        </select>
+                        </div>
                     </div>
+
+
                     <div class="info-item">
                         <label for="date_of_birth">Date of Birth:</label>
                         <input type="date" name="date_of_birth" required>
@@ -179,32 +292,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <label for="street_subdivision_name">Street/Subdivision Name:</label>
                         <input type="text" name="street_subdivision_name">
                     </div>
-                    <div class="info-item">
+                   <div class="info-item">
                         <label for="barangay">Barangay:</label>
-                        <input type="text" name="barangay" value="Bagbag">
+                        <input type="text" name="barangay"  class="read-only"  value="Bagbag" readonly>
                     </div>
                     <div class="info-item">
                         <label for="municipality">Municipality:</label>
-                        <input type="text" name="municipality" value="Quezon City">
+                        <input type="text" name="municipality"  class="read-only"  value="Quezon City" readonly>
                     </div>
-                    <div class="info-item">
-                        <label for="account_status">Account Status:</label>
-                        <select name="account_status">
-                            <?php while ($row = mysqli_fetch_assoc($accountStatusResult)) : ?>
-                                <option value="<?php echo htmlspecialchars($row['category_id']); ?>"><?php echo htmlspecialchars($row['category_value']); ?></option>
-                            <?php endwhile; ?>
-                        </select>
-                    </div>
+        
                 </div>
-
-                <button type="submit" class="submit-btn">Add Resident</button>
+                <hr>
+                <div>
+                <button type="submit" class="submit-btn">CREATE</button>
+                </div>     
             </form>
-        </div>
-         <!-- Profile Photo Section -->
-         <div class="profile-photo">
-            <input type="file" name="profile_photo" accept="image/*" id="profile_photo" style="display: none;">
-            <label for="profile_photo" class="upload-photo-button">UPLOAD A PHOTO</label>
-        </div>
+        </div>     
     </div>
 </div>
 

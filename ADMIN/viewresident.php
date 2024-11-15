@@ -88,9 +88,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
             align-items: center;
             margin-bottom: 20px;
             background-color: white;
+            color: white;
             padding: 10px;
             border-radius: 8px;
-            color: white;
             gap: 15px;
         }
 
@@ -211,12 +211,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
             border-radius: 4px;
             font-size: 14px;
         }
-        .full-width {
-            grid-column: span 2;
-        }
-
+    
         hr {
-            border: 1px solid #e0e0e0;
+            border: 10px solid #e0e0e0;
             margin: 20px 0;
         }
         .status-container {
