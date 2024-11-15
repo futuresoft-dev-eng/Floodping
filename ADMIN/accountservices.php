@@ -151,8 +151,12 @@ include_once('../db/connection.php');
                 </thead>
                 <tbody>
                     <?php
-                    $residentQuery = "SELECT resident_id, first_name, middle_name, last_name, suffix, mobile_number, 'Active' AS status FROM residents";
-                    $residentResult = mysqli_query($conn, $residentQuery);
+                $residentQuery = "
+                SELECT r.resident_id, r.first_name, r.middle_name, r.last_name, r.suffix, r.mobile_number, 
+                c.category_value AS account_status 
+                FROM residents r
+                LEFT JOIN categories c ON r.account_status_id = c.category_id";
+                $residentResult = mysqli_query($conn, $residentQuery);
 
                     if ($residentResult && mysqli_num_rows($residentResult) > 0) {
                         while ($residentRow = mysqli_fetch_assoc($residentResult)) {
@@ -163,7 +167,7 @@ include_once('../db/connection.php');
                             echo "<td>{$residentRow['last_name']}</td>";
                             echo "<td>{$residentRow['suffix']}</td>";
                             echo "<td>{$residentRow['mobile_number']}</td>";
-                            echo "<td>{$residentRow['status']}</td>";
+                            echo "<td>" . ($residentRow['account_status'] ?? 'Unknown') . "</td>";
                             echo "<td><a href='/floodping/ADMIN/viewresident.php?resident_id={$residentRow['resident_id']}' class='view-btn'><span class='material-symbols-rounded'>visibility</span>VIEW</a></td>";
                             echo "</tr>";
                         }
