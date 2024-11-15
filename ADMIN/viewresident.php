@@ -2,54 +2,86 @@
 include_once('../adminsidebar.php');
 include_once('../db/connection.php');
 
-if (isset($_GET['resident_id'])) {
-    $resident_id = $_GET['resident_id'];
+// Fetch resident details based on resident ID
+$resident_id = isset($_GET['resident_id']) ? $_GET['resident_id'] : null;
 
-    // Fetch resident data
-    $query = "SELECT * FROM residents WHERE resident_id = ?";
-    $stmt = $conn->prepare($query);
+if ($resident_id) {
+    $sql = "SELECT r.*, c1.category_value AS sex, c2.category_value AS civil_status, 
+                   c3.category_value AS socioeconomic_category, c4.category_value AS health_status 
+            FROM residents r
+            LEFT JOIN categories c1 ON r.sex_id = c1.category_id
+            LEFT JOIN categories c2 ON r.civil_status_id = c2.category_id
+            LEFT JOIN categories c3 ON r.socioeconomic_category_id = c3.category_id
+            LEFT JOIN categories c4 ON r.health_status_id = c4.category_id
+            WHERE r.resident_id = ?";
+    $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $resident_id);
     $stmt->execute();
     $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        $resident = $result->fetch_assoc();
-    } else {
-        echo "<p>Resident not found.</p>";
-        exit();
-    }
+    $resident = $result->fetch_assoc();
+    $stmt->close();
 } else {
-    echo "<p>No resident ID specified.</p>";
-    exit();
+    echo "Resident ID not provided.";
+    exit;
 }
 
-// fetch categories by type
-function fetchCategories($conn, $type) {
-    $stmt = $conn->prepare("SELECT category_value FROM categories WHERE category_type = ?");
-    $stmt->bind_param("s", $type);
+// Handle profile update form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_resident'])) {
+    $first_name = $_POST['first_name'];
+    $middle_name = $_POST['middle_name'];
+    $last_name = $_POST['last_name'];
+    $suffix = $_POST['suffix'];
+    $sex_id = $_POST['sex'];
+    $date_of_birth = $_POST['date_of_birth'];
+    $mobile_number = $_POST['mobile_number'];
+    $email_address = $_POST['email_address'];
+    $civil_status_id = $_POST['civil_status'];
+    $socioeconomic_category_id = $_POST['socioeconomic_category'];
+    $health_status_id = $_POST['health_status'];
+
+    // Update resident data in the database
+    $updateQuery = "UPDATE residents SET first_name = ?, middle_name = ?, last_name = ?, suffix = ?, 
+                    sex_id = ?, date_of_birth = ?, mobile_number = ?, email_address = ?, 
+                    civil_status_id = ?, socioeconomic_category_id = ?, health_status_id = ? 
+                    WHERE resident_id = ?";
+    $stmt = $conn->prepare($updateQuery);
+    $stmt->bind_param("ssssissssssi", $first_name, $middle_name, $last_name, $suffix, 
+                      $sex_id, $date_of_birth, $mobile_number, $email_address, 
+                      $civil_status_id, $socioeconomic_category_id, $health_status_id, 
+                      $resident_id);
     $stmt->execute();
-    $result = $stmt->get_result();
-    $options = [];
-    while ($row = $result->fetch_assoc()) {
-        $options[] = $row['category_value'];
-    }
-    return $options;
+    $stmt->close();
+
+    // Refresh data after update
+    header("Location: viewresident.php?resident_id=" . urlencode($resident_id));
+    exit;
 }
 
-// Fetch options for each dropdown
-$civilStatusOptions = fetchCategories($conn, 'civil_status');
-$socioeconomicCategoryOptions = fetchCategories($conn, 'socioeconomic_category');
-$healthStatusOptions = fetchCategories($conn, 'health_status');
-$sexOptions = fetchCategories($conn, 'sex');
+
+// Fetch options for Sex dropdown
+$sexQuery = "SELECT category_id, category_value FROM categories WHERE category_type = 'sex'";
+$sexResult = $conn->query($sexQuery);
+
+// Fetch options for Civil Status dropdown
+$civilStatusQuery = "SELECT category_id, category_value FROM categories WHERE category_type = 'civil_status'";
+$civilStatusResult = $conn->query($civilStatusQuery);
+
+// Fetch options for Socioeconomic Category dropdown
+$socioeconomicCategoryQuery = "SELECT category_id, category_value FROM categories WHERE category_type = 'socioeconomic_category'";
+$socioeconomicCategoryResult = $conn->query($socioeconomicCategoryQuery);
+
+// Fetch options for Health Status dropdown
+$healthStatusQuery = "SELECT category_id, category_value FROM categories WHERE category_type = 'health_status'";
+$healthStatusResult = $conn->query($healthStatusQuery);
 
 
+// Handle profile photo upload
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
     if ($_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = '../uploads/'; 
         $fileName = basename($_FILES['profile_photo']['name']);
         $targetPath = $uploadDir . $fileName;
 
-   
         if (move_uploaded_file($_FILES['profile_photo']['tmp_name'], $targetPath)) {
             $query = "UPDATE residents SET profile_photo_path = ? WHERE resident_id = ?";
             $stmt = $conn->prepare($query);
@@ -61,6 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
     }
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -280,17 +313,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
 
     </style>
       <script>
-        // JavaScript function to trigger file selection and form submission
         function uploadPhoto() {
             const fileInput = document.getElementById('profile_photo');
-            fileInput.click(); // 
+            fileInput.click(); 
             fileInput.onchange = function() {
-                // Submit the form automatically once a file is selected
                 if (fileInput.files.length > 0) {
                     document.getElementById('photoUploadForm').submit();
                 }
             };
         }
+       
+      
+
+</script>
     </script>
 </head>
 <body>
@@ -332,97 +367,103 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
         <!-- First row -->
         <div class="info-item">
             <label>First Name</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['first_name']); ?>" readonly>
+            <input type="text" value="<?php echo htmlspecialchars($resident['first_name']); ?>" readonly style="background-color: #F5F5F5;">
         </div>
         <div class="info-item">
             <label>Middle Name (Optional)</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['middle_name']); ?>" readonly>
+            <input type="text" value="<?php echo htmlspecialchars($resident['middle_name']); ?>" readonly style="background-color: #F5F5F5;">
         </div>
         <div class="info-item">
             <label>Last Name</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['last_name']); ?>" readonly>
+            <input type="text" value="<?php echo htmlspecialchars($resident['last_name']); ?>" readonly style="background-color: #F5F5F5;">
         </div>
         <div class="info-item">
             <label>Suffix (Optional)</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['suffix']); ?>" readonly>
+            <input type="text" value="<?php echo htmlspecialchars($resident['suffix']); ?>" readonly style="background-color: #F5F5F5;">
         </div>
 
         <!-- Second row -->
         <div class="info-item">
-            <label>Sex</label>
-            <select>
-                <?php foreach ($sexOptions as $option): ?>
-                    <option value="<?php echo $option; ?>" <?php echo ($resident['sex'] === $option) ? 'selected' : ''; ?>>
-                        <?php echo ucfirst($option); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
+                <label for="sex">Sex:</label>
+                <div class="radio-group">
+                    <?php while ($row = mysqli_fetch_assoc($sexResult)) : ?>
+                        <label class="radio-option">
+                            <input type="radio" name="sex" value="<?php echo htmlspecialchars($row['category_id']); ?>"
+                                <?php echo $resident['sex_id'] == $row['category_id'] ? 'checked' : ''; ?> disabled>
+                            <?php echo htmlspecialchars($row['category_value']); ?>
+                        </label>
+                    <?php endwhile; ?>
+                </div>
+                </div>
         <div class="info-item">
             <label>Birthday</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['date_of_birth']); ?>" readonly>
+            <input type="text" value="<?php echo htmlspecialchars($resident['date_of_birth']); ?>" readonly style="background-color: #F5F5F5;">
         </div>
         <div class="info-item">
             <label>Mobile Number</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['mobile_number']); ?>" readonly>
+            <input type="text" value="<?php echo htmlspecialchars($resident['mobile_number']); ?>" readonly style="background-color: #F5F5F5;">
         </div>
         <div class="info-item">
             <label>Email Address</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['email_address']); ?>" readonly>
+            <input type="text" value="<?php echo htmlspecialchars($resident['email_address']); ?>" readonly style="background-color: #F5F5F5;">
         </div>
 
         <!-- Third row -->
         <div class="info-item">
-            <label>Civil Status</label>
-            <select>
-                <?php foreach ($civilStatusOptions as $option): ?>
-                    <option value="<?php echo $option; ?>" <?php echo ($resident['civil_status'] === $option) ? 'selected' : ''; ?>>
-                        <?php echo ucfirst($option); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <div class="info-item">
-            <label>Socioeconomic Category</label>
-            <select>
-                <?php foreach ($socioeconomicCategoryOptions as $option): ?>
-                    <option value="<?php echo $option; ?>" <?php echo ($resident['socioeconomic_category'] === $option) ? 'selected' : ''; ?>>
-                        <?php echo ucfirst($option); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <div class="info-item">
-            <label>Health Status</label>
-            <select>
-                <?php foreach ($healthStatusOptions as $option): ?>
-                    <option value="<?php echo $option; ?>" <?php echo ($resident['health_status'] === $option) ? 'selected' : ''; ?>>
-                        <?php echo ucfirst($option); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
+                <label for="civil_status">Civil Status:</label>
+                <select name="civil_status" disabled>
+                    <?php while ($row = mysqli_fetch_assoc($civilStatusResult)) : ?>
+                        <option value="<?php echo htmlspecialchars($row['category_id']); ?>"
+                            <?php echo $resident['civil_status_id'] == $row['category_id'] ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($row['category_value']); ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
+            </div>
 
+
+            <div class="info-item">
+    <label for="socioeconomic_category">Socioeconomic Category</label>
+    <select name="socioeconomic_category" disabled>
+        <?php while ($row = mysqli_fetch_assoc($socioeconomicCategoryResult)) : ?>
+            <option value="<?php echo htmlspecialchars($row['category_id']); ?>"
+                <?php echo $resident['socioeconomic_category_id'] == $row['category_id'] ? 'selected' : ''; ?>>
+                <?php echo htmlspecialchars($row['category_value']); ?>
+            </option>
+        <?php endwhile; ?>
+    </select>
+</div>
+
+<div class="info-item">
+    <label for="health_status">Health Status</label>
+    <select name="health_status" disabled style="background-color: #F5F5F5;">
+        <?php while ($row = mysqli_fetch_assoc($healthStatusResult)) : ?>
+            <option value="<?php echo htmlspecialchars($row['category_id']); ?>"
+                <?php echo $resident['health_status_id'] == $row['category_id'] ? 'selected' : ''; ?>>
+                <?php echo htmlspecialchars($row['category_value']); ?>
+            </option>
+        <?php endwhile; ?>
+    </select>
+</div>
         <!-- Fourth row -->
         <div class="info-item">
             <label>House/Lot Number</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['house_lot_number']); ?>" readonly>
+            <input type="text" value="<?php echo htmlspecialchars($resident['house_lot_number']); ?>" readonly style="background-color: #F5F5F5;">
         </div>
         <div class="info-item">
             <label>Street/Subdivision Name</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['street_subdivision_name']); ?>" readonly>
+            <input type="text" value="<?php echo htmlspecialchars($resident['street_subdivision_name']); ?>" readonly style="background-color: #F5F5F5;">
         </div>
         <div class="info-item">
             <label>Barangay</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['barangay']); ?>" readonly>
+            <input type="text" value="<?php echo htmlspecialchars($resident['barangay']); ?>" readonly style="background-color: #F5F5F5;">
         </div>
         <div class="info-item">
             <label>Municipality</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['municipality']); ?>" readonly>
+            <input type="text" value="<?php echo htmlspecialchars($resident['municipality']); ?>" readonly style="background-color: #F5F5F5;">
         </div>
     </div>
 
-    
 <hr>
     <div class="status-container">
         <div class="status">

@@ -317,7 +317,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             setTimeout(() => {
                 window.location.href = "http://localhost/floodping/ADMIN/accountservices.php";
-            }, 5000);
+            }, 3000);
         }
     </script>
 
