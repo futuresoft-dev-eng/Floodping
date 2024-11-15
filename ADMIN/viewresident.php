@@ -82,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_resident'])) {
     );
 
     if ($stmt->execute()) {
-        echo "Resident updated successfully.";
+        echo "<script>document.addEventListener('DOMContentLoaded', () => { showSuccessModal(); });</script>";
     } else {
         echo "Error: " . $stmt->error;
     }
@@ -283,27 +283,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
             font-weight: bold;
         }
 
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-        }
-
-        .btn-deactivate {
-            background-color: #F44336;
-        }
-
-        .btn-update {
-            background-color: #2196F3;
-        }
         .info-group select {
             appearance: none;
             -webkit-appearance: none;
@@ -330,6 +309,72 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
     cursor: not-allowed;
 }
 
+.info-item button {
+        color: white;
+        background-color: #4597C0;
+        border: none; 
+        cursor: pointer; 
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        color: white;
+        cursor: pointer;
+    }
+
+    .info-item button:hover {
+        text-decoration: none; 
+    } 
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    margin: 15% auto;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 500px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.modal-content p {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.btn-yes {
+    background-color: #4597C0;
+    color: #fff;
+}
+
+.btn-no {
+    background-color: #EA3323;
+    color: #000;
+}
+
     </style>
       <script>
         function uploadPhoto() {
@@ -342,18 +387,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
             };
         }
        
-      // Add this JavaScript function to toggle the form fields
 function enableEdit() {
-    // Enable input fields
     document.querySelectorAll('.info-item input, .info-item select').forEach(input => {
         input.removeAttribute('readonly');
         input.removeAttribute('disabled');
-        input.style.backgroundColor = '#ffffff'; // Change background color to indicate edit mode
+        input.style.backgroundColor = '#ffffff'; 
     });
-    // Show the update button and hide the edit button
     document.getElementById('editButton').style.display = 'none';
     document.getElementById('updateButton').style.display = 'inline-block';
 }
+
+function showModal() {
+    document.getElementById('confirmationModal').style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('confirmationModal').style.display = 'none';
+}
+
+function showSuccessModal() {
+    const modal = document.getElementById('successModal');
+    modal.style.display = 'flex';
+}
+function refreshPage() {
+    window.location.reload();
+}
+
+
+</script>
 
     </script>
 </head>
@@ -492,28 +553,42 @@ function enableEdit() {
                 <label>Municipality</label>
                 <input type="text" name="municipality" value="<?php echo htmlspecialchars($resident['municipality']); ?>" readonly style="background-color: #F5F5F5;">
             </div>
-
-            <div class="info-item">
-                <button type="button" id="editButton" onclick="enableEdit()">Edit</button>
-                <button type="submit" name="update_resident" id="updateButton" style="display: none;">Update</button>
             </div>
-        </div>
-    </form>
-
+            
+           
 <hr>
     <div class="status-container">
         <div class="status">
             <?php echo ucfirst($resident['account_status']); ?>
         </div>
+    
 
-        <div class="action-buttons">
-        <button class="btn btn-deactivate" onclick="window.location.href='deactivateresident.php?resident_id=<?php echo htmlspecialchars($resident['resident_id']); ?>'">
-                DELETE
-            </button>
-            <button class="btn btn-update" onclick="window.location.href='updateresident.php?resident_id=<?php echo htmlspecialchars($resident['resident_id']); ?>'">
-                UPDATE
-            </button>
-           
+            <div class="info-item">
+                <button type="button" id="editButton" onclick="enableEdit()">EDIT</button>
+                <button type="button" id="updateButton" style="display: none;" onclick="showModal()">UPDATE</button>
+                </div>
+
+        <!-- Modal -->
+<div id="confirmationModal" class="modal">
+    <div class="modal-content">
+        <p>Are you sure you want to update?</p>
+        <button type="button" class="btn btn-no" onclick="closeModal()">No</button>
+        <button type="submit" class="btn btn-yes" name="update_resident">Yes</button>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div id="successModal" class="modal">
+    <div class="modal-content">
+        <p>Resident details updated successfully!</p>
+        <button class="btn btn-yes" onclick="refreshPage()">OK</button>
+    </div>
+</div>
+
+
+</form>
+
+
         </div>
     </div>
 </div>
