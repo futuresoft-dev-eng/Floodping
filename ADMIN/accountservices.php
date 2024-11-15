@@ -151,6 +151,23 @@ include_once('../db/connection.php');
             </a>
 
 
+
+            <!-- Add the Delete Selected Button -->
+        <div class="button-container">
+            <!-- Other buttons like Create New and Export Data -->
+            <button id="deleteSelectedBtn" class="import-btn" style="background-color: #D9534F;">
+                <span class="material-symbols-rounded">delete</span> DELETE SELECTED
+            </button>
+        </div>
+
+        <!-- Hidden form to handle deletion -->
+        <form id="deleteForm" action="/floodping/ADMIN/delete_residents.php" method="POST" style="display: none;">
+            <input type="hidden" name="selected_residents" id="selectedResidentsInput">
+        </form>
+
+
+
+
             <label for="statusFilter">Filter by Status:</label>
             <select id="statusFilter">
                 <option value="">All</option>
@@ -239,6 +256,22 @@ $(document).ready(function () {
     $('#fileInput').off('change').on('change', function () {
         if (this.files.length > 0) {
             $('#importForm').submit(); 
+        }
+    });
+
+    $('#deleteSelectedBtn').on('click', function () {
+        const selectedResidents = [];
+        $('.rowCheckbox:checked').each(function () {
+            selectedResidents.push($(this).val());
+        });
+
+        if (selectedResidents.length > 0) {
+            if (confirm('Are you sure you want to delete the selected residents?')) {
+                $('#selectedResidentsInput').val(JSON.stringify(selectedResidents));
+                $('#deleteForm').submit();
+            }
+        } else {
+            alert('No residents selected for deletion.');
         }
     });
 
