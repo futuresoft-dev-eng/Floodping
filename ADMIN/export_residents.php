@@ -1,47 +1,63 @@
 <?php
-require '../vendor/autoload.php'; 
 include_once('../db/connection.php');
+require '../vendor/autoload.php'; 
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-$spreadsheet = new Spreadsheet();
-$sheet = $spreadsheet->getActiveSheet();
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    try {
+        $query = "SELECT * FROM residents";
+        $result = $conn->query($query);
 
-$sheet->setCellValue('A1', 'Resident ID');
-$sheet->setCellValue('B1', 'First Name');
-$sheet->setCellValue('C1', 'Middle Name');
-$sheet->setCellValue('D1', 'Last Name');
-$sheet->setCellValue('E1', 'Suffix');
-$sheet->setCellValue('F1', 'Mobile Number');
-$sheet->setCellValue('G1', 'Status');
+        if ($result->num_rows > 0) {
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
 
-$query = "
-SELECT r.resident_id, r.first_name, r.middle_name, r.last_name, r.suffix, r.mobile_number, 
-c.category_value AS account_status 
-FROM residents r
-LEFT JOIN categories c ON r.account_status_id = c.category_id";
+            $headers = [
+                'Resident ID', 'First Name', 'Middle Name', 'Last Name', 'Suffix', 
+                'Date of Birth', 'Mobile Number', 'Email Address', 'House Lot Number', 
+                'Street/Subdivision Name', 'Barangay', 'Municipality', 'Account Status ID', 
+                'Civil Status ID', 'Health Status ID', 'Sex ID', 'Socioeconomic Category ID'
+            ];
+            
+            $sheet->fromArray($headers, NULL, 'A1');
 
-$result = mysqli_query($conn, $query);
+            $rowIndex = 2; 
+            while ($row = $result->fetch_assoc()) {
+                $sheet->setCellValue("A$rowIndex", $row['resident_id']);
+                $sheet->setCellValue("B$rowIndex", $row['first_name']);
+                $sheet->setCellValue("C$rowIndex", $row['middle_name']);
+                $sheet->setCellValue("D$rowIndex", $row['last_name']);
+                $sheet->setCellValue("E$rowIndex", $row['suffix']);
+                $sheet->setCellValue("F$rowIndex", $row['date_of_birth']);
+                $sheet->setCellValue("G$rowIndex", $row['mobile_number']);
+                $sheet->setCellValue("H$rowIndex", $row['email_address']);
+                $sheet->setCellValue("I$rowIndex", $row['house_lot_number']);
+                $sheet->setCellValue("J$rowIndex", $row['street_subdivision_name']);
+                $sheet->setCellValue("K$rowIndex", $row['barangay']);
+                $sheet->setCellValue("L$rowIndex", $row['municipality']);
+                $sheet->setCellValue("M$rowIndex", $row['account_status_id']);
+                $sheet->setCellValue("N$rowIndex", $row['civil_status_id']);
+                $sheet->setCellValue("O$rowIndex", $row['health_status_id']);
+                $sheet->setCellValue("P$rowIndex", $row['sex_id']);
+                $sheet->setCellValue("Q$rowIndex", $row['socioeconomic_category_id']);
+                $rowIndex++;
+            }
 
-if ($result && mysqli_num_rows($result) > 0) {
-    $rowIndex = 2; 
-    while ($row = mysqli_fetch_assoc($result)) {
-        $sheet->setCellValue('A' . $rowIndex, $row['resident_id']);
-        $sheet->setCellValue('B' . $rowIndex, $row['first_name']);
-        $sheet->setCellValue('C' . $rowIndex, $row['middle_name']);
-        $sheet->setCellValue('D' . $rowIndex, $row['last_name']);
-        $sheet->setCellValue('E' . $rowIndex, $row['suffix']);
-        $sheet->setCellValue('F' . $rowIndex, $row['mobile_number']);
-        $sheet->setCellValue('G' . $rowIndex, $row['account_status']);
-        $rowIndex++;
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment;filename="residents_export.xlsx"');
+            header('Cache-Control: max-age=0');
+
+            $writer = new Xlsx($spreadsheet);
+            $writer->save('php://output');
+            exit;
+        } else {
+            echo "No data found in the residents table.";
+        }
+    } catch (Exception $e) {
+        die("Error exporting data: " . $e->getMessage());
     }
+} else {
+    die("Invalid request method.");
 }
-
-header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-header('Content-Disposition: attachment; filename="Residents_List.xlsx"');
-
-$writer = new Xlsx($spreadsheet);
-$writer->save('php://output');
-exit();
-?>
