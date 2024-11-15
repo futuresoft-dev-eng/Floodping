@@ -2,7 +2,6 @@
 include_once('../adminsidebar.php');
 include_once('../db/connection.php');
 
-// Fetch resident details based on resident ID
 $resident_id = isset($_GET['resident_id']) ? $_GET['resident_id'] : null;
 
 if ($resident_id) {
@@ -15,7 +14,7 @@ if ($resident_id) {
             LEFT JOIN categories c4 ON r.health_status_id = c4.category_id
             WHERE r.resident_id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $resident_id);
+    $stmt->bind_param("s", $resident_id); 
     $stmt->execute();
     $result = $stmt->get_result();
     $resident = $result->fetch_assoc();
@@ -25,57 +24,80 @@ if ($resident_id) {
     exit;
 }
 
-// Handle profile update form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_resident'])) {
+//  update resident
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_resident'])) {
     $first_name = $_POST['first_name'];
     $middle_name = $_POST['middle_name'];
     $last_name = $_POST['last_name'];
     $suffix = $_POST['suffix'];
-    $sex_id = $_POST['sex'];
+    $sex = $_POST['sex'];
     $date_of_birth = $_POST['date_of_birth'];
     $mobile_number = $_POST['mobile_number'];
     $email_address = $_POST['email_address'];
-    $civil_status_id = $_POST['civil_status'];
-    $socioeconomic_category_id = $_POST['socioeconomic_category'];
-    $health_status_id = $_POST['health_status'];
+    $civil_status = $_POST['civil_status'];
+    $socioeconomic_category = $_POST['socioeconomic_category'];
+    $health_status = $_POST['health_status'];
+    $house_lot_number = $_POST['house_lot_number'];
+    $street_subdivision_name = $_POST['street_subdivision_name'];
+    $barangay = $_POST['barangay'];
+    $municipality = $_POST['municipality'];
+    $profile_photo_path = $resident['profile_photo_path']; 
 
-    // Update resident data in the database
-    $updateQuery = "UPDATE residents SET first_name = ?, middle_name = ?, last_name = ?, suffix = ?, 
-                    sex_id = ?, date_of_birth = ?, mobile_number = ?, email_address = ?, 
-                    civil_status_id = ?, socioeconomic_category_id = ?, health_status_id = ? 
-                    WHERE resident_id = ?";
-    $stmt = $conn->prepare($updateQuery);
-    $stmt->bind_param("ssssissssssi", $first_name, $middle_name, $last_name, $suffix, 
-                      $sex_id, $date_of_birth, $mobile_number, $email_address, 
-                      $civil_status_id, $socioeconomic_category_id, $health_status_id, 
-                      $resident_id);
-    $stmt->execute();
+    // photo upload
+    if (!empty($_FILES['profile_photo']['name'])) {
+        $photo_name = $_FILES['profile_photo']['name'];
+        $target_dir = "../uploads/";
+        $profile_photo_path = $target_dir . basename($photo_name);
+        if (!move_uploaded_file($_FILES['profile_photo']['tmp_name'], $profile_photo_path)) {
+            echo "Error uploading profile photo.";
+        }
+    }
+
+    $sql = "UPDATE residents 
+            SET first_name = ?, 
+                middle_name = ?, 
+                last_name = ?, 
+                suffix = ?, 
+                sex_id = ?, 
+                date_of_birth = ?, 
+                mobile_number = ?, 
+                email_address = ?, 
+                civil_status_id = ?, 
+                socioeconomic_category_id = ?, 
+                health_status_id = ?, 
+                house_lot_number = ?, 
+                street_subdivision_name = ?, 
+                barangay = ?, 
+                municipality = ?, 
+                profile_photo_path = ?
+            WHERE resident_id = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param(
+        "ssssississssssiss", 
+        $first_name, $middle_name, $last_name, $suffix, $sex, $date_of_birth,
+        $mobile_number, $email_address, $civil_status, $socioeconomic_category, $health_status,
+        $house_lot_number, $street_subdivision_name, $barangay, $municipality,
+        $profile_photo_path, $resident_id 
+    );
+
+    if ($stmt->execute()) {
+        echo "Resident updated successfully.";
+    } else {
+        echo "Error: " . $stmt->error;
+    }
     $stmt->close();
-
-    // Refresh data after update
-    header("Location: viewresident.php?resident_id=" . urlencode($resident_id));
-    exit;
 }
 
-
-// Fetch options for Sex dropdown
 $sexQuery = "SELECT category_id, category_value FROM categories WHERE category_type = 'sex'";
 $sexResult = $conn->query($sexQuery);
-
-// Fetch options for Civil Status dropdown
 $civilStatusQuery = "SELECT category_id, category_value FROM categories WHERE category_type = 'civil_status'";
 $civilStatusResult = $conn->query($civilStatusQuery);
-
-// Fetch options for Socioeconomic Category dropdown
 $socioeconomicCategoryQuery = "SELECT category_id, category_value FROM categories WHERE category_type = 'socioeconomic_category'";
 $socioeconomicCategoryResult = $conn->query($socioeconomicCategoryQuery);
-
-// Fetch options for Health Status dropdown
 $healthStatusQuery = "SELECT category_id, category_value FROM categories WHERE category_type = 'health_status'";
 $healthStatusResult = $conn->query($healthStatusQuery);
 
-
-// Handle profile photo upload
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
     if ($_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = '../uploads/'; 
@@ -93,9 +115,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
     }
 }
 ?>
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -323,9 +342,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
             };
         }
        
-      
+      // Add this JavaScript function to toggle the form fields
+function enableEdit() {
+    // Enable input fields
+    document.querySelectorAll('.info-item input, .info-item select').forEach(input => {
+        input.removeAttribute('readonly');
+        input.removeAttribute('disabled');
+        input.style.backgroundColor = '#ffffff'; // Change background color to indicate edit mode
+    });
+    // Show the update button and hide the edit button
+    document.getElementById('editButton').style.display = 'none';
+    document.getElementById('updateButton').style.display = 'inline-block';
+}
 
-</script>
     </script>
 </head>
 <body>
@@ -363,27 +392,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
 
 <div class="profile-info">
     <h3>Personal Information</h3>
-    <div class="info-group">
-        <!-- First row -->
-        <div class="info-item">
-            <label>First Name</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['first_name']); ?>" readonly style="background-color: #F5F5F5;">
-        </div>
-        <div class="info-item">
-            <label>Middle Name (Optional)</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['middle_name']); ?>" readonly style="background-color: #F5F5F5;">
-        </div>
-        <div class="info-item">
-            <label>Last Name</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['last_name']); ?>" readonly style="background-color: #F5F5F5;">
-        </div>
-        <div class="info-item">
-            <label>Suffix (Optional)</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['suffix']); ?>" readonly style="background-color: #F5F5F5;">
-        </div>
+    <form method="POST">
+        <div class="info-group">
+            <!-- First row -->
+            <div class="info-item">
+                <label>First Name</label>
+                <input type="text" name="first_name" value="<?php echo htmlspecialchars($resident['first_name']); ?>" readonly>
+            </div>
+            <div class="info-item">
+                <label>Middle Name (Optional)</label>
+                <input type="text" name="middle_name" value="<?php echo htmlspecialchars($resident['middle_name']); ?>" readonly style="background-color: #F5F5F5;">
+            </div>
+            <div class="info-item">
+                <label>Last Name</label>
+                <input type="text" name="last_name" value="<?php echo htmlspecialchars($resident['last_name']); ?>" readonly style="background-color: #F5F5F5;">
+            </div>
+            <div class="info-item">
+                <label>Suffix (Optional)</label>
+                <input type="text" name="suffix" value="<?php echo htmlspecialchars($resident['suffix']); ?>" readonly style="background-color: #F5F5F5;">
+            </div>
 
-        <!-- Second row -->
-        <div class="info-item">
+            <!-- Second row -->
+            <div class="info-item">
                 <label for="sex">Sex:</label>
                 <div class="radio-group">
                     <?php while ($row = mysqli_fetch_assoc($sexResult)) : ?>
@@ -394,22 +424,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
                         </label>
                     <?php endwhile; ?>
                 </div>
-                </div>
-        <div class="info-item">
-            <label>Birthday</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['date_of_birth']); ?>" readonly style="background-color: #F5F5F5;">
-        </div>
-        <div class="info-item">
-            <label>Mobile Number</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['mobile_number']); ?>" readonly style="background-color: #F5F5F5;">
-        </div>
-        <div class="info-item">
-            <label>Email Address</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['email_address']); ?>" readonly style="background-color: #F5F5F5;">
-        </div>
+            </div>
+            <div class="info-item">
+                <label>Birthday</label>
+                <input type="text" name="date_of_birth" value="<?php echo htmlspecialchars($resident['date_of_birth']); ?>" readonly style="background-color: #F5F5F5;">
+            </div>
+            <div class="info-item">
+                <label>Mobile Number</label>
+                <input type="text" name="mobile_number" value="<?php echo htmlspecialchars($resident['mobile_number']); ?>" readonly style="background-color: #F5F5F5;">
+            </div>
+            <div class="info-item">
+                <label>Email Address</label>
+                <input type="text" name="email_address" value="<?php echo htmlspecialchars($resident['email_address']); ?>" readonly style="background-color: #F5F5F5;">
+            </div>
 
-        <!-- Third row -->
-        <div class="info-item">
+            <!-- Third row -->
+            <div class="info-item">
                 <label for="civil_status">Civil Status:</label>
                 <select name="civil_status" disabled>
                     <?php while ($row = mysqli_fetch_assoc($civilStatusResult)) : ?>
@@ -421,48 +451,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
                 </select>
             </div>
 
+            <div class="info-item">
+                <label for="socioeconomic_category">Socioeconomic Category</label>
+                <select name="socioeconomic_category" disabled>
+                    <?php while ($row = mysqli_fetch_assoc($socioeconomicCategoryResult)) : ?>
+                        <option value="<?php echo htmlspecialchars($row['category_id']); ?>"
+                            <?php echo $resident['socioeconomic_category_id'] == $row['category_id'] ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($row['category_value']); ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
+            </div>
 
             <div class="info-item">
-    <label for="socioeconomic_category">Socioeconomic Category</label>
-    <select name="socioeconomic_category" disabled>
-        <?php while ($row = mysqli_fetch_assoc($socioeconomicCategoryResult)) : ?>
-            <option value="<?php echo htmlspecialchars($row['category_id']); ?>"
-                <?php echo $resident['socioeconomic_category_id'] == $row['category_id'] ? 'selected' : ''; ?>>
-                <?php echo htmlspecialchars($row['category_value']); ?>
-            </option>
-        <?php endwhile; ?>
-    </select>
-</div>
+                <label for="health_status">Health Status</label>
+                <select name="health_status" disabled style="background-color: #F5F5F5;">
+                    <?php while ($row = mysqli_fetch_assoc($healthStatusResult)) : ?>
+                        <option value="<?php echo htmlspecialchars($row['category_id']); ?>"
+                            <?php echo $resident['health_status_id'] == $row['category_id'] ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($row['category_value']); ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
+            </div>
 
-<div class="info-item">
-    <label for="health_status">Health Status</label>
-    <select name="health_status" disabled style="background-color: #F5F5F5;">
-        <?php while ($row = mysqli_fetch_assoc($healthStatusResult)) : ?>
-            <option value="<?php echo htmlspecialchars($row['category_id']); ?>"
-                <?php echo $resident['health_status_id'] == $row['category_id'] ? 'selected' : ''; ?>>
-                <?php echo htmlspecialchars($row['category_value']); ?>
-            </option>
-        <?php endwhile; ?>
-    </select>
-</div>
-        <!-- Fourth row -->
-        <div class="info-item">
-            <label>House/Lot Number</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['house_lot_number']); ?>" readonly style="background-color: #F5F5F5;">
+            <!-- Fourth row -->
+            <div class="info-item">
+                <label>House/Lot Number</label>
+                <input type="text" name="house_lot_number" value="<?php echo htmlspecialchars($resident['house_lot_number']); ?>" readonly style="background-color: #F5F5F5;">
+            </div>
+            <div class="info-item">
+                <label>Street/Subdivision Name</label>
+                <input type="text" name="street_subdivision_name" value="<?php echo htmlspecialchars($resident['street_subdivision_name']); ?>" readonly style="background-color: #F5F5F5;">
+            </div>
+            <div class="info-item">
+                <label>Barangay</label>
+                <input type="text" name="barangay" value="<?php echo htmlspecialchars($resident['barangay']); ?>" readonly style="background-color: #F5F5F5;">
+            </div>
+            <div class="info-item">
+                <label>Municipality</label>
+                <input type="text" name="municipality" value="<?php echo htmlspecialchars($resident['municipality']); ?>" readonly style="background-color: #F5F5F5;">
+            </div>
+
+            <div class="info-item">
+                <button type="button" id="editButton" onclick="enableEdit()">Edit</button>
+                <button type="submit" name="update_resident" id="updateButton" style="display: none;">Update</button>
+            </div>
         </div>
-        <div class="info-item">
-            <label>Street/Subdivision Name</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['street_subdivision_name']); ?>" readonly style="background-color: #F5F5F5;">
-        </div>
-        <div class="info-item">
-            <label>Barangay</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['barangay']); ?>" readonly style="background-color: #F5F5F5;">
-        </div>
-        <div class="info-item">
-            <label>Municipality</label>
-            <input type="text" value="<?php echo htmlspecialchars($resident['municipality']); ?>" readonly style="background-color: #F5F5F5;">
-        </div>
-    </div>
+    </form>
 
 <hr>
     <div class="status-container">
