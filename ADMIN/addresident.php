@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssssississssssiss", $first_name, $middle_name, $last_name, $suffix, $sex, $date_of_birth, $mobile_number, $email_address, $civil_status, $socioeconomic_category, $health_status, $house_lot_number, $street_subdivision_name, $barangay, $municipality, $account_status, $profile_photo_path);
+        $stmt->bind_param("ssssissssssssssss", $first_name, $middle_name, $last_name, $suffix, $sex, $date_of_birth, $mobile_number, $email_address, $civil_status, $socioeconomic_category, $health_status, $house_lot_number, $street_subdivision_name, $barangay, $municipality, $account_status, $profile_photo_path);
 
         if ($stmt->execute()) {
             $isResidentAdded = true; // Set success flag

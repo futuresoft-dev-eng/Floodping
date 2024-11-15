@@ -84,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_resident'])) {
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param(
-        "ssssississssssiss", 
+        "ssssissssssssssss", 
         $first_name, $middle_name, $last_name, $suffix, $sex, $date_of_birth,
         $mobile_number, $email_address, $civil_status, $socioeconomic_category, $health_status,
         $house_lot_number, $street_subdivision_name, $barangay, $municipality,
@@ -147,7 +147,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_account_status
     $action = $_POST['update_account_status'];
     $resident_id = $_POST['resident_id'];
     
-    $new_status_id = ($action === 'deactivate') ? 2 : 1; // Assuming 1 = Active, 2 = Deactivated
+    $new_status_id = ($action === 'deactivate') ? 2 : 1; 
 
     $sql = "UPDATE residents SET account_status_id = ? WHERE resident_id = ?";
     $stmt = $conn->prepare($sql);
@@ -459,10 +459,6 @@ function refreshPage() {
 function showSuccessDeleteModal() {
     document.getElementById('successdeleteModal').style.display = 'flex';
 }
-
-
-</script>
-
     </script>
 </head>
 <body>
@@ -626,11 +622,11 @@ function showSuccessDeleteModal() {
 <div class="info-item">
 <button type="button" id="deleteButton" onclick="showDeleteModal()">DELETE</button>
 <button type="button" id="editButton" onclick="enableEdit()">EDIT</button>
-    <button type="button" id="updateButton" style="display: none;" onclick="showModal()">UPDATE</button>
+<button type="button" id="updateButton" style="display: none;" onclick="showModal()">UPDATE</button>
     </div>
 
         <!-- Modal -->
-<div id="confirmationModal" class="modal">
+        <div id="confirmationModal" class="modal">
     <div class="modal-content">
         <p>Are you sure you want to update?</p>
         <button type="button" class="btn btn-no" onclick="closeModal()">No</button>
