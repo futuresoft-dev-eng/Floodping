@@ -17,47 +17,58 @@ $healthStatusResult = mysqli_query($conn, $healthStatusQuery);
 
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $first_name = $_POST['first_name'];
-    $middle_name = $_POST['middle_name'];
-    $last_name = $_POST['last_name'];
-    $suffix = $_POST['suffix'];
-    $sex = $_POST['sex'];
-    $date_of_birth = $_POST['date_of_birth'];
-    $mobile_number = $_POST['mobile_number'];
-    $email_address = $_POST['email_address'];
-    $civil_status = $_POST['civil_status'];
-    $socioeconomic_category = $_POST['socioeconomic_category'];
-    $health_status = $_POST['health_status'];
-    $house_lot_number = $_POST['house_lot_number'];
-    $street_subdivision_name = $_POST['street_subdivision_name'];
-    $barangay = $_POST['barangay'];
-    $municipality = $_POST['municipality'];
-    $account_status = 1;
+    $required_fields = ['first_name', 'last_name', 'sex', 'date_of_birth', 'mobile_number', 'email_address', 'civil_status', 'socioeconomic_category', 'health_status', 'house_lot_number', 'street_subdivision_name'];
+    $missing_fields = [];
 
-    $profile_photo_path = '';
-    if (!empty($_FILES['profile_photo']['name'])) {
-        $photo_name = $_FILES['profile_photo']['name'];
-        $target_dir = "../uploads/";
-        $profile_photo_path = $target_dir . basename($photo_name);
-        if (!move_uploaded_file($_FILES['profile_photo']['tmp_name'], $profile_photo_path)) {
-            echo "Error uploading profile photo.";
+    foreach ($required_fields as $field) {
+        if (empty($_POST[$field])) {
+            $missing_fields[] = $field;
         }
     }
 
-    // Insert new resident's information into the residents table
-    $sql = "INSERT INTO residents (first_name, middle_name, last_name, suffix, sex_id, date_of_birth, mobile_number, email_address, civil_status_id, socioeconomic_category_id, health_status_id, house_lot_number, street_subdivision_name, barangay, municipality, account_status_id, profile_photo_path)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    if (empty($missing_fields)) {
+        $first_name = $_POST['first_name'];
+        $middle_name = $_POST['middle_name'];
+        $last_name = $_POST['last_name'];
+        $suffix = $_POST['suffix'];
+        $sex = $_POST['sex'];
+        $date_of_birth = $_POST['date_of_birth'];
+        $mobile_number = $_POST['mobile_number'];
+        $email_address = $_POST['email_address'];
+        $civil_status = $_POST['civil_status'];
+        $socioeconomic_category = $_POST['socioeconomic_category'];
+        $health_status = $_POST['health_status'];
+        $house_lot_number = $_POST['house_lot_number'];
+        $street_subdivision_name = $_POST['street_subdivision_name'];
+        $barangay = $_POST['barangay'];
+        $municipality = $_POST['municipality'];
+        $account_status = 1;
 
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssississssssiss", $first_name, $middle_name, $last_name, $suffix, $sex, $date_of_birth, $mobile_number, $email_address, $civil_status, $socioeconomic_category, $health_status, $house_lot_number, $street_subdivision_name, $barangay, $municipality, $account_status, $profile_photo_path);
+        $profile_photo_path = '';
+        if (!empty($_FILES['profile_photo']['name'])) {
+            $photo_name = $_FILES['profile_photo']['name'];
+            $target_dir = "../uploads/";
+            $profile_photo_path = $target_dir . basename($photo_name);
+            if (!move_uploaded_file($_FILES['profile_photo']['tmp_name'], $profile_photo_path)) {
+                echo "Error uploading profile photo.";
+            }
+        }
 
-    if ($stmt->execute()) {
-        echo "New resident added successfully!";
-    } else {
-        echo "Error: " . $stmt->error;
+        // Insert new resident's information into the residents table
+        $sql = "INSERT INTO residents (first_name, middle_name, last_name, suffix, sex_id, date_of_birth, mobile_number, email_address, civil_status_id, socioeconomic_category_id, health_status_id, house_lot_number, street_subdivision_name, barangay, municipality, account_status_id, profile_photo_path)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ssssississssssiss", $first_name, $middle_name, $last_name, $suffix, $sex, $date_of_birth, $mobile_number, $email_address, $civil_status, $socioeconomic_category, $health_status, $house_lot_number, $street_subdivision_name, $barangay, $municipality, $account_status, $profile_photo_path);
+
+        if ($stmt->execute()) {
+            echo "New resident added successfully!";
+        } else {
+            echo "Error: " . $stmt->error;
+        }
+
+        $stmt->close();
     }
-
-    $stmt->close();
 }
 
 ?>
@@ -161,8 +172,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             padding: 10px 20px; border: none; border-radius: 5px; 
             cursor: pointer; font-weight: bold; }
 
-
-
+    
         /* Modal styles */
         .modal {
             display: none;
@@ -240,9 +250,55 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             };
         }
 
+        function validateForm() {
+            let isValid = true;
+            const requiredFields = ['first_name', 'last_name', 'date_of_birth', 'mobile_number', 'email_address', 'civil_status', 'socioeconomic_category', 'health_status', 'house_lot_number', 'street_subdivision_name'];
+            
+            requiredFields.forEach((field) => {
+                const input = document.getElementsByName(field)[0];
+                if (input && input.value.trim() === '') {
+                    input.style.borderColor = 'red';
+                    isValid = false;
+                } else if (input) {
+                    input.style.borderColor = '';
+                }
+            });
+
+            const sexGroup = document.getElementsByName('sex');
+            const sexGroupContainer = document.querySelector('.radio-group');
+            let isSexSelected = false;
+
+            for (let i = 0; i < sexGroup.length; i++) {
+                if (sexGroup[i].checked) {
+                    isSexSelected = true;
+                    break;
+                }
+            }
+
+            if (!isSexSelected) {
+                sexGroupContainer.style.border = '2px solid red';
+                isValid = false;
+            } else {
+                sexGroupContainer.style.border = '';
+            }
+
+            const errorMessage = document.getElementById('error-message');
+            if (!isValid) {
+                errorMessage.style.display = 'inline';
+            } else {
+                errorMessage.style.display = 'none';
+            }
+
+            return isValid;
+        }
+
         function confirmCreation(event) {
-            event.preventDefault();
-            document.getElementById('confirmationModal').style.display = 'flex';
+            if (validateForm()) {
+                event.preventDefault();
+                document.getElementById('confirmationModal').style.display = 'flex';
+            } else {
+                event.preventDefault();
+            }
         }
 
         function closeModal() {
@@ -252,7 +308,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         function submitForm() {
             document.querySelector('form[action="addresident.php"]').submit();
         }
-
     </script>
 
 </head>
@@ -276,7 +331,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     <div class="profile-container">
-    <form action="addresident.php" method="POST" enctype="multipart/form-data" style="display: inline;">
+    <form action="addresident.php" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
         <input type="file" name="profile_photo" id="profile_photo" accept="image/*" style="display: none;">
            
             <div class="profile-photo">
@@ -290,13 +345,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <div class="profile-info">
         <h3>Personal Information</h3>
+        <span id="error-message" style="color: red; display: none;">Please fill in all required fields.</span>
+
                 <div class="info-group">
                     <div class="info-item">
                         <label for="first_name">First Name:</label>
                         <input type="text" name="first_name" placeholder="Enter first name" required>
-                    </div>
+                        </div>
                     <div class="info-item">
-                        <label for="middle_name">Middle Name:</label>
+                        <label for="middle_name">Middle Name: (Optional) </label>
                         <input type="text" name="middle_name" placeholder="Enter middle name">
 
                     </div>
@@ -305,7 +362,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <input type="text" name="last_name" placeholder="Enter last name" required>
                     </div>
                     <div class="info-item">
-                        <label for="suffix">Suffix:</label>
+                        <label for="suffix">Suffix: (Optional)</label>
                         <input type="text" name="suffix" placeholder="Enter suffix">
                     </div>
 
