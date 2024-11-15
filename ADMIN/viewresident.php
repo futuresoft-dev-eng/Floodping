@@ -22,14 +22,12 @@ if ($resident_id) {
     $resident = $result->fetch_assoc();
     $stmt->close();
 
-    // Set account status if available
     $account_status = isset($resident['account_status']) ? $resident['account_status'] : 'Unknown';
 } else {
     echo "Resident ID not provided.";
     exit;
 }
 
-// Determine button label and action based on account status
 $button_label = $account_status === 'Active' ? 'DEACTIVATE' : 'REACTIVATE';
 $button_action = $account_status === 'Active' ? 'deactivate' : 'reactivate';
 
