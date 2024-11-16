@@ -10,10 +10,11 @@
     <style>
         body {
             font-family: Poppins, sans-serif;
-            background: var(--body-color);
             margin: 0;
-            padding-top: 0;  
-            overflow: hidden;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden; 
         }
 
         .sidebar {
@@ -22,7 +23,7 @@
             height: 100vh;
             background-color: #E8F3F8;
             padding-top: 20px;
-            width: 250px;
+            width: 250px; min-width: 250px; 
             position: fixed;
             z-index: 1;
             overflow: hidden;
@@ -30,6 +31,17 @@
             overflow-y: auto; 
             scroll-behavior: smooth; 
             
+        }
+
+        .main-content {
+            margin-left: 250px; 
+            padding: 20px;
+            flex-grow: 1;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+            box-sizing: border-box;
+            overflow-y: auto; 
+
         }
 
         .sidebar-logo {
@@ -44,7 +56,6 @@
 
         .sidebar-logo img {
             width: 40px;
-            margin: 0;
         }
 
         .sidebar-content {
@@ -299,8 +310,12 @@
     </a>
     <span class="material-symbols-rounded logout-button">chevron_right</span>
 </div>
-
+</nav>
+        <!-- content area -->
+    <main class="main-content">
         
+        </main>
+    
         
     <script>
         function updateTimeAndDate() {
