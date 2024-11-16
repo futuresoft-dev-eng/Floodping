@@ -25,6 +25,23 @@ include_once('../db/connection.php');
         margin-top: 20px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
+    .delete-btn {
+    color: white;
+    background-color: #EA3323;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 16px;
+    margin-right: 10px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+.delete-btn .material-symbols-rounded {
+    margin-right: 5px; 
+}
     .create-btn {
         background-color: #59C447;
         color: white;
@@ -115,22 +132,23 @@ include_once('../db/connection.php');
         margin-right: 5px;
     }
     .export-btn {
-    background-color: #0288D1;
-    color: white;
-    padding: 10px 16px;
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    cursor: pointer;
-    margin-right: 10px;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-}
+        background-color: #0288D1;
+        color: white;
+        padding: 10px 16px;
+        border: none;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        margin-right: 10px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
 .export-btn .material-symbols-rounded {
-    margin-right: 5px;
-    font-size: 18px;
-}
+        margin-right: 5px;
+        font-size: 18px;
+    }
+
 </style>
 
 <main class="main-content">
@@ -144,30 +162,19 @@ include_once('../db/connection.php');
             <a href="/floodping/ADMIN/addresident.php" class="create-btn">
                 <span class="material-symbols-rounded">add</span> CREATE NEW
             </a>
-
              <!-- Export Data -->
             <a href="/floodping/ADMIN/export_residents.php" class="export-btn">
                 <span class="material-symbols-rounded">download</span> EXPORT DATA
             </a>
-
-
-
-            <!-- Add the Delete Selected Button -->
-        <div class="button-container">
-            <!-- Other buttons like Create New and Export Data -->
-            <button id="deleteSelectedBtn" class="import-btn" style="background-color: #D9534F;">
-                <span class="material-symbols-rounded">delete</span> DELETE SELECTED
+            <!-- Delete -->
+            <button id="deleteSelectedBtn" class="delete-btn">
+                <span class="material-symbols-rounded">delete</span> DELETE
             </button>
-        </div>
-
-        <!-- Hidden form to handle deletion -->
-        <form id="deleteForm" action="/floodping/ADMIN/delete_residents.php" method="POST" style="display: none;">
-            <input type="hidden" name="selected_residents" id="selectedResidentsInput">
-        </form>
-
-
-
-
+            </div>
+            <form id="deleteForm" action="/floodping/ADMIN/delete_residents.php" method="POST" style="display: none;">
+                <input type="hidden" name="selected_residents" id="selectedResidentsInput">
+            </form>
+           <!-- Filter -->
             <label for="statusFilter">Filter by Status:</label>
             <select id="statusFilter">
                 <option value="">All</option>
@@ -182,8 +189,7 @@ include_once('../db/connection.php');
                 ?>
             </select>
         </div>
-
-        <!-- Table container -->
+        <!-- Table -->
         <div class="table-container">
             <table id="residentTable" class="table table-bordered">
                 <thead>
@@ -264,7 +270,6 @@ $(document).ready(function () {
         $('.rowCheckbox:checked').each(function () {
             selectedResidents.push($(this).val());
         });
-
         if (selectedResidents.length > 0) {
             if (confirm('Are you sure you want to delete the selected residents?')) {
                 $('#selectedResidentsInput').val(JSON.stringify(selectedResidents));
@@ -288,4 +293,6 @@ $(document).ready(function () {
         $('#selectAll').prop('checked', $('.rowCheckbox:checked').length === $('.rowCheckbox').length);
     });
 });
+
+
 </script>
