@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sidebar</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Rounded" rel="stylesheet">
+    <link rel="icon" href="/floodping/images/Floodpinglogo.png" type="image/png">
+
     <style>
         body {
             font-family: Poppins, sans-serif;
@@ -186,7 +187,7 @@
                 top: 0;
                 width: 100%;
                 height: 50px;
-                background-color: #02476A;
+                background-color: #E8F3F8;
                 color: white;
                 justify-content: space-around;
                 align-items: center;
@@ -205,23 +206,38 @@
 </head>
 
 <body>
-    <!-- Top bar -->
-    <div class="top-bar d-md-none">
+  <!-- Top bar -->
+<div class="top-bar d-md-none">
+    <a href="/floodping/LA/la.php" class="nav-link">
         <span class="material-symbols-rounded">dashboard</span>
+    </a>
+    <a href="/floodping/LA/reports.php" class="nav-link">
         <span class="material-symbols-rounded">article</span>
+    </a>
+    <a href="/floodping/LA/livecam.php" class="nav-link">
         <span class="material-symbols-rounded">videocam</span>
+    </a>
+    <a href="/floodping/LA/floodalerts.php" class="nav-link">
         <span class="material-symbols-rounded">notifications_active</span>
+    </a>
+    <a href="/floodping/LA/smsalerts.php" class="nav-link">
         <span class="material-symbols-rounded">sms</span>
+    </a>
+    <a href="/floodping/LA/floodhistory.php" class="nav-link">
         <span class="material-symbols-rounded">history</span>
+    </a>
+    <a href="#" class="nav-link">
         <span class="material-symbols-rounded">account_circle</span>
-        <span class="material-symbols-rounded logout-icon">logout</span>
-
-    </div>
+    </a>
+    <a href="/logout" class="nav-link">
+        <span class="material-symbols-rounded logout-icon">chevron_right</span>
+    </a>
+</div>
 
     <!-- Sidebar -->
     <nav class="sidebar d-none d-md-flex flex-column p-0">
         <div class="sidebar-logo">
-            <img src="images\Floodpinglogo.png" alt="floodping">
+            <img src="/floodping/images/Floodpinglogo.png" alt="floodping">
             <div class="sidebar-logo-text" style="font-size: 19px; font-weight: bold;">FLOODPING</div>
         </div>
 
@@ -235,36 +251,37 @@
         <div class="sidebar-content">
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="/floodping/LA/la.php" class="nav-link">
                         <span class="material-symbols-rounded">dashboard</span> <span class="icon-text">Dashboard</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="/floodping/LA/reports.php" class="nav-link">
                         <span class="material-symbols-rounded">article</span> <span class="icon-text">Reports</span>
                     </a>
                 </li>
 
                 <div class="section-title">Flood Monitoring</div>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="/floodping/LA/livecam.php" class="nav-link">
                         <span class="material-symbols-rounded">videocam</span> <span class="icon-text">Live Camera Feed</span>
                     </a>
                 </li>
 
                 <div class="section-title">Alerts Management</div>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="/floodping/LA/floodalerts.php" class="nav-link">
                         <span class="material-symbols-rounded">notifications_active</span> <span class="icon-text">Flood Alerts</span>
                     </a>
                 </li>
+
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="/floodping/LA/smsalerts.php" class="nav-link">
                         <span class="material-symbols-rounded">sms</span> <span class="icon-text">SMS Alerts</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="/floodping/LA/floodhistory.php" class="nav-link">
                         <span class="material-symbols-rounded">history</span> <span class="icon-text">Flood History Logs</span>
                     </a>
                 </li>
