@@ -2,21 +2,20 @@
 include('../db/connection.php');
 include_once('../sidebar.php');
 
-// Fetch Flood Alerts
-$sql_flood_alerts = "SELECT * FROM flood_alerts";
+// Fetch Flood Alerts and Join with Predefined Messages
+$sql_flood_alerts = "
+    SELECT fa.*, pm.message AS predefined_message
+    FROM flood_alerts fa
+    LEFT JOIN predefined_messages pm
+    ON fa.water_level = pm.level
+";
 $result_flood_alerts = $conn->query($sql_flood_alerts);
 
 if (!$result_flood_alerts) {
     die("Error fetching flood alerts: " . $conn->error);
 }
-
-// Predefined messages
-$predefined_messages = [
-    'LOW' => 'Water level is 10m. Low flood risk identified. Please consider self-evacuation for safety. Stay updated.',
-    'MODERATE' => 'Water level reached 13m, moderate flood risk. Immediate evacuation recommended for your safety.',
-    'CRITICAL' => 'Water level at 15m, critical flood risk. Remain in evacuation sites until further notice for safety.'
-];
 ?>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,7 +29,7 @@ $predefined_messages = [
 
     <style>
         .main-content {
-            margin-left: 0; 
+            margin-left: 50px; 
             padding: 20px;
         }
 
@@ -77,7 +76,6 @@ $predefined_messages = [
             <h1>Flood Alerts</h1>
 
             <!-- Flood Alerts Section -->
-             <!-- Alerts from the sensor -->
             <div class="table-container">
                 <h1>NEW FLOOD ALERTS</h1> 
                 <table id="flood-alerts-table" class="display responsive nowrap" style="width:100%">
@@ -91,29 +89,26 @@ $predefined_messages = [
                             <th>Flow</th>
                             <th>Water Level</th>
                             <th>Status</th>
-                            <th>SMS Alert</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php while ($row = $result_flood_alerts->fetch_assoc()) { 
-                            $status = $row['status'];
-                            $message = $predefined_messages[$status] ?? 'No predefined message available.';
-                        ?>
+                        <?php while ($row = $result_flood_alerts->fetch_assoc()) { ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($row['flood_id']); ?></td>
-                            <td><?php echo htmlspecialchars($row['date']); ?></td>
-                            <td><?php echo htmlspecialchars($row['time']); ?></td>
-                            <td><?php echo htmlspecialchars($row['height']); ?></td>
-                            <td><?php echo htmlspecialchars($row['speed']); ?></td>
-                            <td><?php echo htmlspecialchars($row['flow']); ?></td>
-                            <td><?php echo htmlspecialchars($row['water_level']); ?></td>
-                            <td><?php echo htmlspecialchars($status); ?></td>
+                            <td><?php echo $row['flood_id']; ?></td>
+                            <td><?php echo $row['date']; ?></td>
+                            <td><?php echo $row['time']; ?></td>
+                            <td><?php echo $row['height']; ?></td>
+                            <td><?php echo $row['speed']; ?></td>
+                            <td><?php echo $row['flow']; ?></td>
+                            <td><?php echo $row['water_level']; ?></td>
+                            <td><?php echo $row['status']; ?></td>
                             <td>
-                                <form action="send_sms.php" method="POST">
-                                    <input type="hidden" name="flood_id" value="<?php echo htmlspecialchars($row['flood_id']); ?>">
-                                    <input type="hidden" name="message" value="<?php echo htmlspecialchars($message); ?>">
-                                    <button type="submit">Send</button>
-                                </form>
+                                <button class="btn-view-message" 
+                                        data-message="<?php echo htmlspecialchars($row['predefined_message']); ?>" 
+                                        data-flood-id="<?php echo $row['flood_id']; ?>">
+                                    Send
+                                </button>
                             </td>
                         </tr>
                         <?php } ?>
@@ -123,11 +118,32 @@ $predefined_messages = [
         </div>
     </main>
 
+    <!-- Modal HTML -->
+    <div id="messageModal" style="display:none;">
+        <div style="background: #fff; padding: 20px; border-radius: 8px; width: 50%; margin: auto;">
+            <h2>Flood Alert Message</h2>
+            <p id="messageContent"></p>
+            <button id="closeModal">Close</button>
+        </div>
+    </div>
+
     <script>
-        // DataTables
+        // Initialize DataTable
         $(document).ready(function () {
             $('#flood-alerts-table').DataTable({
                 responsive: true
+            });
+
+            // Handle "Send" button click
+            $(document).on('click', '.btn-view-message', function () {
+                const message = $(this).data('message');
+                $('#messageContent').text(message);
+                $('#messageModal').fadeIn();
+            });
+
+            // Close Modal
+            $('#closeModal').click(function () {
+                $('#messageModal').fadeOut();
             });
         });
     </script>
