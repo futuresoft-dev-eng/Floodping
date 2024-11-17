@@ -1,6 +1,7 @@
 <?php
 include('../db/connection.php');
 include_once('../sidebar.php');
+
 // Fetch Flood Alerts
 $sql_flood_alerts = "SELECT * FROM flood_alerts";
 $result_flood_alerts = $conn->query($sql_flood_alerts);
@@ -8,9 +9,14 @@ $result_flood_alerts = $conn->query($sql_flood_alerts);
 if (!$result_flood_alerts) {
     die("Error fetching flood alerts: " . $conn->error);
 }
+
+// Predefined messages
+$predefined_messages = [
+    'LOW' => 'Water level is 10m. Low flood risk identified. Please consider self-evacuation for safety. Stay updated.',
+    'MODERATE' => 'Water level reached 13m, moderate flood risk. Immediate evacuation recommended for your safety.',
+    'CRITICAL' => 'Water level at 15m, critical flood risk. Remain in evacuation sites until further notice for safety.'
+];
 ?>
-
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -85,21 +91,30 @@ if (!$result_flood_alerts) {
                             <th>Flow</th>
                             <th>Water Level</th>
                             <th>Status</th>
-                            <th>Message Content</th>
+                            <th>SMS Alert</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php while ($row = $result_flood_alerts->fetch_assoc()) { ?>
+                        <?php while ($row = $result_flood_alerts->fetch_assoc()) { 
+                            $status = $row['status'];
+                            $message = $predefined_messages[$status] ?? 'No predefined message available.';
+                        ?>
                         <tr>
-                            <td><?php echo $row['flood_id']; ?></td>
-                            <td><?php echo $row['date']; ?></td>
-                            <td><?php echo $row['time']; ?></td>
-                            <td><?php echo $row['height']; ?></td>
-                            <td><?php echo $row['speed']; ?></td>
-                            <td><?php echo $row['flow']; ?></td>
-                            <td><?php echo $row['water_level']; ?></td>
-                            <td><?php echo $row['status']; ?></td>
-                            <td><?php echo $row['message_content']; ?></td>
+                            <td><?php echo htmlspecialchars($row['flood_id']); ?></td>
+                            <td><?php echo htmlspecialchars($row['date']); ?></td>
+                            <td><?php echo htmlspecialchars($row['time']); ?></td>
+                            <td><?php echo htmlspecialchars($row['height']); ?></td>
+                            <td><?php echo htmlspecialchars($row['speed']); ?></td>
+                            <td><?php echo htmlspecialchars($row['flow']); ?></td>
+                            <td><?php echo htmlspecialchars($row['water_level']); ?></td>
+                            <td><?php echo htmlspecialchars($status); ?></td>
+                            <td>
+                                <form action="send_sms.php" method="POST">
+                                    <input type="hidden" name="flood_id" value="<?php echo htmlspecialchars($row['flood_id']); ?>">
+                                    <input type="hidden" name="message" value="<?php echo htmlspecialchars($message); ?>">
+                                    <button type="submit">Send</button>
+                                </form>
+                            </td>
                         </tr>
                         <?php } ?>
                     </tbody>
@@ -109,7 +124,7 @@ if (!$result_flood_alerts) {
     </main>
 
     <script>
-        //  DataTabless
+        // DataTables
         $(document).ready(function () {
             $('#flood-alerts-table').DataTable({
                 responsive: true
