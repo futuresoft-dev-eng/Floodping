@@ -2,7 +2,6 @@
 include('../db/connection.php');
 include_once('../sidebar.php');
 
-// Fetch Flood Alerts and Join with Predefined Messages
 $sql_flood_alerts = "
     SELECT fa.*, pm.message AS predefined_message
     FROM flood_alerts fa
@@ -16,6 +15,8 @@ if (!$result_flood_alerts) {
 }
 ?>
 
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,7 +30,7 @@ if (!$result_flood_alerts) {
 
     <style>
         .main-content {
-            margin-left: 50px; 
+            margin-left: 50px;
             padding: 20px;
         }
 
@@ -47,7 +48,7 @@ if (!$result_flood_alerts) {
             margin-top: 20px;
             margin-bottom: 50px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            overflow-x: auto; 
+            overflow-x: auto;
         }
 
         h1 {
@@ -56,16 +57,74 @@ if (!$result_flood_alerts) {
             margin-bottom: 20px;
         }
 
-        /* Responsive design tweaks */
-        @media (max-width: 768px) {
-            .main-content {
-                margin-left: 0; 
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 1000; 
+            overflow: hidden; 
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 50%;
+            max-width: 600px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.3s ease-in-out;
+            box-sizing: border-box; 
+        }
+
+        .modal-content h2 {
+            color: #02476A;
+            text-align: center;
+        }
+
+        .modal-content p {
+            color: #0056b3;
+            text-align: center;
+        }
+
+        .close-modal {
+            float: right;
+            cursor: pointer;
+            font-size: 50px;
+            color: black;
+        }
+
+        .modal-content div {
+            margin-top: 20px;
+        }
+
+        .modal-content button {
+            background-color: #0073AC;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            cursor: pointer;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
             }
-            .table-container {
-                padding: 10px;
-            }
-            h1 {
-                font-size: 1.5rem;
+            to {
+                opacity: 1;
+                transform: scale(1);
             }
         }
     </style>
@@ -77,7 +136,7 @@ if (!$result_flood_alerts) {
 
             <!-- Flood Alerts Section -->
             <div class="table-container">
-                <h1>NEW FLOOD ALERTS</h1> 
+                <h1>NEW FLOOD ALERTS</h1>
                 <table id="flood-alerts-table" class="display responsive nowrap" style="width:100%">
                     <thead>
                         <tr>
@@ -104,9 +163,12 @@ if (!$result_flood_alerts) {
                             <td><?php echo $row['water_level']; ?></td>
                             <td><?php echo $row['status']; ?></td>
                             <td>
-                                <button class="btn-view-message" 
-                                        data-message="<?php echo htmlspecialchars($row['predefined_message']); ?>" 
-                                        data-flood-id="<?php echo $row['flood_id']; ?>">
+                                <button class="btn-view-message"
+                                        data-message="<?php echo htmlspecialchars($row['predefined_message']); ?>"
+                                        data-flood-id="<?php echo $row['flood_id']; ?>"
+                                        data-date="<?php echo $row['date']; ?>"
+                                        data-time="<?php echo $row['time']; ?>"
+                                        data-water-level="<?php echo $row['water_level']; ?>">
                                     Send
                                 </button>
                             </td>
@@ -114,38 +176,61 @@ if (!$result_flood_alerts) {
                         <?php } ?>
                     </tbody>
                 </table>
-            </div> 
+            </div>
         </div>
     </main>
 
     <!-- Modal HTML -->
-    <div id="messageModal" style="display:none;">
-        <div style="background: #fff; padding: 20px; border-radius: 8px; width: 50%; margin: auto;">
-            <h2>Flood Alert Message</h2>
-            <p id="messageContent"></p>
-            <button id="closeModal">Close</button>
+    <div id="smsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">×</span>
+            <h2>Send SMS Alert to the registered residents</h2>
+            <p>(Magpadala ng mensahe sa mga residente)</p>
+            <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span><strong>Flood ID:</strong> <span id="refId"></span></span>
+                    <span><strong>Date (Petsa):</strong> <span id="date"></span></span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span><strong>Water Level:</strong> <span id="waterLevel"></span></span>
+                    <span><strong>Time (Oras):</strong> <span id="time"></span></span>
+                </div>
+                <div>
+                    <strong>Message Content (Mensahe):</strong>
+                    <p id="messageContent" style="background-color: #f9f9f9; padding: 10px; border-radius: 5px;"></p>
+                </div>
+            </div>
+            <button>SEND SMS</button>
         </div>
     </div>
 
     <script>
-        // Initialize DataTable
         $(document).ready(function () {
             $('#flood-alerts-table').DataTable({
                 responsive: true
             });
 
-            // Handle "Send" button click
             $(document).on('click', '.btn-view-message', function () {
-                const message = $(this).data('message');
-                $('#messageContent').text(message);
-                $('#messageModal').fadeIn();
-            });
+            const floodId = $(this).data('flood-id');
+            const date = $(this).data('date');
+            const time = $(this).data('time');
+            const waterLevel = $(this).data('water-level');
+            const message = $(this).data('message');
 
-            // Close Modal
-            $('#closeModal').click(function () {
-                $('#messageModal').fadeOut();
-            });
+            $('#refId').text(floodId);
+            $('#date').text(date);
+            $('#time').text(time);
+            $('#waterLevel').text(waterLevel);
+            $('#messageContent').text(message);
+
+            $('#smsModal').css("display", "flex").hide().fadeIn();
         });
+
+        });
+
+        function closeModal() {
+            $('#smsModal').fadeOut();
+        }
     </script>
 </body>
 </html>
