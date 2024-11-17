@@ -1,5 +1,5 @@
 <?php
-require_once '../vendor/autoload.php'; 
+require_once '../vendor/autoload.php';
 
 use Infobip\Api\SmsApi;
 use Infobip\Configuration;
@@ -9,26 +9,28 @@ use Infobip\Model\SmsAdvancedTextualRequest;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $baseUrl = 'https://api.infobip.com'; 
-    $apiKey = 'App 3038a262496533bc7a760133bcc22dba-74139d11-e1a8-4bf6-8bcb-452b84cd6057';
+    $apiKey = '3038a262496533bc7a760133bcc22dba-74139d11-e1a8-4bf6-8bcb-452b84cd6057'; // Correct API key
 
-    $floodId = $_POST['flood_id'];
-    $date = $_POST['date'];
-    $time = $_POST['time'];
-    $waterLevel = $_POST['water_level'];
-    $message = $_POST['message'];
+    $message = trim($_POST['message']); 
 
-    $config = new Configuration($baseUrl, $apiKey);
-    $smsApi = new SmsApi($config);
+    if (empty($message) || strlen($message) > 160) {
+        die("Error: Message cannot be empty and must be 160 characters or less.");
+    }
 
-    $recipients = ['+639106411147']; 
+    $sender = 'ServiceSMS'; 
+    $recipients = ['+639932810412', '+639106411147', '+639707084966'];
 
     try {
-        $destinations = array_map(function ($recipient) {
-            return new SmsDestination($recipient);
-        }, $recipients);
+        $config = new Configuration($baseUrl, $apiKey);
+        $smsApi = new SmsApi($config);
+
+        $destinations = [];
+        foreach ($recipients as $recipient) {
+            $destinations[] = new SmsDestination($recipient);
+        }
 
         $smsMessage = new SmsTextualMessage([
-            'from' => 'FloodPing',
+            'from' => $sender, 
             'text' => $message,
             'destinations' => $destinations,
         ]);
@@ -39,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $response = $smsApi->sendSmsMessage($advancedRequest);
 
-        echo "SMS sent successfully!";
+        echo "SMS sent successfully! Check your delivery report in Infobip.";
     } catch (Exception $e) {
         echo "Error sending SMS: " . $e->getMessage();
     }
