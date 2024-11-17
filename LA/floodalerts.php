@@ -1,18 +1,13 @@
 <?php
 include('../db/connection.php');
 include_once('../sidebar.php');
-
 // Fetch Flood Alerts
 $sql_flood_alerts = "SELECT * FROM flood_alerts";
 $result_flood_alerts = $conn->query($sql_flood_alerts);
 
-// Fetch Pending SMS Logs
-$sql_pending_sms = "SELECT * FROM sms_logs_pending";
-$result_pending_sms = $conn->query($sql_pending_sms);
-
-// Fetch Sent SMS Logs
-$sql_sent_sms = "SELECT * FROM sms_logs_sent";
-$result_sent_sms = $conn->query($sql_sent_sms);
+if (!$result_flood_alerts) {
+    die("Error fetching flood alerts: " . $conn->error);
+}
 ?>
 
 
@@ -29,12 +24,13 @@ $result_sent_sms = $conn->query($sql_sent_sms);
 
     <style>
         .main-content {
-            margin-left: 100px; 
+            margin-left: 0; 
             padding: 20px;
         }
 
         .container {
             max-width: 100%;
+            padding: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
@@ -108,88 +104,14 @@ $result_sent_sms = $conn->query($sql_sent_sms);
                         <?php } ?>
                     </tbody>
                 </table>
-            </div>
-
-            <h1>SMS Alert Logs</h1>
-            <!-- Pending SMS Logs Section -->
-            <!-- SMS Alerts ni LA papunta sa registered residents  -->
-            <div class="table-container">
-                <h1>Pending Status</h1>
-                <table id="pending-sms-table" class="display responsive nowrap" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Sending ID</th>
-                            <th>Date Sent</th>
-                            <th>Recipients</th>
-                            <th>Flood ID</th>
-                            <th>Water Level</th>
-                            <th>Sending Progress</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while ($row = $result_pending_sms->fetch_assoc()) { ?>
-                        <tr>
-                            <td><?php echo $row['sending_id']; ?></td>
-                            <td><?php echo $row['date_sent']; ?></td>
-                            <td><?php echo $row['recipients']; ?></td>
-                            <td><?php echo $row['flood_id']; ?></td>
-                            <td><?php echo $row['water_level']; ?></td>
-                            <td><?php echo $row['sending_progress']; ?></td>
-                        </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Sent SMS Logs Section -->
-            <div class="table-container">
-                <h1>Sent status</h1>
-                <table id="sent-sms-table" class="display responsive nowrap" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Batch ID</th>
-                            <th>Date Sent</th>
-                            <th>Time Sent</th>
-                            <th>Success Count</th>
-                            <th>Failed Count</th>
-                            <th>Recipients</th>
-                            <th>Flood ID</th>
-                            <th>Water Level</th>
-                            <th>Credits Consumed</th>
-                            <th>Sent By</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while ($row = $result_sent_sms->fetch_assoc()) { ?>
-                        <tr>
-                            <td><?php echo $row['sms_batch_id']; ?></td>
-                            <td><?php echo $row['date_sent']; ?></td>
-                            <td><?php echo $row['time_sent']; ?></td>
-                            <td><?php echo $row['success_count']; ?></td>
-                            <td><?php echo $row['failed_count']; ?></td>
-                            <td><?php echo $row['recipients']; ?></td>
-                            <td><?php echo $row['flood_id']; ?></td>
-                            <td><?php echo $row['water_level']; ?></td>
-                            <td><?php echo $row['credits_consumed']; ?></td>
-                            <td><?php echo $row['sent_by']; ?></td>
-                        </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
-            </div>
+            </div> 
         </div>
     </main>
 
     <script>
-        // DataTabless
+        //  DataTabless
         $(document).ready(function () {
             $('#flood-alerts-table').DataTable({
-                responsive: true
-            });
-            $('#pending-sms-table').DataTable({
-                responsive: true
-            });
-            $('#sent-sms-table').DataTable({
                 responsive: true
             });
         });
