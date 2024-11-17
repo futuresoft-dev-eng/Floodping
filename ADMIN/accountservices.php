@@ -148,7 +148,18 @@ include_once('../db/connection.php');
         margin-right: 5px;
         font-size: 18px;
     }
-
+ /* Responsive design tweaks */
+ @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0; 
+            }
+            .table-container {
+                padding: 10px;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
 </style>
 
 <main class="main-content">

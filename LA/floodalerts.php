@@ -1,113 +1,198 @@
 <?php
-include_once('../db/connection.php');
-include_once('../sidebar.php'); 
+include('../db/connection.php');
+include_once('../sidebar.php');
+
+// Fetch Flood Alerts
+$sql_flood_alerts = "SELECT * FROM flood_alerts";
+$result_flood_alerts = $conn->query($sql_flood_alerts);
+
+// Fetch Pending SMS Logs
+$sql_pending_sms = "SELECT * FROM sms_logs_pending";
+$result_pending_sms = $conn->query($sql_pending_sms);
+
+// Fetch Sent SMS Logs
+$sql_sent_sms = "SELECT * FROM sms_logs_sent";
+$result_sent_sms = $conn->query($sql_sent_sms);
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flood Alerts</title>
-    <link rel="stylesheet" href="../styles.css"> 
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.dataTables.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Rounded" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
+
+    <style>
+        .main-content {
+            margin-left: 100px; 
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 100%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+            margin-top: 20px;
+            margin-bottom: 50px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow-x: auto; 
+        }
+
+        h1 {
+            text-align: center;
+            color: #343a40;
+            margin-bottom: 20px;
+        }
+
+        /* Responsive design tweaks */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0; 
+            }
+            .table-container {
+                padding: 10px;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="content">
-        <h1>Flood Alerts</h1>
-        <div class="new-flood-alerts">
-            <h2>New Flood Alerts</h2>
-            <form method="POST" action="send_alert.php">
-                <table>
-                    <tr>
-                        <th>Flood ID</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Height</th>
-                        <th>Speed</th>
-                        <th>Flow</th>
-                        <th>Water Level</th>
-                        <th>Status</th>
-                        <th>SMS Alert</th>
-                    </tr>
-                    <tr>
-                        <td><input type="text" name="flood_id" readonly value="0000002"></td>
-                        <td><input type="date" name="date" required></td>
-                        <td><input type="time" name="time" required></td>
-                        <td><input type="text" name="height" required></td>
-                        <td><input type="text" name="speed" required></td>
-                        <td><input type="text" name="flow" required></td>
-                        <td>
-                            <select name="water_level">
-                                <option value="Normal">Normal</option>
-                                <option value="Low">Low</option>
-                                <option value="Moderate">Moderate</option>
-                                <option value="Critical">Critical</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select name="status">
-                                <option value="New">New</option>
-                                <option value="Updated">Updated</option>
-                            </select>
-                        </td>
-                        <td><button type="submit" name="send_sms">SEND</button></td>
-                    </tr>
+    <main class="main-content">
+        <div class="container">
+            <h1>Flood Alerts</h1>
+
+            <!-- Flood Alerts Section -->
+             <!-- Alerts from the sensor -->
+            <div class="table-container">
+                <h1>NEW FLOOD ALERTS</h1> 
+                <table id="flood-alerts-table" class="display responsive nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Flood ID</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Height</th>
+                            <th>Speed</th>
+                            <th>Flow</th>
+                            <th>Water Level</th>
+                            <th>Status</th>
+                            <th>Message Content</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $result_flood_alerts->fetch_assoc()) { ?>
+                        <tr>
+                            <td><?php echo $row['flood_id']; ?></td>
+                            <td><?php echo $row['date']; ?></td>
+                            <td><?php echo $row['time']; ?></td>
+                            <td><?php echo $row['height']; ?></td>
+                            <td><?php echo $row['speed']; ?></td>
+                            <td><?php echo $row['flow']; ?></td>
+                            <td><?php echo $row['water_level']; ?></td>
+                            <td><?php echo $row['status']; ?></td>
+                            <td><?php echo $row['message_content']; ?></td>
+                        </tr>
+                        <?php } ?>
+                    </tbody>
                 </table>
-            </form>
-        </div>
-
-        <!-- Sent Flood Alerts Section -->
-        <div class="sent-flood-alerts">
-            <h2>Sent Flood Alerts Today</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Flood ID</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Status</th>
-                        <th>Height</th>
-                        <th>Speed</th>
-                        <th>Flow</th>
-                        <th>Water Level</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    $result = $conn->query("SELECT * FROM flood_events ORDER BY date DESC");
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<tr>
-                            <td>{$row['event_id']}</td>
-                            <td>{$row['date']}</td>
-                            <td>{$row['time']}</td>
-                            <td>{$row['sms_status']}</td>
-                            <td>{$row['water_level']}</td>
-                            <td>{$row['flow_rate']}</td>
-                            <td><a href='view_flood.php?id={$row['event_id']}'>VIEW</a></td>
-                        </tr>";
-                    }
-                    ?>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Information Cards -->
-        <div class="info-cards">
-            <div class="card">
-                <h3>Water Level</h3>
-                <p>Normal: 9m | No Flood</p>
-                <p>Low: 10m | Self-Evacuation</p>
-                <p>Moderate: 13m | Force Evacuation</p>
-                <p>Critical: 15m | Stay in Evacuation Sites</p>
             </div>
-            <div class="card">
-                <h3>Evacuation Sites</h3>
-                <p>Low: Remarville Court</p>
-                <p>Moderate: Bagbag Elementary School</p>
-                <p>Critical: Goodwill Elementary School</p>
+
+            <h1>SMS Alert Logs</h1>
+            <!-- Pending SMS Logs Section -->
+            <!-- SMS Alerts ni LA papunta sa registered residents  -->
+            <div class="table-container">
+                <h1>Pending Status</h1>
+                <table id="pending-sms-table" class="display responsive nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Sending ID</th>
+                            <th>Date Sent</th>
+                            <th>Recipients</th>
+                            <th>Flood ID</th>
+                            <th>Water Level</th>
+                            <th>Sending Progress</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $result_pending_sms->fetch_assoc()) { ?>
+                        <tr>
+                            <td><?php echo $row['sending_id']; ?></td>
+                            <td><?php echo $row['date_sent']; ?></td>
+                            <td><?php echo $row['recipients']; ?></td>
+                            <td><?php echo $row['flood_id']; ?></td>
+                            <td><?php echo $row['water_level']; ?></td>
+                            <td><?php echo $row['sending_progress']; ?></td>
+                        </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Sent SMS Logs Section -->
+            <div class="table-container">
+                <h1>Sent status</h1>
+                <table id="sent-sms-table" class="display responsive nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Batch ID</th>
+                            <th>Date Sent</th>
+                            <th>Time Sent</th>
+                            <th>Success Count</th>
+                            <th>Failed Count</th>
+                            <th>Recipients</th>
+                            <th>Flood ID</th>
+                            <th>Water Level</th>
+                            <th>Credits Consumed</th>
+                            <th>Sent By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $result_sent_sms->fetch_assoc()) { ?>
+                        <tr>
+                            <td><?php echo $row['sms_batch_id']; ?></td>
+                            <td><?php echo $row['date_sent']; ?></td>
+                            <td><?php echo $row['time_sent']; ?></td>
+                            <td><?php echo $row['success_count']; ?></td>
+                            <td><?php echo $row['failed_count']; ?></td>
+                            <td><?php echo $row['recipients']; ?></td>
+                            <td><?php echo $row['flood_id']; ?></td>
+                            <td><?php echo $row['water_level']; ?></td>
+                            <td><?php echo $row['credits_consumed']; ?></td>
+                            <td><?php echo $row['sent_by']; ?></td>
+                        </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
             </div>
         </div>
-    </div>
+    </main>
+
+    <script>
+        // DataTabless
+        $(document).ready(function () {
+            $('#flood-alerts-table').DataTable({
+                responsive: true
+            });
+            $('#pending-sms-table').DataTable({
+                responsive: true
+            });
+            $('#sent-sms-table').DataTable({
+                responsive: true
+            });
+        });
+    </script>
 </body>
 </html>
