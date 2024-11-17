@@ -200,7 +200,15 @@ if (!$result_flood_alerts) {
                     <p id="messageContent" style="background-color: #f9f9f9; padding: 10px; border-radius: 5px;"></p>
                 </div>
             </div>
-            <button>SEND SMS</button>
+            <form method="POST" action="send_sms.php">
+                <input type="hidden" name="flood_id" id="hiddenFloodId">
+                <input type="hidden" name="date" id="hiddenDate">
+                <input type="hidden" name="time" id="hiddenTime">
+                <input type="hidden" name="water_level" id="hiddenWaterLevel">
+                <textarea name="message" id="hiddenMessage" style="display: none;"></textarea>
+                <button type="submit">SEND SMS</button>
+            </form>
+
         </div>
     </div>
 
@@ -211,20 +219,27 @@ if (!$result_flood_alerts) {
             });
 
             $(document).on('click', '.btn-view-message', function () {
-            const floodId = $(this).data('flood-id');
-            const date = $(this).data('date');
-            const time = $(this).data('time');
-            const waterLevel = $(this).data('water-level');
-            const message = $(this).data('message');
+                const floodId = $(this).data('flood-id');
+                const date = $(this).data('date');
+                const time = $(this).data('time');
+                const waterLevel = $(this).data('water-level');
+                const message = $(this).data('message');
 
-            $('#refId').text(floodId);
-            $('#date').text(date);
-            $('#time').text(time);
-            $('#waterLevel').text(waterLevel);
-            $('#messageContent').text(message);
+                $('#refId').text(floodId);
+                $('#date').text(date);
+                $('#time').text(time);
+                $('#waterLevel').text(waterLevel);
+                $('#messageContent').text(message);
 
-            $('#smsModal').css("display", "flex").hide().fadeIn();
-        });
+                // Populate the hidden inputs in the form
+                $('#hiddenFloodId').val(floodId);
+                $('#hiddenDate').val(date);
+                $('#hiddenTime').val(time);
+                $('#hiddenWaterLevel').val(waterLevel);
+                $('#hiddenMessage').val(message);
+
+                $('#smsModal').css("display", "flex").hide().fadeIn();
+            });
 
         });
 
