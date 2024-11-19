@@ -3,16 +3,13 @@ include_once('../adminsidebar.php');
 include_once('../db/connection.php');
 ?>
 <title>Residents List</title>
-
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Rounded" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-
 <style>
     .main-content {
-        margin-left: 0;
-        padding: 20px;
+        margin-left: 0; padding: 20px;
     }
     .container {
         max-width: 100%;
@@ -21,54 +18,9 @@ include_once('../db/connection.php');
         background-color: white;
         padding: 20px;
         border-radius: 5px;
-        border: 1px solid #e0e0e0;
-        margin-top: 20px;
+        border: 1px solid #F6F6F6;
+        margin-top: 30px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    .delete-btn {
-    color: white;
-    background-color: #EA3323;
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    padding: 10px 16px;
-    margin-right: 10px;
-    transition: background-color 0.3s, box-shadow 0.3s;
-}
-.delete-btn .material-symbols-rounded {
-    margin-right: 5px; 
-}
-    .create-btn {
-        background-color: #59C447;
-        color: white;
-        padding: 13px 16px;
-        border: none;
-        border-radius: 5px;
-        font-size: 14px;
-        cursor: pointer;
-        margin-right: 10px;
-        text-decoration: none;
-    }
-    .import-btn {
-        display: flex;
-        align-items: center;
-        background-color: #4597C0;
-        color: white;
-        padding: 8px 16px;
-        border: none;
-        border-radius: 5px;
-        font-size: 14px;
-        cursor: pointer;
-        margin-right: 10px;
-        text-decoration: none;
-    }
-    .import-btn .material-symbols-rounded {
-        margin-right: 5px;
-        font-size: 18px;
     }
     .dataTables_filter {
         position: relative;
@@ -78,30 +30,31 @@ include_once('../db/connection.php');
     }
     .dataTables_filter input {
         width: 350px;
-        padding: 8px 12px 8px 30px; 
+        padding: 80px 12px 8px 30px; 
         border-radius: 5px;
-        border: 1px solid #e0e0e0;
+        border: 1px solid #02476A;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     }
     .dataTables_filter::before {
         content: '\e8b6'; 
         font-family: 'Material Symbols Rounded';
         position: absolute;
-        left: 170px;
+        left: 325px;
         top: 50%;
         transform: translateY(-50%);
         font-size: 18px;
-        color: #aaa;
+        color: #02476A;
         pointer-events: none;
     }
     #statusFilter {
         margin-left: 10px;
         padding: 5px;
         border-radius: 5px;
-        border: 1px solid #e0e0e0;
+        border: 1px solid #02476A;
+        color: #02476A;
     }
     .dataTables_filter label {
-        margin-right: 10px;
+        margin-right: 5px;
         font-weight: bold;
     }
     .table th {
@@ -114,41 +67,51 @@ include_once('../db/connection.php');
         display: flex;
         justify-content: center;
     }
-    .view-btn {
-        text-decoration: none;
+    .create-btn, .import-btn,
+    .view-btn, .export-btn,  .delete-btn  {
         color: white;
-        background-color: #4597C0;
-        padding: 5px 10px;
-        border-radius: 5px;
-        border: none;
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        text-align: center;
-        vertical-align: middle;
-    }
-    .view-btn .material-symbols-rounded {
-        font-size: 18px;
-        margin-right: 5px;
-    }
-    .export-btn {
-        background-color: #0288D1;
-        color: white;
-        padding: 10px 16px;
+        padding: 12px 16px;
         border: none;
         border-radius: 5px;
         font-size: 14px;
         cursor: pointer;
         margin-right: 10px;
         text-decoration: none;
-        display: inline-flex;
         align-items: center;
+        text-align: center;
+        vertical-align: middle;
+        display: inline-flex;
+        transition: background-color 0.3s, box-shadow 0.3s;
+
     }
-.export-btn .material-symbols-rounded {
+    .create-btn {
+        background-color: #59C447;
+    }
+    .import-btn {
+        background-color: #4597C0;
+    }
+    .view-btn {
+        background-color: #4597C0;
+        padding: 5px 15px;
+    }
+    .export-btn {
+        background-color: #0288D1;
+        margin-left: 82%;
+        margin-top:20px;
+    }
+    .delete-btn {
+        background-color: #EA3323;
+        margin-top:20px;
+    }
+    .export-btn .material-symbols-rounded,
+    .delete-btn .material-symbols-rounded,
+    .create-btn .material-symbols-rounded,
+    .view-btn .material-symbols-rounded,
+    .import-btn .material-symbols-rounded {
         margin-right: 5px;
         font-size: 18px;
     }
- /* Responsive design tweaks */
+ /* Responsive */
  @media (max-width: 768px) {
             .main-content {
                 margin-left: 0; 
@@ -161,30 +124,12 @@ include_once('../db/connection.php');
             }
         }
 </style>
-
 <main class="main-content">
     <div class="container">
         <form id="importForm" action="/floodping/ADMIN/import_excel.php" method="post" enctype="multipart/form-data" style="display: none;">
             <input type="file" name="file" id="fileInput" accept=".xls, .xlsx" required>
         </form>
-
-        <div class="button-container">
-            <!-- Create New Resident -->
-            <a href="/floodping/ADMIN/addresident.php" class="create-btn">
-                <span class="material-symbols-rounded">add</span> CREATE NEW
-            </a>
-             <!-- Export Data -->
-            <a href="/floodping/ADMIN/export_residents.php" class="export-btn">
-                <span class="material-symbols-rounded">download</span> EXPORT DATA
-            </a>
-            <!-- Delete -->
-            <button id="deleteSelectedBtn" class="delete-btn">
-                <span class="material-symbols-rounded">delete</span> DELETE
-            </button>
-            </div>
-            <form id="deleteForm" action="/floodping/ADMIN/delete_residents.php" method="POST" style="display: none;">
-                <input type="hidden" name="selected_residents" id="selectedResidentsInput">
-            </form>
+        
            <!-- Filter -->
             <label for="statusFilter">Filter by Status:</label>
             <select id="statusFilter">
@@ -246,9 +191,21 @@ include_once('../db/connection.php');
                 </tbody>
             </table>
         </div>
+        <div class="button-container">
+             <!-- Export Data -->
+            <a href="/floodping/ADMIN/export_residents.php" class="export-btn">
+                <span class="material-symbols-rounded">download</span> EXPORT DATA
+            </a>
+            <!-- Delete -->
+            <button id="deleteSelectedBtn" class="delete-btn">
+                <span class="material-symbols-rounded">delete</span> DELETE
+            </button>
+            </div>
+            <form id="deleteForm" action="/floodping/ADMIN/delete_residents.php" method="POST" style="display: none;">
+                <input type="hidden" name="selected_residents" id="selectedResidentsInput">
+            </form>
     </div>
 </main>
-
 <script>
 $(document).ready(function () {
     const table = $('#residentTable').DataTable({
@@ -257,15 +214,17 @@ $(document).ready(function () {
             searchPlaceholder: "     Search...",
         },
     });
-
     if (!$('.import-btn').length) {
         $("div.dataTables_filter").prepend(`
+        <!-- Create New Resident -->
+            <a href="/floodping/ADMIN/addresident.php" class="create-btn">
+                <span class="material-symbols-rounded">add</span> CREATE NEW
+            </a>
             <button type="button" class="import-btn">
                 <span class="material-symbols-rounded">upload</span> IMPORT DATA
             </button>
         `);
     }
-
     $('.import-btn').off('click').on('click', function () {
         $('#fileInput').click();
     });
@@ -275,7 +234,6 @@ $(document).ready(function () {
             $('#importForm').submit(); 
         }
     });
-
     $('#deleteSelectedBtn').on('click', function () {
         const selectedResidents = [];
         $('.rowCheckbox:checked').each(function () {
@@ -290,7 +248,6 @@ $(document).ready(function () {
             alert('No residents selected for deletion.');
         }
     });
-
     $('#statusFilter').on('change', function () {
         const selectedStatus = $(this).val();
         table.column(7).search(selectedStatus).draw();
@@ -304,6 +261,4 @@ $(document).ready(function () {
         $('#selectAll').prop('checked', $('.rowCheckbox:checked').length === $('.rowCheckbox').length);
     });
 });
-
-
 </script>
