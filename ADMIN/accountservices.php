@@ -9,7 +9,7 @@ include_once('../db/connection.php');
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <style>
     .main-content {
-        margin-left: 0; padding: 20px;
+        margin-left: 10px; padding: 20px;
     }
     .container {
         max-width: 100%;
