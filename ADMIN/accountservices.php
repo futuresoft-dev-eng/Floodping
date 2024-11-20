@@ -119,6 +119,11 @@ include_once('../db/connection.php');
         margin-right: 5px;
         font-size: 18px;
     }
+    button:disabled, .export-btn:disabled {
+        background-color: #C5C5C5;
+        pointer-events: none; 
+    }
+
  /* Responsive */
  @media (max-width: 768px) {
             .main-content {
@@ -200,9 +205,12 @@ include_once('../db/connection.php');
             </table>
         </div>
         <div class="button-container">
+             <!-- Display number of selected rows -->
+            <span id="selectedCount" class="selected-count">0 Selected</span>
+
              <!-- Export Data -->
-            <a href="/floodping/ADMIN/export_residents.php" class="export-btn">
-                <span class="material-symbols-rounded">download</span> EXPORT
+             <a href="/floodping/ADMIN/export_residents.php" class="export-btn disabled">
+             <span class="material-symbols-rounded">download</span> EXPORT
             </a>
 
               <!-- Deactivate Button -->
@@ -236,7 +244,12 @@ $(document).ready(function () {
             search: "",
             searchPlaceholder: "     Search...",
         },
+        stateSave: true
     });
+
+    $('#deactivateSelectedBtn, #reactivateSelectedBtn, #deleteSelectedBtn, .export-btn').prop('disabled', true);
+    $('.export-btn').css('background-color', '#C5C5C5');
+
     if (!$('.import-btn').length) {
         $("div.dataTables_filter").prepend(`
         <!-- Create New Resident -->
@@ -248,6 +261,7 @@ $(document).ready(function () {
             </button>
         `);
     }
+
     $('.import-btn').off('click').on('click', function () {
         $('#fileInput').click();
     });
@@ -257,6 +271,7 @@ $(document).ready(function () {
             $('#importForm').submit(); 
         }
     });
+
     $('#deleteSelectedBtn').on('click', function () {
         const selectedResidents = [];
         $('.rowCheckbox:checked').each(function () {
@@ -271,6 +286,7 @@ $(document).ready(function () {
             alert('No residents selected for deletion.');
         }
     });
+
     $('#statusFilter').on('change', function () {
         const selectedStatus = $(this).val();
         table.column(7).search(selectedStatus).draw();
@@ -278,14 +294,31 @@ $(document).ready(function () {
 
     $('#selectAll').on('click', function () {
         $('.rowCheckbox').prop('checked', this.checked);
+        toggleButtons();  
     });
 
     $('.rowCheckbox').on('click', function () {
         $('#selectAll').prop('checked', $('.rowCheckbox:checked').length === $('.rowCheckbox').length);
+        toggleButtons();  
     });
-    
+
+    function toggleButtons() {
+        const selectedResidents = $('.rowCheckbox:checked').length;  
+        $('#deactivateSelectedBtn, #reactivateSelectedBtn, #deleteSelectedBtn').prop('disabled', selectedResidents === 0);
+        
+        if (selectedResidents > 0) {
+            $('.export-btn').css('pointer-events', 'auto'); 
+            $('.export-btn').css('background-color', ''); 
+        } else {
+            $('.export-btn').css('pointer-events', 'none'); 
+            $('.export-btn').css('background-color', '#C5C5C5'); 
+        }
+
+        $('#selectedCount').text(selectedResidents + ' Selected');
+    }
+
     $('#deactivateSelectedBtn').on('click', function () {
-    updateStatus('deactivate');
+        updateStatus('deactivate');
     });
 
     $('#reactivateSelectedBtn').on('click', function () {
@@ -298,8 +331,8 @@ $(document).ready(function () {
             selectedResidents.push($(this).val());
         });
         if (selectedResidents.length > 0) {
-            const confirmMessage = action === 'deactivate' ?
-                'Are you sure you want to deactivate the selected residents?' :
+            const confirmMessage = action === 'deactivate' ? 
+                'Are you sure you want to deactivate the selected residents?' : 
                 'Are you sure you want to reactivate the selected residents?';
             if (confirm(confirmMessage)) {
                 $('#statusResidentsInput').val(JSON.stringify(selectedResidents));
@@ -310,5 +343,11 @@ $(document).ready(function () {
             alert('No residents selected for status update.');
         }
     }
+
+    table.on('draw', function () {
+        toggleButtons();  
     });
+
+});
+
 </script>
