@@ -2,42 +2,64 @@
 include_once('../db/connection.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get selected residents and action from the form
-    $selectedResidents = isset($_POST['selected_residents']) ? $_POST['selected_residents'] : [];
+    $selectedResidents = isset($_POST['selected_residents']) ? json_decode($_POST['selected_residents'], true) : [];
     $action = isset($_POST['action']) ? $_POST['action'] : '';
 
-    // Validate inputs
-    if (empty($selectedResidents)) {
-        echo "No residents selected.";
+    if (empty($selectedResidents) || !is_array($selectedResidents)) {
+        echo "No residents selected or invalid data format.";
         exit();
     }
+
     if (!in_array($action, ['deactivate', 'reactivate'])) {
         echo "Invalid action.";
         exit();
     }
 
-    // Determine the new status based on the action
     $newStatus = $action === 'deactivate' ? 'Deactivated' : 'Active';
 
-    // Sanitize resident IDs
-    $residentIds = implode(',', array_map('intval', $selectedResidents));
+    $residentIdsPlaceholders = implode(',', array_fill(0, count($selectedResidents), '?'));
 
-    // Prepare the query to update the selected residents
-    $query = "
+    $residentIds = [];
+    $residentLookupQuery = "SELECT id FROM residents WHERE resident_id IN ($residentIdsPlaceholders)";
+    $lookupStmt = $conn->prepare($residentLookupQuery);
+    if ($lookupStmt) {
+        $lookupStmt->bind_param(str_repeat('s', count($selectedResidents)), ...$selectedResidents);
+        $lookupStmt->execute();
+        $result = $lookupStmt->get_result();
+        while ($row = $result->fetch_assoc()) {
+            $residentIds[] = $row['id'];
+        }
+        $lookupStmt->close();
+    }
+
+    if (empty($residentIds)) {
+        echo "No matching residents found.";
+        exit();
+    }
+
+    $categoryQuery = "SELECT category_id FROM categories WHERE category_value = ? AND category_type = 'account_status'";
+    $categoryStmt = $conn->prepare($categoryQuery);
+    $categoryStmt->bind_param('s', $newStatus);
+    $categoryStmt->execute();
+    $categoryStmt->bind_result($categoryId);
+    if (!$categoryStmt->fetch()) {
+        echo "Category ID not found for status: $newStatus";
+        $categoryStmt->close();
+        exit();
+    }
+    $categoryStmt->close();
+
+    $placeholders = implode(',', array_fill(0, count($residentIds), '?'));
+    $updateQuery = "
         UPDATE residents
-        SET account_status_id = (
-            SELECT category_id 
-            FROM categories 
-            WHERE category_value = ? AND category_type = 'account_status' 
-            LIMIT 1
-        )
-        WHERE id IN ($residentIds)
+        SET account_status_id = ?
+        WHERE id IN ($placeholders)
     ";
-
-    // Use prepared statements for security
-    $stmt = $conn->prepare($query);
+    $stmt = $conn->prepare($updateQuery);
     if ($stmt) {
-        $stmt->bind_param('s', $newStatus);
+        $paramTypes = 'i' . str_repeat('i', count($residentIds)); 
+        $paramValues = array_merge([$categoryId], $residentIds);
+        $stmt->bind_param($paramTypes, ...$paramValues);
 
         if ($stmt->execute()) {
             $affectedRows = $stmt->affected_rows;

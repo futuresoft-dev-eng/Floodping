@@ -197,35 +197,18 @@ include_once('../db/connection.php');
                 <span class="material-symbols-rounded">download</span> EXPORT DATA
             </a>
 
+              <!-- Deactivate Button -->
+        <button id="deactivateSelectedBtn" class="status-btn deactivate-btn">
+            <span class="material-symbols-rounded">block</span> DEACTIVATE
+        </button>
 
-
-
-            <<form method="POST" action="updateresidents_status.php">
-    <table>
-        <thead>
-            <tr>
-                <th>Select</th>
-                <th>Resident Name</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            // Fetch residents from the database
-            include_once('../db/connection.php');
-            $result = mysqli_query($conn, "SELECT id, first_name, last_name, account_status_id FROM residents");
-            while ($row = mysqli_fetch_assoc($result)) {
-                echo "<tr>";
-                echo "<td><input type='checkbox' name='selected_residents[]' value='{$row['id']}'></td>";
-                echo "<td>{$row['first_name']} {$row['last_name']}</td>";
-                echo "<td>{$row['account_status_id']}</td>";
-                echo "</tr>";
-            }
-            ?>
-        </tbody>
-    </table>
-    <button type="submit" name="action" value="deactivate">Deactivate</button>
-    <button type="submit" name="action" value="reactivate">Reactivate</button>
+        <!-- Reactivate Button -->
+        <button id="reactivateSelectedBtn" class="status-btn reactivate-btn">
+            <span class="material-symbols-rounded">refresh</span> REACTIVATE
+        </button>
+        <form id="statusUpdateForm" action="/floodping/ADMIN/updateresidents_status.php" method="POST" style="display: none;">
+    <input type="hidden" name="selected_residents" id="statusResidentsInput">
+    <input type="hidden" name="action" id="statusActionInput">
 </form>
 
 
@@ -302,12 +285,6 @@ $(document).ready(function () {
 
 
 
-
-
-
-
-
-
     $('#deactivateSelectedBtn').on('click', function () {
     updateStatus('deactivate');
 });
@@ -322,8 +299,8 @@ function updateStatus(action) {
         selectedResidents.push($(this).val());
     });
     if (selectedResidents.length > 0) {
-        const confirmMessage = action === 'deactivate' ? 
-            'Are you sure you want to deactivate the selected residents?' : 
+        const confirmMessage = action === 'deactivate' ?
+            'Are you sure you want to deactivate the selected residents?' :
             'Are you sure you want to reactivate the selected residents?';
         if (confirm(confirmMessage)) {
             $('#statusResidentsInput').val(JSON.stringify(selectedResidents));
@@ -334,6 +311,5 @@ function updateStatus(action) {
         alert('No residents selected for status update.');
     }
 }
-
 });
 </script>
