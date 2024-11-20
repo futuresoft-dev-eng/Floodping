@@ -158,6 +158,19 @@ include_once('../db/connection.php');
                 ?>
             </select>
         </div>
+        
+        <?php
+if (isset($_GET['message'])) {
+    echo "
+    <div style=' display: flex; align-items: center; justify-content: center;
+        margin: 20px auto; max-width: 20%; border: 2px solid #59C447; background-color: #F0FFF0;
+        color: #59C447; padding: 5px 20px; border-radius: 8px; font-size: 16px; '>
+        <span style='font-size: 24px; margin-right: 10px;'>✔</span>
+        <span>" . htmlspecialchars($_GET['message']) . "</span>
+    </div>
+    ";
+}
+?>
         <!-- Table -->
         <div class="table-container">
             <table id="residentTable" class="table table-bordered">
@@ -261,7 +274,6 @@ $(document).ready(function () {
             </button>
         `);
     }
-
     $('.import-btn').off('click').on('click', function () {
         $('#fileInput').click();
     });
@@ -271,7 +283,6 @@ $(document).ready(function () {
             $('#importForm').submit(); 
         }
     });
-
     $('#deleteSelectedBtn').on('click', function () {
         const selectedResidents = [];
         $('.rowCheckbox:checked').each(function () {
@@ -286,22 +297,18 @@ $(document).ready(function () {
             alert('No residents selected for deletion.');
         }
     });
-
     $('#statusFilter').on('change', function () {
         const selectedStatus = $(this).val();
         table.column(7).search(selectedStatus).draw();
     });
-
     $('#selectAll').on('click', function () {
         $('.rowCheckbox').prop('checked', this.checked);
         toggleButtons();  
     });
-
     $('.rowCheckbox').on('click', function () {
         $('#selectAll').prop('checked', $('.rowCheckbox:checked').length === $('.rowCheckbox').length);
         toggleButtons();  
     });
-
     function toggleButtons() {
         const selectedResidents = $('.rowCheckbox:checked').length;  
         $('#deactivateSelectedBtn, #reactivateSelectedBtn, #deleteSelectedBtn').prop('disabled', selectedResidents === 0);
@@ -316,15 +323,12 @@ $(document).ready(function () {
 
         $('#selectedCount').text(selectedResidents + ' Selected');
     }
-
     $('#deactivateSelectedBtn').on('click', function () {
         updateStatus('deactivate');
     });
-
     $('#reactivateSelectedBtn').on('click', function () {
         updateStatus('reactivate');
     });
-
     function updateStatus(action) {
         const selectedResidents = [];
         $('.rowCheckbox:checked').each(function () {
@@ -343,11 +347,8 @@ $(document).ready(function () {
             alert('No residents selected for status update.');
         }
     }
-
     table.on('draw', function () {
         toggleButtons();  
     });
-
 });
-
 </script>
