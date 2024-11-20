@@ -189,11 +189,12 @@ if (isset($_GET['message'])) {
                 </thead>
                 <tbody>
                     <?php
-                    $residentQuery = "
-                    SELECT r.resident_id, r.first_name, r.middle_name, r.last_name, r.suffix, r.mobile_number, 
-                    c.category_value AS account_status 
-                    FROM residents r
-                    LEFT JOIN categories c ON r.account_status_id = c.category_id";
+                   $residentQuery = "
+                   SELECT r.resident_id, r.first_name, r.middle_name, r.last_name, r.suffix, r.mobile_number, 
+                   c.category_value AS account_status 
+                   FROM residents r
+                   LEFT JOIN categories c ON r.account_status_id = c.category_id
+                   ORDER BY r.id DESC";                   
                     $residentResult = mysqli_query($conn, $residentQuery);
 
                     if ($residentResult && mysqli_num_rows($residentResult) > 0) {
