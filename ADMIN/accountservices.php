@@ -68,7 +68,8 @@ include_once('../db/connection.php');
         justify-content: center;
     }
     .create-btn, .import-btn,
-    .view-btn, .export-btn,  .delete-btn  {
+    .view-btn, .export-btn, .delete-btn,
+    .deactivate-btn, .reactivate-btn  {
         color: white;
         padding: 12px 16px;
         border: none;
@@ -82,7 +83,6 @@ include_once('../db/connection.php');
         vertical-align: middle;
         display: inline-flex;
         transition: background-color 0.3s, box-shadow 0.3s;
-
     }
     .create-btn {
         background-color: #59C447;
@@ -96,18 +96,26 @@ include_once('../db/connection.php');
     }
     .export-btn {
         background-color: #0288D1;
-        margin-left: 70%;
+        margin-left: 60%;
         margin-top:20px;
     }
     .delete-btn {
         background-color: #EA3323;
         margin-top:20px;
     }
+    .deactivate-btn{
+        background-color: #EB8817;
+    }
+    .reactivate-btn{
+        background-color: #59C447;
+    }
     .export-btn .material-symbols-rounded,
     .delete-btn .material-symbols-rounded,
     .create-btn .material-symbols-rounded,
     .view-btn .material-symbols-rounded,
-    .import-btn .material-symbols-rounded {
+    .import-btn .material-symbols-rounded,
+    .deactivate-btn .material-symbols-rounded,
+    .reactivate-btn .material-symbols-rounded {      
         margin-right: 5px;
         font-size: 18px;
     }
@@ -194,25 +202,22 @@ include_once('../db/connection.php');
         <div class="button-container">
              <!-- Export Data -->
             <a href="/floodping/ADMIN/export_residents.php" class="export-btn">
-                <span class="material-symbols-rounded">download</span> EXPORT DATA
+                <span class="material-symbols-rounded">download</span> EXPORT
             </a>
 
               <!-- Deactivate Button -->
         <button id="deactivateSelectedBtn" class="status-btn deactivate-btn">
-            <span class="material-symbols-rounded">block</span> DEACTIVATE
+            <span class="material-symbols-rounded">person_off</span> DEACTIVATE
         </button>
 
         <!-- Reactivate Button -->
         <button id="reactivateSelectedBtn" class="status-btn reactivate-btn">
-            <span class="material-symbols-rounded">refresh</span> REACTIVATE
+            <span class="material-symbols-rounded">notifications_active</span> REACTIVATE
         </button>
-        <form id="statusUpdateForm" action="/floodping/ADMIN/updateresidents_status.php" method="POST" style="display: none;">
-    <input type="hidden" name="selected_residents" id="statusResidentsInput">
-    <input type="hidden" name="action" id="statusActionInput">
-</form>
-
-
-
+            <form id="statusUpdateForm" action="/floodping/ADMIN/updateresidents_status.php" method="POST" style="display: none;">
+                <input type="hidden" name="selected_residents" id="statusResidentsInput">
+                <input type="hidden" name="action" id="statusActionInput">
+            </form>
 
             <!-- Delete -->
             <button id="deleteSelectedBtn" class="delete-btn">
@@ -279,37 +284,31 @@ $(document).ready(function () {
         $('#selectAll').prop('checked', $('.rowCheckbox:checked').length === $('.rowCheckbox').length);
     });
     
-    
-
-
-
-
-
     $('#deactivateSelectedBtn').on('click', function () {
     updateStatus('deactivate');
-});
-
-$('#reactivateSelectedBtn').on('click', function () {
-    updateStatus('reactivate');
-});
-
-function updateStatus(action) {
-    const selectedResidents = [];
-    $('.rowCheckbox:checked').each(function () {
-        selectedResidents.push($(this).val());
     });
-    if (selectedResidents.length > 0) {
-        const confirmMessage = action === 'deactivate' ?
-            'Are you sure you want to deactivate the selected residents?' :
-            'Are you sure you want to reactivate the selected residents?';
-        if (confirm(confirmMessage)) {
-            $('#statusResidentsInput').val(JSON.stringify(selectedResidents));
-            $('#statusActionInput').val(action);
-            $('#statusUpdateForm').submit();
+
+    $('#reactivateSelectedBtn').on('click', function () {
+        updateStatus('reactivate');
+    });
+
+    function updateStatus(action) {
+        const selectedResidents = [];
+        $('.rowCheckbox:checked').each(function () {
+            selectedResidents.push($(this).val());
+        });
+        if (selectedResidents.length > 0) {
+            const confirmMessage = action === 'deactivate' ?
+                'Are you sure you want to deactivate the selected residents?' :
+                'Are you sure you want to reactivate the selected residents?';
+            if (confirm(confirmMessage)) {
+                $('#statusResidentsInput').val(JSON.stringify(selectedResidents));
+                $('#statusActionInput').val(action);
+                $('#statusUpdateForm').submit();
+            }
+        } else {
+            alert('No residents selected for status update.');
         }
-    } else {
-        alert('No residents selected for status update.');
     }
-}
-});
+    });
 </script>
