@@ -213,12 +213,12 @@ include_once('../db/connection.php');
              <span class="material-symbols-rounded">download</span> EXPORT
             </a>
 
-              <!-- Deactivate Button -->
+              <!-- Deactivate -->
         <button id="deactivateSelectedBtn" class="status-btn deactivate-btn">
             <span class="material-symbols-rounded">person_off</span> DEACTIVATE
         </button>
 
-        <!-- Reactivate Button -->
+        <!-- Reactivate -->
         <button id="reactivateSelectedBtn" class="status-btn reactivate-btn">
             <span class="material-symbols-rounded">notifications_active</span> REACTIVATE
         </button>
