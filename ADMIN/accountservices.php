@@ -96,7 +96,7 @@ include_once('../db/connection.php');
     }
     .export-btn {
         background-color: #0288D1;
-        margin-left: 82%;
+        margin-left: 70%;
         margin-top:20px;
     }
     .delete-btn {
@@ -196,6 +196,41 @@ include_once('../db/connection.php');
             <a href="/floodping/ADMIN/export_residents.php" class="export-btn">
                 <span class="material-symbols-rounded">download</span> EXPORT DATA
             </a>
+
+
+
+
+            <<form method="POST" action="updateresidents_status.php">
+    <table>
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>Resident Name</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            // Fetch residents from the database
+            include_once('../db/connection.php');
+            $result = mysqli_query($conn, "SELECT id, first_name, last_name, account_status_id FROM residents");
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo "<tr>";
+                echo "<td><input type='checkbox' name='selected_residents[]' value='{$row['id']}'></td>";
+                echo "<td>{$row['first_name']} {$row['last_name']}</td>";
+                echo "<td>{$row['account_status_id']}</td>";
+                echo "</tr>";
+            }
+            ?>
+        </tbody>
+    </table>
+    <button type="submit" name="action" value="deactivate">Deactivate</button>
+    <button type="submit" name="action" value="reactivate">Reactivate</button>
+</form>
+
+
+
+
             <!-- Delete -->
             <button id="deleteSelectedBtn" class="delete-btn">
                 <span class="material-symbols-rounded">delete</span> DELETE
@@ -260,5 +295,45 @@ $(document).ready(function () {
     $('.rowCheckbox').on('click', function () {
         $('#selectAll').prop('checked', $('.rowCheckbox:checked').length === $('.rowCheckbox').length);
     });
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+    $('#deactivateSelectedBtn').on('click', function () {
+    updateStatus('deactivate');
+});
+
+$('#reactivateSelectedBtn').on('click', function () {
+    updateStatus('reactivate');
+});
+
+function updateStatus(action) {
+    const selectedResidents = [];
+    $('.rowCheckbox:checked').each(function () {
+        selectedResidents.push($(this).val());
+    });
+    if (selectedResidents.length > 0) {
+        const confirmMessage = action === 'deactivate' ? 
+            'Are you sure you want to deactivate the selected residents?' : 
+            'Are you sure you want to reactivate the selected residents?';
+        if (confirm(confirmMessage)) {
+            $('#statusResidentsInput').val(JSON.stringify(selectedResidents));
+            $('#statusActionInput').val(action);
+            $('#statusUpdateForm').submit();
+        }
+    } else {
+        alert('No residents selected for status update.');
+    }
+}
+
 });
 </script>
