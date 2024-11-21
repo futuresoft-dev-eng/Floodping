@@ -39,10 +39,10 @@ $button_label = $account_status === 'Active' ? 'DEACTIVATE' : 'REACTIVATE';
 $button_action = $account_status === 'Active' ? 'deactivate' : 'reactivate';
 // Update resident details
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_resident'])) {
-    $first_name = $_POST['first_name'];
-    $middle_name = $_POST['middle_name'];
-    $last_name = $_POST['last_name'];
-    $suffix = $_POST['suffix'];
+    $first_name = ucfirst(strtolower($_POST['first_name']));
+    $middle_name = ucfirst(strtolower($_POST['middle_name']));
+    $last_name = ucfirst(strtolower($_POST['last_name']));
+    $suffix = ucfirst(strtolower($_POST['suffix']));
     $sex = $_POST['sex'];
     $date_of_birth = $_POST['date_of_birth'];
     $mobile_number = $_POST['mobile_number'];
@@ -50,10 +50,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_resident'])) {
     $civil_status = $_POST['civil_status'];
     $socioeconomic_category = $_POST['socioeconomic_category'];
     $health_status = $_POST['health_status'];
-    $house_lot_number = $_POST['house_lot_number'];
-    $street_subdivision_name = $_POST['street_subdivision_name'];
-    $barangay = $_POST['barangay'];
-    $municipality = $_POST['municipality'];
+    $house_lot_number = ucfirst(strtolower($_POST['house_lot_number']));
+    $street_subdivision_name = ucfirst(strtolower($_POST['street_subdivision_name']));
+    $barangay = ucfirst(strtolower($_POST['barangay']));
+    $municipality = ucfirst(strtolower($_POST['municipality']));
 
     // Update the database
     $update_sql = "UPDATE residents 
@@ -180,8 +180,8 @@ function enableEdit() {
 
         document.body.appendChild(alertBox);
 
-        setTimeout(() => alertBox.style.opacity = '0', 2000); // Fade out
-        setTimeout(() => alertBox.remove(), 4000); // Remove after fade
+        setTimeout(() => alertBox.style.opacity = '0', 2000); 
+        setTimeout(() => alertBox.remove(), 4000); 
     }
 }
 
@@ -204,7 +204,33 @@ function confirmUpdate(event) {
     document.getElementById('confirmationModal').style.display = 'none'; 
     document.getElementById('residentUpdateForm').submit();  
 }
+  // Enable the "Update" button if any field is changed
+  document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll('input, select').forEach(input => {
+                input.addEventListener('input', function() {
+                    document.getElementById('updateButton').disabled = false; // Enable update button
+                    document.getElementById('updateButton').style.display = 'inline-block'; // Show the button
+                });
+            });
 
+            // Prevent form submission if no changes were made
+            document.getElementById('residentUpdateForm').addEventListener('submit', function(event) {
+                let formChanged = false;
+
+                // Check if any input or select field has been changed
+                document.querySelectorAll('input, select').forEach(input => {
+                    if (input.value !== input.defaultValue) {
+                        formChanged = true;
+                    }
+                });
+
+                // If no changes were made, prevent form submission
+                if (!formChanged) {
+                    event.preventDefault();
+                    alert("No changes were made.");
+                }
+            });
+        });
     </script>
 </head>
 <body>
@@ -334,8 +360,8 @@ function confirmUpdate(event) {
                 </div>
                 
                 <button type="button" id="editButton" class="btn" onclick="enableEdit()">Edit</button>
-                <button type="submit" id="updateButton" name="update_resident" class="btn" style="display:none;">Update</button>
-            </form>
+                <button type="submit" id="updateButton" name="update_resident" class="btn" style="display:none;" disabled>Update</button>
+                </form>
         </div>
     </div>
 

@@ -34,10 +34,10 @@ $button_label = $account_status === 'Active' ? 'DEACTIVATE' : 'REACTIVATE';
 $button_action = $account_status === 'Active' ? 'deactivate' : 'reactivate';
 //  update resident
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_resident'])) {
-    $first_name = $_POST['first_name'];
-    $middle_name = $_POST['middle_name'];
-    $last_name = $_POST['last_name'];
-    $suffix = $_POST['suffix'];
+    $first_name = ucfirst(strtolower($_POST['first_name']));
+    $middle_name = ucfirst(strtolower($_POST['middle_name']));
+    $last_name = ucfirst(strtolower($_POST['last_name']));
+    $suffix = ucfirst(strtolower($_POST['suffix']));
     $sex = $_POST['sex'];
     $date_of_birth = $_POST['date_of_birth'];
     $mobile_number = $_POST['mobile_number'];
@@ -45,10 +45,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_resident'])) {
     $civil_status = $_POST['civil_status'];
     $socioeconomic_category = $_POST['socioeconomic_category'];
     $health_status = $_POST['health_status'];
-    $house_lot_number = $_POST['house_lot_number'];
-    $street_subdivision_name = $_POST['street_subdivision_name'];
-    $barangay = $_POST['barangay'];
-    $municipality = $_POST['municipality'];
+    $house_lot_number = ucfirst(strtolower($_POST['house_lot_number']));
+    $street_subdivision_name = ucfirst(strtolower($_POST['street_subdivision_name']));
+    $barangay = ucfirst(strtolower($_POST['barangay']));
+    $municipality = ucfirst(strtolower($_POST['municipality']));
     $profile_photo_path = $resident['profile_photo_path']; 
 
     // photo upload
@@ -436,31 +436,24 @@ function enableEdit() {
 }
 
 
-// Show confirmation modal before updating
 function showUpdateModal() {
     document.getElementById('confirmationModal').style.display = 'block';
 }
 
-// Close the confirmation modal
 function closeUpdateModal() {
     document.getElementById('confirmationModal').style.display = 'none';
 }
 
-// Show success modal after the update is successful
 function showSuccessUpdateModal() {
     const modal = document.getElementById('successUpdateModal');
     modal.style.display = 'flex';
 }
 
-// Handle confirmation of update from the modal
 function confirmUpdate(event) {
-    event.preventDefault();  // Prevent form submission before confirming
+    event.preventDefault();  
     document.getElementById('confirmationModal').style.display = 'none'; 
     document.getElementById('residentUpdateForm').submit();  
 }
-
-
-
 
     function showDeleteModal() {
         document.getElementById('deleteModal').style.display = 'block';
@@ -472,6 +465,29 @@ function confirmUpdate(event) {
         const modal = document.getElementById('successdeleteModal');
         modal.style.display = 'flex';
     }
+
+            document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll('input, select').forEach(input => {
+                input.addEventListener('input', function() {
+                    document.getElementById('updateButton').disabled = false; 
+                    document.getElementById('updateButton').style.display = 'inline-block'; 
+                });
+            });
+            document.getElementById('residentUpdateForm').addEventListener('submit', function(event) {
+                let formChanged = false;
+
+                document.querySelectorAll('input, select').forEach(input => {
+                    if (input.value !== input.defaultValue) {
+                        formChanged = true;
+                    }
+                });
+                if (!formChanged) {
+                    event.preventDefault();
+                    alert("No changes were made.");
+                }
+            });
+        });
+
 </script>
 
 </head>
@@ -607,7 +623,7 @@ function confirmUpdate(event) {
 
 </div>
                 <button type="button" id="editButton" class="btn" style="background-color: #4597C0; color: white;" onclick="enableEdit()">EDIT</button>
-                <button type="submit" id="updateButton" name="update_resident" class="btn" style="display:none; background-color: #4597C0; color: white;">UPDATE</button>
+                <button type="submit" id="updateButton" name="update_resident" class="btn" style="display:none; background-color: #4597C0; color: white;" disabled>UPDATE</button>
             </form>
 
 
