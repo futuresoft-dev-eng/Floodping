@@ -394,9 +394,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_account_status
 // Enable edit
 function enableEdit() {
     document.querySelectorAll('.info-item input, .info-item select').forEach(input => {
+        if (input.name !== 'barangay' && input.name !== 'municipality' && input.name !== 'account_status' ) {
         input.removeAttribute('readonly');
         input.removeAttribute('disabled');
-        input.style.backgroundColor = '#ffffff';  
+        input.style.backgroundColor = '#ffffff';  }
     });
     document.getElementById('editButton').style.display = 'none';
     document.getElementById('updateButton').style.display = 'inline-block';

@@ -131,9 +131,12 @@ $healthStatusResult = $conn->query($healthStatusQuery);
 // Enable the fields for editing
 function enableEdit() {
     document.querySelectorAll('.info-item input, .info-item select').forEach(input => {
-        input.removeAttribute('readonly');
-        input.removeAttribute('disabled');
-        input.style.backgroundColor = '#ffffff';  // Make background white when editable
+         // Exclude barangay and municipality fields
+         if (input.name !== 'barangay' && input.name !== 'municipality') {
+            input.removeAttribute('readonly');
+            input.removeAttribute('disabled');
+            input.style.backgroundColor = '#ffffff'; 
+          } // Make background white when editable
     });
     document.getElementById('editButton').style.display = 'none';
     document.getElementById('updateButton').style.display = 'inline-block';
@@ -280,19 +283,35 @@ function confirmUpdate(event) {
                         <input type="text" name="street_subdivision_name" value="<?php echo htmlspecialchars($resident['street_subdivision_name']); ?>" readonly style="background-color: #F5F5F5;">
                     </div>
                     <div class="info-item">
-                        <label>Barangay</label>
-                        <input type="text" name="barangay" value="<?php echo htmlspecialchars($resident['barangay']); ?>" readonly style="background-color: #F5F5F5;">
-                    </div>
-                    <div class="info-item">
-                        <label>Municipality</label>
-                        <input type="text" name="municipality" value="<?php echo htmlspecialchars($resident['municipality']); ?>" readonly style="background-color: #F5F5F5;">
-                    </div>
+                    <label>Barangay</label>
+                    <input type="text" name="barangay" value="<?php echo htmlspecialchars($resident['barangay']); ?>" readonly style="background-color: #F5F5F5;">
+                </div>
+                <div class="info-item">
+                    <label>Municipality</label>
+                    <input type="text" name="municipality" value="<?php echo htmlspecialchars($resident['municipality']); ?>" readonly style="background-color: #F5F5F5;">
+                </div>
+
                 </div>
                 <button type="button" id="editButton" class="btn" onclick="enableEdit()">Edit</button>
                 <button type="submit" id="updateButton" name="update_resident" class="btn" style="display:none;">Update</button>
             </form>
         </div>
     </div>
+
+    
+<!-- Account Status -->
+<div class="info-item">
+    <label for="account_status">Account Status:</label>
+    <input type="text" id="account_status" name="account_status" value="<?php echo htmlspecialchars($account_status); ?>" readonly style="background-color: #F5F5F5;">
+    <form method="POST" style="display:inline;">
+        <input type="hidden" name="resident_id" value="<?php echo htmlspecialchars($resident_id); ?>">
+        <button type="submit" name="update_account_status" value="<?php echo $button_action; ?>">
+            <?php echo $button_label; ?>
+        </button>
+    </form>
+</div>
+<br>
+
 
     <!-- Confirmation Modal -->
     <div id="confirmationModal" class="modal" style="display:none;">
