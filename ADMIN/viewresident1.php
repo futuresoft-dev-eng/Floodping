@@ -4,8 +4,8 @@ include_once('../db/connection.php');
 $resident_id = isset($_GET['resident_id']) ? $_GET['resident_id'] : null;
 if ($resident_id) {
     $sql = "SELECT r.*, c1.category_value AS sex, c2.category_value AS civil_status, 
-                   c3.category_value AS socioeconomic_category, c4.category_value AS health_status, 
-                   a.category_value AS account_status
+                        c3.category_value AS socioeconomic_category, c4.category_value AS health_status, 
+                        a.category_value AS account_status
             FROM residents r
             LEFT JOIN categories c1 ON r.sex_id = c1.category_id
             LEFT JOIN categories c2 ON r.civil_status_id = c2.category_id
@@ -21,6 +21,11 @@ if ($resident_id) {
     $stmt->close();
 
     $account_status = isset($resident['account_status']) ? $resident['account_status'] : 'Unknown';
+
+    if (!$resident) {
+    echo "<p>Resident not found.</p>";
+    exit;
+}
 } else {
     echo "Resident ID not provided.";
     exit;
@@ -85,20 +90,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_resident'])) {
     );
 
     if ($stmt->execute()) {
-        echo "<script>document.addEventListener('DOMContentLoaded', () => { showSuccessModal(); });</script>";
+        echo "<script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    showSuccessUpdateModal();
+                });
+              </script>";
     } else {
-        echo "Error: " . $stmt->error;
-    }
+        echo "Error updating record: " . $stmt->error;
+    }    
     $stmt->close();
 }
+
+
 $sexQuery = "SELECT category_id, category_value FROM categories WHERE category_type = 'sex'";
 $sexResult = $conn->query($sexQuery);
+
 $civilStatusQuery = "SELECT category_id, category_value FROM categories WHERE category_type = 'civil_status'";
 $civilStatusResult = $conn->query($civilStatusQuery);
+
 $socioeconomicCategoryQuery = "SELECT category_id, category_value FROM categories WHERE category_type = 'socioeconomic_category'";
 $socioeconomicCategoryResult = $conn->query($socioeconomicCategoryQuery);
+
 $healthStatusQuery = "SELECT category_id, category_value FROM categories WHERE category_type = 'health_status'";
 $healthStatusResult = $conn->query($healthStatusQuery);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
     if ($_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = '../uploads/'; 
@@ -376,34 +391,43 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_account_status
             }
         };
     }
+// Enable edit
+function enableEdit() {
+    document.querySelectorAll('.info-item input, .info-item select').forEach(input => {
+        input.removeAttribute('readonly');
+        input.removeAttribute('disabled');
+        input.style.backgroundColor = '#ffffff';  
+    });
+    document.getElementById('editButton').style.display = 'none';
+    document.getElementById('updateButton').style.display = 'inline-block';
+}
 
-    function enableEdit() {
-        document.querySelectorAll('.info-item input, .info-item select').forEach(input => {
-            input.removeAttribute('readonly');
-            input.removeAttribute('disabled');
-            input.style.backgroundColor = '#ffffff'; 
-        });
-                document.getElementById('editButton').style.display = 'none';
-        document.getElementById('updateButton').style.display = 'inline-block';
-    }
-    function showModal() {
-        document.getElementById('confirmationModal').style.display = 'block';
-    }
-    function closeModal() {
-        document.getElementById('confirmationModal').style.display = 'none';
-    }
-    // Function to show the success modal after an update
-    function showSuccessModal() {
-    const modal = document.getElementById('successModal');
+// Show confirmation modal before updating
+function showUpdateModal() {
+    document.getElementById('confirmationModal').style.display = 'block';
+}
+
+// Close the confirmation modal
+function closeUpdateModal() {
+    document.getElementById('confirmationModal').style.display = 'none';
+}
+
+// Show success modal after the update is successful
+function showSuccessUpdateModal() {
+    const modal = document.getElementById('successUpdateModal');
     modal.style.display = 'flex';
-        setTimeout(function() {
-            refreshPage(); 
-        }, 2000); 
-    }
+}
 
-    function refreshPage() {
-        window.location.reload();
-    }
+// Handle confirmation of update from the modal
+function confirmUpdate(event) {
+    event.preventDefault();  // Prevent form submission before confirming
+    document.getElementById('confirmationModal').style.display = 'none'; // Hide confirmation modal
+    document.getElementById('residentUpdateForm').submit();  // Submit the form after confirmation
+}
+
+
+
+
     function showDeleteModal() {
         document.getElementById('deleteModal').style.display = 'block';
     }
@@ -449,8 +473,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_account_status
 </form>
 <div class="profile-info">
     <h3>Personal Information</h3>
-    <form method="POST">
-        <div class="info-group">
+    <form method="POST" id="residentUpdateForm">
+    <div class="info-group">
             <!-- First row -->
             <div class="info-item">
                 <label>First Name</label>
@@ -544,8 +568,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_account_status
                 <label>Municipality</label>
                 <input type="text" name="municipality" value="<?php echo htmlspecialchars($resident['municipality']); ?>" readonly style="background-color: #F5F5F5;">
             </div>
-            </div>         
+              
 <hr>
+
+</div>
+                <button type="button" id="editButton" class="btn" onclick="enableEdit()">Edit</button>
+                <button type="submit" id="updateButton" name="update_resident" class="btn" style="display:none;">Update</button>
+            </form>
+
+
 <!-- Account Status -->
 <div class="info-item">
     <label for="account_status">Account Status:</label>
@@ -561,28 +592,37 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_account_status
 
 <div class="info-item">
 <button type="button" id="deleteButton" onclick="showDeleteModal()">DELETE</button>
-<button type="button" id="editButton" onclick="enableEdit()">EDIT</button>
-<button type="button" id="updateButton" style="display: none;" onclick="showModal()">UPDATE</button>
 </div>
 
 <!-- Confirmation Modal (Update) -->
-<div id="confirmationModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <p>Are you sure you want to update?</p>
-        <form method="POST">
-            <button type="button" class="btn btn-no" onclick="closeModal()">No</button>
-            <button type="submit" class="btn btn-yes" name="update_resident">Yes</button>
-        </form>
+<div id="confirmationModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeUpdateModal()">&times;</span>
+            <h2>Confirm Update</h2>
+            <p>Are you sure you want to update this resident's details?</p>
+            <button class="btn btn-yes" onclick="confirmUpdate(event)">Yes</button>
+            <button class="btn btn-no" onclick="closeUpdateModal()">No</button>
+        </div>
     </div>
-</div>
+
 
 <!-- Success Modal (Update) -->
-<div id="successModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <p>Resident details updated successfully!</p>
-        <button class="btn btn-yes" onclick="refreshPage()">OK</button>
+<div id="successUpdateModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="material-symbols-rounded" style="color:red;">check_circle</span>
+                Resident Updated Successfully
+            </div>
+            <p>Resident details updated successfully!</p>
+            <div class="modal-buttons">
+                <a href='/floodping/ADMIN/viewresident1.php?resident_id=<?php echo htmlspecialchars($resident_id); ?>' class="btn btn-yes">OK</a>
+            </div>
+        </div>
     </div>
-</div>
+
+
+
+
 
 <!-- Delete Confirmation Modal -->
 <div id="deleteModal" class="modal">
