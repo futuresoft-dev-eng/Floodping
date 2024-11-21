@@ -422,8 +422,8 @@ function showSuccessUpdateModal() {
 // Handle confirmation of update from the modal
 function confirmUpdate(event) {
     event.preventDefault();  // Prevent form submission before confirming
-    document.getElementById('confirmationModal').style.display = 'none'; // Hide confirmation modal
-    document.getElementById('residentUpdateForm').submit();  // Submit the form after confirmation
+    document.getElementById('confirmationModal').style.display = 'none'; 
+    document.getElementById('residentUpdateForm').submit();  
 }
 
 

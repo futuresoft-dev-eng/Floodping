@@ -2,11 +2,9 @@
 include_once('../adminsidebar.php');
 include_once('../db/connection.php');
 
-// Get the resident ID from the URL
 $resident_id = isset($_GET['resident_id']) ? $_GET['resident_id'] : null;
 
 if ($resident_id) {
-    // Fetch resident details
     $sql = "SELECT r.*, 
                    c1.category_value AS sex, 
                    c2.category_value AS civil_status, 
@@ -27,7 +25,8 @@ if ($resident_id) {
     $resident = $result->fetch_assoc();
     $stmt->close();
 
-    // Handle case where resident is not found
+$account_status = isset($resident['account_status']) ? $resident['account_status'] : 'Unknown';
+
     if (!$resident) {
         echo "<p>Resident not found.</p>";
         exit;
@@ -36,10 +35,10 @@ if ($resident_id) {
     echo "<p>Resident ID not provided.</p>";
     exit;
 }
-
+$button_label = $account_status === 'Active' ? 'DEACTIVATE' : 'REACTIVATE';
+$button_action = $account_status === 'Active' ? 'deactivate' : 'reactivate';
 // Update resident details
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_resident'])) {
-    // Collect data from the form
     $first_name = $_POST['first_name'];
     $middle_name = $_POST['middle_name'];
     $last_name = $_POST['last_name'];
@@ -107,7 +106,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_resident'])) {
     $stmt->close();
 }
 
-// Fetch dropdown values
 $sexQuery = "SELECT category_id, category_value FROM categories WHERE category_type = 'sex'";
 $sexResult = $conn->query($sexQuery);
 
@@ -119,6 +117,25 @@ $socioeconomicCategoryResult = $conn->query($socioeconomicCategoryQuery);
 
 $healthStatusQuery = "SELECT category_id, category_value FROM categories WHERE category_type = 'health_status'";
 $healthStatusResult = $conn->query($healthStatusQuery);
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_account_status'])) {
+    $action = $_POST['update_account_status'];
+    $resident_id = $_POST['resident_id'];   
+    $new_status_id = ($action === 'deactivate') ? 2 : 1; 
+    $sql = "UPDATE residents SET account_status_id = ? WHERE resident_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("is", $new_status_id, $resident_id);
+    if ($stmt->execute()) {
+        echo "<script>
+            alert('Account status successfully updated.');
+            window.location.href = 'viewresident.php?resident_id={$resident_id}';
+        </script>";
+    } else {
+        echo "<script>alert('Error updating account status: {$stmt->error}');</script>";
+    }
+    $stmt->close();
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -128,41 +145,41 @@ $healthStatusResult = $conn->query($healthStatusQuery);
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Symbols+Rounded">
     <link rel="stylesheet" href="styles.css">
     <script>
-// Enable the fields for editing
 function enableEdit() {
-    document.querySelectorAll('.info-item input, .info-item select').forEach(input => {
-         // Exclude barangay and municipality fields
-         if (input.name !== 'barangay' && input.name !== 'municipality') {
-            input.removeAttribute('readonly');
-            input.removeAttribute('disabled');
-            input.style.backgroundColor = '#ffffff'; 
-          } // Make background white when editable
-    });
-    document.getElementById('editButton').style.display = 'none';
-    document.getElementById('updateButton').style.display = 'inline-block';
+    const accountStatus = document.getElementById('account_status').value;
+    if (accountStatus === 'Active') {
+        document.querySelectorAll('.info-item input, .info-item select').forEach(input => {
+            if (input.name !== 'barangay' && input.name !== 'municipality') {
+                input.removeAttribute('readonly');
+                input.removeAttribute('disabled');
+                input.style.backgroundColor = '#ffffff'; 
+            }
+        });
+        document.getElementById('editButton').style.display = 'none';
+        document.getElementById('updateButton').style.display = 'inline-block';
+    } else {
+        alert('Editing is not allowed for deactivated accounts.');
+    }
 }
 
-// Show confirmation modal before updating
+
 function showUpdateModal() {
     document.getElementById('confirmationModal').style.display = 'block';
 }
 
-// Close the confirmation modal
 function closeUpdateModal() {
     document.getElementById('confirmationModal').style.display = 'none';
 }
 
-// Show success modal after the update is successful
 function showSuccessUpdateModal() {
     const modal = document.getElementById('successUpdateModal');
     modal.style.display = 'flex';
 }
 
-// Handle confirmation of update from the modal
 function confirmUpdate(event) {
-    event.preventDefault();  // Prevent form submission before confirming
-    document.getElementById('confirmationModal').style.display = 'none'; // Hide confirmation modal
-    document.getElementById('residentUpdateForm').submit();  // Submit the form after confirmation
+    event.preventDefault();  
+    document.getElementById('confirmationModal').style.display = 'none'; 
+    document.getElementById('residentUpdateForm').submit();  
 }
 
     </script>
@@ -292,6 +309,7 @@ function confirmUpdate(event) {
                 </div>
 
                 </div>
+                
                 <button type="button" id="editButton" class="btn" onclick="enableEdit()">Edit</button>
                 <button type="submit" id="updateButton" name="update_resident" class="btn" style="display:none;">Update</button>
             </form>
