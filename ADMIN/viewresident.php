@@ -149,7 +149,7 @@ function enableEdit() {
     const accountStatus = document.getElementById('account_status').value;
     if (accountStatus === 'Active') {
         document.querySelectorAll('.info-item input, .info-item select').forEach(input => {
-            if (!['barangay', 'municipality'].includes(input.name)) {
+            if (!['barangay', 'municipality', 'account_status'].includes(input.name)) {
                 input.removeAttribute('readonly');
                 input.removeAttribute('disabled');
                 input.style.backgroundColor = '#ffffff';

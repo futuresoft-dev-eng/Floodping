@@ -416,7 +416,7 @@ function enableEdit() {
     const accountStatus = document.getElementById('account_status').value;
     if (accountStatus === 'Active') {
         document.querySelectorAll('.info-item input, .info-item select').forEach(input => {
-            if (!['barangay', 'municipality'].includes(input.name)) {
+            if (!['barangay', 'municipality', 'account_status'].includes(input.name)) {
                 input.removeAttribute('readonly');
                 input.removeAttribute('disabled');
                 input.style.backgroundColor = '#ffffff';
@@ -596,25 +596,25 @@ function confirmUpdate(event) {
             </div>
             <div class="info-item">
                 <label>Barangay</label>
-                <input type="text" name="barangay" value="<?php echo htmlspecialchars($resident['barangay']); ?>" readonly style="background-color: #F5F5F5;">
+                <input type="text" name="barangay" value="<?php echo htmlspecialchars($resident['barangay']); ?>" readonly style="background-color: #C5C5C5;">
             </div>
             <div class="info-item">
                 <label>Municipality</label>
-                <input type="text" name="municipality" value="<?php echo htmlspecialchars($resident['municipality']); ?>" readonly style="background-color: #F5F5F5;">
+                <input type="text" name="municipality" value="<?php echo htmlspecialchars($resident['municipality']); ?>" readonly style="background-color: #C5C5C5;">
             </div>
               
 <hr>
 
 </div>
-                <button type="button" id="editButton" class="btn" onclick="enableEdit()">Edit</button>
-                <button type="submit" id="updateButton" name="update_resident" class="btn" style="display:none;">Update</button>
+                <button type="button" id="editButton" class="btn" style="background-color: #4597C0; color: white;" onclick="enableEdit()">EDIT</button>
+                <button type="submit" id="updateButton" name="update_resident" class="btn" style="display:none; background-color: #4597C0; color: white;">UPDATE</button>
             </form>
 
 
 <!-- Account Status -->
 <div class="info-item">
-    <label for="account_status">Account Status:</label>
-    <input type="text" id="account_status" name="account_status" value="<?php echo htmlspecialchars($account_status); ?>" readonly style="background-color: #F5F5F5;">
+    <label for="account_status">Account Status: </label> <br>
+    <input type="text" id="account_status" name="account_status" value="<?php echo htmlspecialchars($account_status); ?>" readonly style="background-color: #C5C5C5; border: none; margin-bottom: 10px; width: 20%; " >
     <form method="POST" style="display:inline;">
         <input type="hidden" name="resident_id" value="<?php echo htmlspecialchars($resident_id); ?>">
         <button type="submit" name="update_account_status" value="<?php echo $button_action; ?>">
@@ -625,7 +625,7 @@ function confirmUpdate(event) {
 <br>
 
 <div class="info-item">
-<button type="button" id="deleteButton" onclick="showDeleteModal()">DELETE</button>
+<button type="button" id="deleteButton" onclick="showDeleteModal()" style="background-color: #EA3323; color: white;">DELETE</button>
 </div>
 
 <!-- Confirmation Modal (Update) -->
@@ -644,8 +644,7 @@ function confirmUpdate(event) {
 <div id="successUpdateModal" class="modal" style="display:none;">
         <div class="modal-content">
             <div class="modal-header">
-                <span class="material-symbols-rounded" style="color:red;">check_circle</span>
-                Resident Updated Successfully
+                <span class="material-symbols-rounded" style="color:green; ">check_circle</span>Resident Updated Successfully
             </div>
             <p>Resident details updated successfully!</p>
             <div class="modal-buttons">
@@ -672,8 +671,7 @@ function confirmUpdate(event) {
 <div id="successdeleteModal" class="modal" style="display: none;">
     <div class="modal-content">
         <div class="modal-header">
-            <span class="material-symbols-rounded" style="color: green;">check_circle</span>
-            Resident Deleted Successfully
+            <span class="material-symbols-rounded" style="color: red;">check_circle</span>Resident Deleted Successfully
         </div>
         <p>The resident profile has been deleted.</p>
         <div class="modal-buttons">
