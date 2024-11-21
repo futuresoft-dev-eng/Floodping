@@ -158,19 +158,60 @@ include_once('../db/connection.php');
                 ?>
             </select>
         </div>
-        
         <?php
 if (isset($_GET['message'])) {
     echo "
-    <div style=' display: flex; align-items: center; justify-content: center;
+    <div id='temporaryMessage' style='display: flex; align-items: center; justify-content: center;
         margin: 20px auto; max-width: 20%; border: 2px solid #59C447; background-color: #F0FFF0;
-        color: #59C447; padding: 5px 20px; border-radius: 8px; font-size: 16px; '>
+        color: #59C447; padding: 5px 20px; border-radius: 8px; font-size: 16px;' >
         <span style='font-size: 24px; margin-right: 10px;'>✔</span>
         <span>" . htmlspecialchars($_GET['message']) . "</span>
     </div>
+    <script>
+        setTimeout(() => {
+            const messageDiv = document.getElementById('temporaryMessage');
+            if (messageDiv) {
+                messageDiv.style.transition = 'opacity 2s';
+                messageDiv.style.opacity = '0';
+            }
+        }, 2000);
+        setTimeout(() => {
+            const messageDiv = document.getElementById('temporaryMessage');
+            if (messageDiv) {
+                messageDiv.remove();
+            }
+        }, 4000); 
+    </script>
+    ";
+}
+
+if (isset($_GET['delete_status'])) {
+    echo "
+    <div id='deleteMessage' style='display: flex; align-items: center; justify-content: center;
+        margin: 20px auto; max-width: 20%; border: 2px solid #E74C3C; background-color: #FDEDEC;
+        color: #E74C3C; padding: 5px 20px; border-radius: 8px; font-size: 16px;'>
+        <span style='font-size: 24px; margin-right: 10px;'>✔</span>
+        <span>" . htmlspecialchars($_GET['delete_status']) . "</span>
+    </div>
+    <script>
+        setTimeout(() => {
+            const messageDiv = document.getElementById('deleteMessage');
+            if (messageDiv) {
+                messageDiv.style.transition = 'opacity 2s';
+                messageDiv.style.opacity = '0';
+            }
+        }, 2000);
+        setTimeout(() => {
+            const messageDiv = document.getElementById('deleteMessage');
+            if (messageDiv) {
+                messageDiv.remove();
+            }
+        }, 4000);
+    </script>
     ";
 }
 ?>
+
         <!-- Table -->
         <div class="table-container">
             <table id="residentTable" class="table table-bordered">
