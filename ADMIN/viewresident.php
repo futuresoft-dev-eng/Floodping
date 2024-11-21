@@ -149,16 +149,39 @@ function enableEdit() {
     const accountStatus = document.getElementById('account_status').value;
     if (accountStatus === 'Active') {
         document.querySelectorAll('.info-item input, .info-item select').forEach(input => {
-            if (input.name !== 'barangay' && input.name !== 'municipality') {
+            if (!['barangay', 'municipality'].includes(input.name)) {
                 input.removeAttribute('readonly');
                 input.removeAttribute('disabled');
-                input.style.backgroundColor = '#ffffff'; 
+                input.style.backgroundColor = '#ffffff';
             }
         });
         document.getElementById('editButton').style.display = 'none';
         document.getElementById('updateButton').style.display = 'inline-block';
     } else {
-        alert('Editing is not allowed for deactivated accounts.');
+        const alertBox = document.createElement('div');
+        alertBox.textContent = 'Editing is not allowed for deactivated accounts.';
+        Object.assign(alertBox.style, {
+            position: 'absolute',
+            top: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            padding: '15px 20px',
+            backgroundColor: '#f8d7da',
+            color: '#721c24',
+            border: '1px solid #f5c6cb',
+            borderRadius: '5px',
+            fontSize: '16px',
+            textAlign: 'center',
+            width: '20%',
+            zIndex: '1000',
+            opacity: '1',
+            transition: 'opacity 2s ease-out'
+        });
+
+        document.body.appendChild(alertBox);
+
+        setTimeout(() => alertBox.style.opacity = '0', 2000); // Fade out
+        setTimeout(() => alertBox.remove(), 4000); // Remove after fade
     }
 }
 
