@@ -380,6 +380,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_account_status
     background-color: #EA3323;
     color: #000;
 }
+.alert-box {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px 20px;
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+    width: 20%;
+    z-index: 1000;
+    opacity: 1;
+    transition: opacity 2s ease-out;
+}
+
+.alert-box.fade-out {
+    opacity: 0;
+}
  </style>
 <script>
     function uploadPhoto() {
@@ -391,17 +412,29 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_account_status
             }
         };
     }
-// Enable edit
 function enableEdit() {
-    document.querySelectorAll('.info-item input, .info-item select').forEach(input => {
-        if (input.name !== 'barangay' && input.name !== 'municipality' && input.name !== 'account_status' ) {
-        input.removeAttribute('readonly');
-        input.removeAttribute('disabled');
-        input.style.backgroundColor = '#ffffff';  }
-    });
-    document.getElementById('editButton').style.display = 'none';
-    document.getElementById('updateButton').style.display = 'inline-block';
+    const accountStatus = document.getElementById('account_status').value;
+    if (accountStatus === 'Active') {
+        document.querySelectorAll('.info-item input, .info-item select').forEach(input => {
+            if (!['barangay', 'municipality'].includes(input.name)) {
+                input.removeAttribute('readonly');
+                input.removeAttribute('disabled');
+                input.style.backgroundColor = '#ffffff';
+            }
+        });
+        document.getElementById('editButton').style.display = 'none';
+        document.getElementById('updateButton').style.display = 'inline-block';
+    } else {
+        const alertBox = document.createElement('div');
+        alertBox.textContent = 'Editing is not allowed for deactivated accounts.';
+        alertBox.className = 'alert-box';
+        document.body.appendChild(alertBox);
+
+        setTimeout(() => alertBox.classList.add('fade-out'), 2000); 
+        setTimeout(() => alertBox.remove(), 4000); 
+    }
 }
+
 
 // Show confirmation modal before updating
 function showUpdateModal() {
