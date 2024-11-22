@@ -173,10 +173,12 @@
             font-size: 24px;
             color: #02476A;
             cursor: pointer;
+            transition: color 0.3s;
         }
 
         .logout-button:hover {
-            color: #02476A;
+            color: white;
+            background-color: #02476A;
         }
 
         h2 {
@@ -186,7 +188,7 @@
             margin: 100px 0px 0px 10px;
         }
 
-        /* Responsive styling */
+        /* Responsive */
         @media (max-width: 992px) {
             .sidebar {
                 display: none; 
@@ -308,7 +310,9 @@
             <div class="user-role">Local Authority</div>
         </div>
     </a>
-    <span class="material-symbols-rounded logout-button">chevron_right</span>
+    <span class="material-symbols-rounded logout-button" onclick="window.location.href='http://localhost/floodping/HOME/login.php';">
+        chevron_right
+    </span>
 </div>
 </nav>
         <!-- content area -->
