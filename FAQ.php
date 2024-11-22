@@ -109,7 +109,7 @@ body {
     font-size: 40px;
     font-weight: 500;
     color: #FFFFFF;
-    margin: -130px 0px 0px 290px;
+    margin: -130px 0px 0px 250px;
     position: absolute;
 }
 
@@ -122,11 +122,16 @@ body {
     margin: -5px auto;
 }
 
+#welcome-text {
+    margin-left: 0px;
+}
+
 .faq-container p {
     font-size: 14px;
     margin-bottom: 14px;
     color: #333;
     text-align: justify;
+    margin-left: 55px;
 }
 
 .faq-section {
@@ -148,6 +153,7 @@ body {
 .faq-section ul li {
     list-style-type: disc;
     margin-bottom: 5px;
+    margin-left: 20px;
 }
 
 .highlight-text {
@@ -265,7 +271,7 @@ body {
     
     <div class="faq-container">
     <h2 id="title">FloodPing | Frequently Asked Questions</h2>
-    <p>
+    <p id="welcome-text">
         Welcome to FloodPing, an advanced IoT-based flood monitoring and alert system designed to keep communities safe during flood events. By utilizing real-time water sensors and a web-based live stream, FloodPing helps Local Authorities and residents stay informed about changing water levels and receive timely alerts to guide evacuation actions. This system is structured to provide clear, early warnings and ensure a coordinated response, protecting lives and minimizing flood-related risks. <br>
     <br>
         Below are some frequently asked questions to help you understand how FloodPing works and how it can assist you during flood events.
