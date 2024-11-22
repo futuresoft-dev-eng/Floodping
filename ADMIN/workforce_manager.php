@@ -1,5 +1,5 @@
 <?php
-include 'db_conn.php';
+include_once('../db/db_conn.php');
 $userData = [];
 if (isset($_GET['edit_user_id'])) {
     $userId = $_GET['edit_user_id'];
