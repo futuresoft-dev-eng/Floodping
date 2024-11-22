@@ -1,5 +1,5 @@
 <?php
-include 'db_conn.php'; 
+include_once('../db/db_conn.php');
 
 
 if (isset($_GET['user_id']) || isset($_POST['user_id'])) {
