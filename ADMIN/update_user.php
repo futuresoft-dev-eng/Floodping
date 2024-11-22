@@ -1,5 +1,5 @@
 <?php
-include 'db_conn.php';
+include_once('../db/db_conn.php');
 
 if (isset($_GET['user_id']) || isset($_SESSION['user_id'])) {
     $user_id = isset($_GET['user_id']) ? $_GET['user_id'] : $_SESSION['user_id'];
@@ -22,7 +22,7 @@ if (isset($_GET['user_id']) || isset($_SESSION['user_id'])) {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] == 0) {
-        $upload_dir = 'uploads/';
+        $upload_dir = '../uploads/';
         $allowed_types = ['image/jpeg', 'image/png', 'image/jpg'];
         $file_name = $_FILES['profile_photo']['name'];
         $file_tmp_name = $_FILES['profile_photo']['tmp_name'];
