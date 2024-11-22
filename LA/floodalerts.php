@@ -1,5 +1,5 @@
 <?php
-include('../db/connection.php');
+include_once('../db/db_conn.php');
 include_once('../sidebar.php');
 
 $sql_flood_alerts = "
