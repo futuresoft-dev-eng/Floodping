@@ -8,7 +8,7 @@ if (isset($_SESSION['full_name']) && isset($_SESSION['role'])) {
     echo "<h3>Welcome, Guest!</h3>";
 }
 
-include 'db_conn.php';
+include_once('../db/db_conn.php');
 function generatePassword($len = 12) {
     $lowercase = "abcdefghijklmnopqrstuvwxyz";
     $uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -90,7 +90,7 @@ if (!preg_match('/^09\d{9}$/', $contact_no)) {
     // Profile photo upload
     $profile_photo = "";
     if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] == 0) {
-        $target_dir = "uploads/";
+        $target_dir = "../uploads/";
         $profile_photo_name = time() . "_" . basename($_FILES["profile_photo"]["name"]);
         $target_file = $target_dir . $profile_photo_name;
 
