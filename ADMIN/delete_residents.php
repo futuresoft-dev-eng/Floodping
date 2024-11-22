@@ -1,6 +1,5 @@
 <?php
-include_once('../db/connection.php');
-
+include_once('../db/db_conn.php');
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_residents'])) {
     $selectedResidents = json_decode($_POST['selected_residents'], true);
 

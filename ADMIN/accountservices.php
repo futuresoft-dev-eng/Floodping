@@ -1,6 +1,6 @@
 <?php
 include_once('../adminsidebar.php');
-include_once('../db/connection.php');
+include_once('../db/db_conn.php');
 ?>
 <title>Residents List</title>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
