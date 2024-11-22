@@ -2,6 +2,7 @@
 session_start();
 include_once('../db/db_conn.php');
 
+
 // get current time, date, and day
 date_default_timezone_set("Asia/Manila"); 
 $current_time = date("h:i A"); 
@@ -81,9 +82,10 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="/floodping/images/Floodpinglogo.png" type="image/png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <title>Login</title>
+    <link rel="icon" href="/floodping/images/Floodpinglogo.png" type="image/png">
+
 </head>
 
 <style>
@@ -97,7 +99,7 @@ $conn->close();
 body {
     height: 100vh;
     width: 100%;
-    background-image: url('images/bg.jpg');
+    background-image: url('../images/bg.jpg');
     background-size: cover; 
     background-repeat: no-repeat; 
     background-position: center; 
@@ -373,10 +375,10 @@ button:hover {
 
 <header class="header">
         <nav class="navbar">
-        <img class="FPlogo-image" src="images/FloodPingLogo.png" alt="Description of the image">  
+        <img class="FPlogo-image" src="../images/FloodPingLogo.png" alt="Description of the image">  
             <h2 class="logo">Floodping</h2>
             <ul class="links">
-                <li><a href="landingpage.php">HOME</a></li>
+                <li><a href="/floodping/HOME/landingpage.php">HOME</a></li>
                 <li><a href="#">LIVESTREAM</a></li>
                 <li><a href="#emergency">ABOUT</a></li>
                 <li><a href="#contact">CONTACT</a></li>
