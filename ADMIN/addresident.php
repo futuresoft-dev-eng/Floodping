@@ -15,6 +15,8 @@ $healthStatusQuery = "SELECT category_id, category_value FROM categories WHERE c
 $healthStatusResult = mysqli_query($conn, $healthStatusQuery);
 
 $isResidentAdded = false; 
+$errorMessage = "";
+
 
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -54,8 +56,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "Error uploading profile photo.";
             }
         }
-
-        // Insert new resident's information into the residents table
+        try {
+        // Insert new resident to residents table
         $sql = "INSERT INTO residents (first_name, middle_name, last_name, suffix, sex_id, date_of_birth, mobile_number, email_address, civil_status_id, socioeconomic_category_id, health_status_id, house_lot_number, street_subdivision_name, barangay, municipality, account_status_id, profile_photo_path)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -63,12 +65,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("ssssissssssssssss", $first_name, $middle_name, $last_name, $suffix, $sex, $date_of_birth, $mobile_number, $email_address, $civil_status, $socioeconomic_category, $health_status, $house_lot_number, $street_subdivision_name, $barangay, $municipality, $account_status, $profile_photo_path);
 
         if ($stmt->execute()) {
-            $isResidentAdded = true; // Set success flag
+            $isResidentAdded = true; 
         } else {
-            echo "Error: " . $stmt->error;
+            throw new Exception($stmt->error);
         }
 
         $stmt->close();
+    } catch (Exception $e) {
+        $errorMessage = $e->getMessage();
+    }
     }
 }
 
@@ -355,6 +360,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <div class="profile-info">
         <h3>Personal Information</h3>
+      
+        <?php if (!empty($errorMessage)): ?>
+            <div style="color: red; font-weight: bold; margin-bottom: 20px;">
+                <?php echo htmlspecialchars($errorMessage); ?>
+            </div>
+        <?php endif; ?>
+
         <span id="error-message" style="color: red; display: none;">Please fill in all required fields.</span>
 
                 <div class="info-group">
