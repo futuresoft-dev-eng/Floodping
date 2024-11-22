@@ -1,7 +1,6 @@
 <?php
 include_once('../adminsidebar.php');
-include_once('../db/connection.php');
-
+include_once('../db/db_conn.php');
 $resident_id = isset($_GET['resident_id']) ? $_GET['resident_id'] : null;
 
 if ($resident_id) {

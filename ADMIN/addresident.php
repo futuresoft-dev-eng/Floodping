@@ -1,7 +1,6 @@
 <?php
 include_once('../adminsidebar.php');
-include_once('../db/connection.php');
-
+include_once('../db/db_conn.php');
 // Fetch options from categories table
 $sexQuery = "SELECT category_id, category_value FROM categories WHERE category_type = 'sex'";
 $sexResult = mysqli_query($conn, $sexQuery);

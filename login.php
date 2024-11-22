@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db_conn.php';
+include_once('../db/db_conn.php');
 
 // get current time, date, and day
 date_default_timezone_set("Asia/Manila"); 
