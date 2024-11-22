@@ -7,7 +7,7 @@ require '/xampp/htdocs/FloodPing/phpmailer/src/Exception.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-include 'db_conn.php';
+include_once('../db/db_conn.php');
 session_start();
 
 if (isset($_SESSION['user_id'])) {
