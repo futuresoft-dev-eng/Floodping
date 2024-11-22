@@ -112,6 +112,10 @@ body {
     background: #F5F5F5;;
 }
 
+#welcome-text {
+    margin-left: 0px;
+}
+
 .privacy-policy h1 {
     font-size: 40px;
     font-weight: 500;
@@ -130,6 +134,7 @@ body {
     font-size: 14px;
     margin-bottom: 10px;
     color: #333;
+    margin-left: 55px;
 }
 
 .privacy-policy ul {
@@ -140,6 +145,7 @@ body {
 
 .privacy-policy li {
     margin-bottom: 5px;
+    margin-left: 20px;
 }
 
 .privacy-policy a {
@@ -263,7 +269,7 @@ body {
     <div class="privacy-policy">
         <p class="last-updated">Last Updated: Friday, November 1, 2024</p>
         <h1 class="title">FloodPing | Privacy and Policy</h1>
-        <p>
+        <p id="welcome-text">
         <b><i>FloodPing</i></b> values your privacy and is committed to protecting your personal information. This Privacy Policy explains how we collect, use, and protect your data when you interact with our website, IoT-based flood monitoring system, and services.
         </p>
 
