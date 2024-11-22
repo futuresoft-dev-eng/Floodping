@@ -206,7 +206,7 @@ if (isset($error_message)): ?>
 <!-- map section -->
     <div class="map-section" id="map"> 
         <div class = "photo">
-          <img class="map-image" src="images/map.jpg" alt="Description of the image">   
+          <img class="map-image" src="../images/map.jpg" alt="Description of the image">   
     </div> 
 
     <div class="legend-container">
@@ -221,8 +221,8 @@ if (isset($error_message)): ?>
   <div class="partnership-section" id="partnership">
     <div class = "logo">
       <h2>LINKAGES AND PARTNERSHIP WITH:</h2>
-      <img class="brgylogo-image" src="images/brgy-logo.png" alt="Description of the image">   
-      <img class="qculogo-image" src="images/QCU-logo.png" alt="Description of the image">
+      <img class="brgylogo-image" src="../images/brgy-logo.png" alt="Description of the image">   
+      <img class="qculogo-image" src="../images/QCU-logo.png" alt="Description of the image">
     </div>
   </div>
   <br>
@@ -274,7 +274,7 @@ if (isset($error_message)): ?>
 <footer class="footer">
     <div class="footer-container">
         <div class="footer-logo">
-            <img src="images/FloodPingLogo.png" alt="FloodPing Logo">
+            <img src="../images/FloodPingLogo.png" alt="FloodPing Logo">
         </div>
         <div class="footer-links">
             <ul>
