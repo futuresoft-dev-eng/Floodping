@@ -9,7 +9,7 @@ include_once('../db/db_conn.php');
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <style>
     .main-content {
-        margin-left: 10px; padding: 20px;
+        margin-left: 30px; padding: 20px;
     }
     .container {
         max-width: 100%;
@@ -144,7 +144,6 @@ include_once('../db/db_conn.php');
         </form>
         
            <!-- Filter -->
-            <label for="statusFilter">Filter by Status:</label>
             <select id="statusFilter">
                 <option value="">All</option>
                 <?php
