@@ -1,5 +1,11 @@
 {
     "require": {
-        "phpoffice/phpspreadsheet": "^3.4"
+        "phpoffice/phpspreadsheet": "^3.4",
+        "infobip/infobip-api-php-client": "^5.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Infobip\\": "infobip-api-php-sdk/Infobip/"
+        }
     }
 }

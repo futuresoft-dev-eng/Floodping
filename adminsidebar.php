@@ -207,6 +207,7 @@
             .main-content {
                 margin-left: 0;
                 padding-top: 50px;
+                margin-top: 50px
             }
         }
 

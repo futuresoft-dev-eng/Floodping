@@ -80,11 +80,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
                 $insertQuery->execute();
             }
         }
-
-        echo "File imported successfully!";
-    } catch (Exception $e) {
-        die("Error loading file: " . $e->getMessage());
-    }
+      header("Location: accountservices.php?message=File+imported+successfully");
+      exit();
+  } catch (Exception $e) {
+      die("Error loading file: " . $e->getMessage());
+  }
 } else {
-    die("No file uploaded.");
+  die("No file uploaded.");
 }
