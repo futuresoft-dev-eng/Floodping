@@ -86,6 +86,7 @@ $conn->close();
         <input type="email" name="email" required placeholder="User ID"><br>
         <label>Password:</label>
         <input type="password" name="password" required placeholder="Password"><br>
+        <a href="forgot_password.php">Forgot Password</a>
         <button type="submit">Log in</button>
     </form>
     <?php if ($error): ?>
