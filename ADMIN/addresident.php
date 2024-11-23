@@ -22,12 +22,36 @@ $errorMessage = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $required_fields = ['first_name', 'last_name', 'sex', 'date_of_birth', 'mobile_number', 'email_address', 'civil_status', 'socioeconomic_category', 'health_status', 'house_lot_number', 'street_subdivision_name'];
     $missing_fields = [];
+    $errorMessage = ""; 
 
     foreach ($required_fields as $field) {
         if (empty($_POST[$field])) {
             $missing_fields[] = $field;
         }
     }
+
+      // Mobile number validation
+      $mobile_number = $_POST['mobile_number'];
+      if (!preg_match('/^09\d{9}$/', $mobile_number)) {
+          $errorMessage = "Invalid mobile number. Must be 11 digits and start with 09.";
+      }
+
+        // Email address validation
+        $email_address = $_POST['email_address'];
+        if (!preg_match('/^[a-zA-Z0-9._%+-]+@gmail\.com$/', $email_address)) {
+            $errorMessage = "Invalid email address. Must end with @gmail.com.";
+        }
+
+        // Age validation
+        $date_of_birth = $_POST['date_of_birth'];
+        $dob = new DateTime($date_of_birth);
+        $today = new DateTime();
+        $age = $today->diff($dob)->y;
+
+        if ($age < 18) {
+            $errorMessage = "Invalid age. Resident must be at least 18 years old.";
+        }
+
 
     if (empty($missing_fields)) {
         $first_name = $_POST['first_name'];
@@ -56,6 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "Error uploading profile photo.";
             }
         }
+        if (empty($errorMessage)) {
         try {
         // Insert new resident to residents table
         $sql = "INSERT INTO residents (first_name, middle_name, last_name, suffix, sex_id, date_of_birth, mobile_number, email_address, civil_status_id, socioeconomic_category_id, health_status_id, house_lot_number, street_subdivision_name, barangay, municipality, account_status_id, profile_photo_path)
@@ -75,6 +100,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errorMessage = $e->getMessage();
     }
     }
+}
 }
 
 ?>
@@ -245,7 +271,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             fileInput.onchange = function() {
                 if (fileInput.files.length > 0) {
-                    // Display the selected image without submitting the form
                     const previewImage = document.querySelector('.profile-photo img');
                     const fileReader = new FileReader();
                     fileReader.onload = function(event) {
