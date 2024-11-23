@@ -432,11 +432,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                     <div class="info-item">
                         <label for="mobile_number">Mobile Number:</label>
-                        <input type="text" name="mobile_number" title="Mpoile number must be exactly 11 digits" required maxlength="11" placeholder="09_ _ _ _ _ _ _ _ _" required>
+                        <input type="text" name="mobile_number" title="Mobile number must be exactly 11 digits" required maxlength="11" placeholder="09_ _ _ _ _ _ _ _ _" required>
                     </div>
                     <div class="info-item">
                         <label for="email_address">Email Address:</label>
-                        <input type="email" name="email_address"  placeholder="example@gmail.com" required>
+                        <input type="email" name="email_address"  title="Email must be valid" placeholder="example@gmail.com" required>
                     </div>
                     <div class="info-item">
                         <label for="civil_status">Civil Status:</label>

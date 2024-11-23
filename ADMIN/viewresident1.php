@@ -32,6 +32,10 @@ if ($resident_id) {
 }
 $button_label = $account_status === 'Active' ? 'DEACTIVATE' : 'REACTIVATE';
 $button_action = $account_status === 'Active' ? 'deactivate' : 'reactivate';
+
+// Initialize an empty array for error messages
+$errors = [];
+
 //  update resident
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_resident'])) {
     $first_name = ucfirst(strtolower($_POST['first_name']));
@@ -50,6 +54,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_resident'])) {
     $barangay = ucfirst(strtolower($_POST['barangay']));
     $municipality = ucfirst(strtolower($_POST['municipality']));
     $profile_photo_path = $resident['profile_photo_path']; 
+
+    // Mobile number validation
+    if (empty($mobile_number) || !preg_match('/^09\d{9}$/', $mobile_number)) {
+        $errors[] = "Invalid mobile number. It must start with '09' and contain 11 digits.";
+    }
+
+    // Email address validation
+    if (empty($email_address) || !preg_match('/^[a-zA-Z0-9._%+-]+@gmail\.com$/', $email_address)) {
+        $errors[] = "Invalid email address. It must end with '@gmail.com'.";
+    }
+
+    // Age validation
+    if (empty($date_of_birth)) {
+        $errors[] = "Date of birth is required.";
+    } else {
+        $dob = new DateTime($date_of_birth);
+        $today = new DateTime();
+        $age = $today->diff($dob)->y;
+        if ($age < 18) {
+            $errors[] = "Invalid age. Resident must be at least 18 years old.";
+        }
+    }
+
+    // If there are errors, display them and stop execution
+    if (!empty($errors)) {
+        foreach ($errors as $error) {
+            echo "<p style='color: red;'>{$error}</p>";
+        }
+        exit;
+    }
+    
 
     // photo upload
     if (!empty($_FILES['profile_photo']['name'])) {
@@ -523,6 +558,12 @@ function confirmUpdate(event) {
 </form>
 <div class="profile-info">
     <h3>Personal Information</h3>
+
+    <?php if (!empty($errorMessage)): ?>
+            <div style="color: red; font-weight: bold; margin-bottom: 20px;">
+                <?php echo htmlspecialchars($errorMessage); ?>
+            </div>
+        <?php endif; ?> 
     <form method="POST" id="residentUpdateForm">
     <div class="info-group">
             <!-- First row -->
