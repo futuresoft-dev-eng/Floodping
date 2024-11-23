@@ -276,16 +276,12 @@ $conn->close();
 
         <p>Address</p>
         <label for="city">Municipality:</label>
-        <select name="city" required>
-            <option value="Quezon City">Quezon City</option>
-        </select>
+        <input type="text" name="city" value="Quezon City" readonly>
         <br>
 
-        <label for="barangay">Barangay:</label>
-        <select name="barangay" required>
-            <option value="Bagbag">Bagbag</option>
-        </select>
-        <br>
+<label for="barangay">Barangay:</label>
+<input type="text" name="barangay" value="Bagbag" readonly>
+<br>
 
         <label for="house_lot_number">House/Lot Number:</label>
         <input type="text" name="house_lot_number" required placeholder="House/Lot Number" oninput="capitalizeInput(event)">
