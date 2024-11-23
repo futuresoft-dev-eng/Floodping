@@ -43,9 +43,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['full_name'] = $user['first_name'] . ' ' . $user['last_name'];
                     $_SESSION['role'] = $user['role'];
                     if ($user['role'] === 'Admin') {
-                        header("Location: add_user.php");
+                        header("Location: ../ADMIN/admindashboard.php");
                     } else if ($user['role'] === 'Local Authority') {
-                        header("Location: authority_dashboard.php");
+                        header("Location: ../LA/authority_dashboard.php");
                     }
                     exit();
                 } else {

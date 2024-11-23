@@ -221,7 +221,7 @@
 <body>
   <!-- Top bar -->
 <div class="top-bar d-md-none">
-    <a href="/floodping/LA/la.php" class="nav-link">
+    <a href="/floodping/LA/authority_dashboard.php" class="nav-link">
         <span class="material-symbols-rounded">dashboard</span>
     </a>
     <a href="/floodping/LA/reports.php" class="nav-link">
@@ -264,7 +264,7 @@
         <div class="sidebar-content">
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
-                    <a href="/floodping/LA/la.php" class="nav-link">
+                    <a href="/floodping/LA/authority_dashboard.php" class="nav-link">
                         <span class="material-symbols-rounded">dashboard</span> <span class="icon-text">Dashboard</span>
                     </a>
                 </li>
