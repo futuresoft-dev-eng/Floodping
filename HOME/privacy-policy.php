@@ -246,7 +246,7 @@ body {
 
 <header class="header">
         <nav class="navbar">
-        <img class="FPlogo-image" src="images/FloodPingLogo.png" alt="Description of the image">  
+        <img class="FPlogo-image" src="../images/FloodPingLogo.png" alt="Description of the image">  
             <h2 class="logo">Floodping</h2>
             <ul class="links">
                 <li><a href="landingpage.php">HOME</a></li>
@@ -335,7 +335,7 @@ body {
 <footer class="footer">
     <div class="footer-container">
         <div class="footer-logo">
-            <img src="images/FloodPingLogo.png" alt="FloodPing Logo">
+            <img src="../images/FloodPingLogo.png" alt="FloodPing Logo">
         </div>
         <div class="footer-links">
             <ul>

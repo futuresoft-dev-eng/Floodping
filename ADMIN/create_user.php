@@ -1,6 +1,5 @@
 <?php
 include_once('../adminsidebar.php');
-
 include_once('../db/db_conn.php');
 function generatePassword($len = 12) {
     $lowercase = "abcdefghijklmnopqrstuvwxyz";

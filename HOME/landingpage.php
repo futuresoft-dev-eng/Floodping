@@ -279,7 +279,7 @@ if (isset($error_message)): ?>
         <div class="footer-links">
             <ul>
                 <li><a href="privacy-policy.php">Privacy Policy</a></li>
-                <li><a href="terms">Terms & Conditions</a></li>
+                <li><a href="terms-conditions.php">Terms & Conditions</a></li>
                 <li class="faq"><a href="FAQ.php">FAQ</a></li>
             </ul>
         </div>
