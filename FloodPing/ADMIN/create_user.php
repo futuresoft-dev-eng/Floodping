@@ -270,7 +270,7 @@ $conn->close();
 
         <label>Email:</label>
         <input 
-        type="email" name="email" pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$" required placeholder="example@gmail.com" title="Please enter a valid Gmail address (e.g., example@gmail.com)" id="emailInput">
+        type="email" name="email" pattern="[a-zA-Z0-9._%+-ñÑ]+@gmail\.com" required placeholder="example@gmail.com" id="emailInput">
         <br>
         <span id="emailError" style="color:red; display:none;">Please follow the required format (e.g., example@gmail.com).</span>
 
