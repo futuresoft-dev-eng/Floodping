@@ -145,44 +145,44 @@ if (isset($_SESSION['full_name']) && isset($_SESSION['role'])) {
         display: none;
     }
 
-        .session-role {
-            display: none;
+    .session-role {
+        display: none;
     
     }
 
     .button-container {
-    display: flex;
-    margin: 20px 0;
-    position: absolute;
-    top: 90px;
-    left: 300px;
-    border-radius: none !important;
+        display: flex;
+        margin: 20px 0;
+        position: absolute;
+        top: 90px;
+        left: 300px;
+        border-radius: none !important;
 }
 
-.navigation-btn {
-    min-width: 580px;
-    height: 40px;
-    background-color: #FFFFFF;
+    .navigation-btn {
+        min-width: 580px;
+        height: 40px;
+        background-color: #FFFFFF;
         color: #02476A;
         border: 1px solid #ccc;
-    border-radius: none !important;
-    border-top-left-radius: 0px;
+        border-radius: none !important;
+        border-top-left-radius: 0px;
         border-bottom-left-radius: 0px;
         border-top-right-radius: 0px;
         border-bottom-right-radius: 0px;
-    font-size: 14px;
-    text-transform: uppercase;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: background-color 0.3s ease;
-}
+        font-size: 14px;
+        text-transform: uppercase;
+        cursor: pointer;
+        text-transform: uppercase;
+        transition: background-color 0.3s ease;
+    }
 
-.navigation-btn.active {
-    background-color: #4597C0; 
-    color: white;
-}
+    .navigation-btn.active {
+        background-color: #4597C0; 
+        color: white;
+    }
 
-#userAccountsBtn {
+    #userAccountsBtn {
         border-top-left-radius: 10px;
         border-bottom-left-radius: 10px;
     }
@@ -194,9 +194,8 @@ if (isset($_SESSION['full_name']) && isset($_SESSION['role'])) {
         color: #02476A;
         border: 1px solid #ccc;
     }
-
-
 </style>
+    
 <body>
     <div class="title">
 <h3>USER MANAGEMENT</h3>
