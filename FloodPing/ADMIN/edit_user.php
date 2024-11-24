@@ -46,14 +46,18 @@ include 'update_user.php';
 
    <form method="POST" enctype="multipart/form-data" action="update_user.php?user_id=<?= $user['user_id'] ?>">
 
-    <p>Profile Photo</p>
-    <?php if ($user['profile_photo']) : ?>
-        <img id="profilePhotoPreview" src="<?= htmlspecialchars($user['profile_photo']) ?>" alt="Profile Photo" style="width:100px; height:100px;">
-    <?php else : ?>
-        <img id="profilePhotoPreview" src="default_image.jpg" alt="Profile Photo" style="width:100px; height:100px;">
-    <?php endif; ?>
-    <br>
-    <input type="file" name="profile_photo" id="profilePhotoInput"><br><br>
+<p>Profile Photo</p>
+<?php if ($user['profile_photo']) : ?>
+    <!-- Display existing image if exists in the uploads folder -->
+    <img id="profilePhotoPreview" src="../uploads/<?= htmlspecialchars($user['profile_photo']) ?>" alt="Profile Photo" style="width:100px; height:100px;">
+<?php else : ?>
+    <!-- Default image if no profile photo exists -->
+    <img id="profilePhotoPreview" src="default_image.jpg" alt="Profile Photo" style="width:100px; height:100px;">
+<?php endif; ?>
+<br>
+<input type="file" name="profile_photo" id="profilePhotoInput" onchange="previewImage(event)"><br><br>
+
+
 
     <label>User ID</label>
     <input type="text" value="<?= htmlspecialchars($user['user_id']) ?>" readonly class="readonly-field"><br>
@@ -115,9 +119,8 @@ include 'update_user.php';
     <label>Work Time Schedule</label>
     <input type="text" name="shift" value="<?= htmlspecialchars($user['shift']) ?>" readonly class="readonly-field"><br>
 
-    <button type="submit">Update</button>
+    <button type="submit">UPDATE</button>
 </form>
-
 
 
 
@@ -156,6 +159,9 @@ include 'update_user.php';
         <button onclick="closeModal('unlockModal')">NO</button>
     </div>
 </div>
+
+
+
 
 
 
@@ -254,6 +260,27 @@ function confirmStatusChange(action) {
         }
         window.onload = capitalizePlaceholder;
     </script>
+
+    <script>
+    // Preview image before uploading
+    function previewImage(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('profilePhotoPreview');
+
+        // Check if a file is selected
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result; 
+            };
+            reader.readAsDataURL(file); 
+        } else {
+            preview.src = "default_image.jpg";  
+        }
+    }
+</script>
+
+
 
 
 
