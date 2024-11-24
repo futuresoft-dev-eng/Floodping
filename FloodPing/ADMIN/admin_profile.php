@@ -230,9 +230,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </head>
 <body>
-    <?php if (isset($_GET['status']) && $_GET['status'] == 'success'): ?>
-        <p class="success-message">Profile information has been updated successfully.</p>
-    <?php endif; ?>
+<?php if (isset($_GET['status']) && $_GET['status'] == 'success'): ?>
+    <p id="successMessage" class="success-message" style="transition: opacity 0.5s;">
+        Profile information has been updated successfully.
+    </p>
+    <script>
+        setTimeout(function () {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.opacity = '0'; 
+            setTimeout(function () {
+                successMessage.style.display = 'none'; 
+            }, 500); 
+        }, 2000); 
+    </script>
+<?php endif; ?>
+
     <h3>My Account</h3>
     <p>My Profile</p>
     
