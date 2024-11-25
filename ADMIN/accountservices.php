@@ -1,6 +1,6 @@
 <?php
 include_once('../adminsidebar.php');
-include_once('../db/connection.php');
+include_once('../db/db_conn.php');
 ?>
 <title>Residents List</title>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
@@ -9,7 +9,7 @@ include_once('../db/connection.php');
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <style>
     .main-content {
-        margin-left: 10px; padding: 20px;
+        margin-left: 30px; padding: 20px;
     }
     .container {
         max-width: 100%;
@@ -144,7 +144,6 @@ include_once('../db/connection.php');
         </form>
         
            <!-- Filter -->
-            <label for="statusFilter">Filter by Status:</label>
             <select id="statusFilter">
                 <option value="">All</option>
                 <?php
@@ -159,6 +158,7 @@ include_once('../db/connection.php');
             </select>
         </div>
         <?php
+// Display success message
 if (isset($_GET['message'])) {
     echo "
     <div id='temporaryMessage' style='display: flex; align-items: center; justify-content: center;
@@ -185,6 +185,34 @@ if (isset($_GET['message'])) {
     ";
 }
 
+// Display error message
+if (isset($_GET['error'])) {
+    echo "
+    <div id='errorMessage' style='display: flex; align-items: center; justify-content: center;
+        margin: 20px auto; max-width: 20%; border: 2px solid #E74C3C; background-color: #FDEDEC;
+        color: #E74C3C; padding: 5px 20px; border-radius: 8px; font-size: 16px;'>
+        <span style='font-size: 24px; margin-right: 10px;'>✖</span>
+        <span>" . htmlspecialchars($_GET['error']) . "</span>
+    </div>
+    <script>
+        setTimeout(() => {
+            const messageDiv = document.getElementById('errorMessage');
+            if (messageDiv) {
+                messageDiv.style.transition = 'opacity 2s';
+                messageDiv.style.opacity = '0';
+            }
+        }, 2000);
+        setTimeout(() => {
+            const messageDiv = document.getElementById('errorMessage');
+            if (messageDiv) {
+                messageDiv.remove();
+            }
+        }, 4000);
+    </script>
+    ";
+}
+
+// Display delete status message
 if (isset($_GET['delete_status'])) {
     echo "
     <div id='deleteMessage' style='display: flex; align-items: center; justify-content: center;
@@ -211,6 +239,7 @@ if (isset($_GET['delete_status'])) {
     ";
 }
 ?>
+
 
         <!-- Table -->
         <div class="table-container">

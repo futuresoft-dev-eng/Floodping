@@ -1,7 +1,6 @@
 <?php
 include_once('../adminsidebar.php');
-include_once('../db/connection.php');
-
+include_once('../db/db_conn.php');
 $resident_id = isset($_GET['resident_id']) ? $_GET['resident_id'] : null;
 
 if ($resident_id) {
@@ -216,7 +215,7 @@ function confirmUpdate(event) {
             // Prevent form submission if no changes were made
             document.getElementById('residentUpdateForm').addEventListener('submit', function(event) {
                 let formChanged = false;
-
+   
                 // Check if any input or select field has been changed
                 document.querySelectorAll('input, select').forEach(input => {
                     if (input.value !== input.defaultValue) {

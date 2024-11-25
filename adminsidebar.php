@@ -172,10 +172,12 @@
             font-size: 24px;
             color: #02476A;
             cursor: pointer;
+            transition: color 0.3s;
         }
 
         .logout-button:hover {
-            color: #02476A;
+            color: white;
+            background-color: #02476A;
         }
 
         h2 {
@@ -184,6 +186,7 @@
             font-weight: 500;
             margin: 100px 0 0 10px;
         }
+        
 
         /* Responsive  */
         @media (max-width: 992px) {
@@ -222,7 +225,7 @@
 <body>
     <!-- Top bar  -->
     <div class="top-bar d-md-none">
-        <a href="/floodping/ADMIN/admin.php" class="nav-link">
+        <a href="/floodping/ADMIN/admindashboard.php" class="nav-link">
             <span class="material-symbols-rounded">dashboard</span>
         </a>
         <a href="/floodping/ADMIN/activitylog.php" class="nav-link">
@@ -261,7 +264,7 @@
         <div class="sidebar-content">
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
-                    <a href="/floodping/ADMIN/admin.php" class="nav-link">
+                    <a href="/floodping/ADMIN/admindashboard.php" class="nav-link">
                         <span class="material-symbols-rounded">dashboard</span> <span class="icon-text">Dashboard</span>
                     </a>
                 </li>
@@ -303,7 +306,9 @@
                     <div class="user-role">Admin</div>
                 </div>
             </a>
-            <span class="material-symbols-rounded logout-button">chevron_right</span>
+            <span class="material-symbols-rounded logout-button" onclick="window.location.href='http://localhost/floodping/HOME/login.php';">
+            chevron_right
+        </span>
         </div>
     </nav>
 

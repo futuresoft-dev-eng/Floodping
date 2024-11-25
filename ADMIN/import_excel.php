@@ -1,6 +1,6 @@
 <?php
-include_once('../db/connection.php');
-require '../vendor/autoload.php'; 
+include_once('../db/db_conn.php');
+require '../vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -9,7 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
     $allowedTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
 
     if (!in_array($file['type'], $allowedTypes)) {
-        die("Invalid file type. Only .xls and .xlsx files are allowed.");
+        header("Location: accountservices.php?error=Invalid+file+type.+Only+.xls+and+.xlsx+files+are+allowed.");
+        exit();
     }
 
     try {
@@ -18,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         $data = $sheet->toArray();
 
         foreach ($data as $index => $row) {
-            if ($index === 0) continue; 
+            if ($index === 0) continue; // Skip the header row
 
             $resident_id = $row[0];
             $first_name = $row[1];
@@ -32,12 +33,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
             $street_subdivision_name = $row[9];
             $barangay = $row[10] ?? 'Bagbag';
             $municipality = $row[11] ?? 'Quezon City';
-            $account_status_id = $row[12] ?? 1; 
+            $account_status_id = $row[12] ?? 1;
             $civil_status_id = $row[13];
             $health_status_id = $row[14];
             $sex_id = $row[15];
             $socioeconomic_category_id = $row[16];
 
+            // Validate mobile number
+            if (!preg_match('/^09\d{9}$/', $mobile_number)) {
+                header("Location: accountservices.php?error=Invalid+mobile+number.+Must+start+with+09+and+be+11+digits.");
+                exit();
+            }
+
+            // Validate email address
+            if (!preg_match('/^[a-zA-Z0-9._%+-]+@gmail\.com$/', $email_address)) {
+                header("Location: accountservices.php?error=Invalid+email+address.+Must+end+with+@gmail.com.");
+                exit();
+            }
+
+            // Validate age
+            $dob = new DateTime($date_of_birth);
+            $today = new DateTime();
+            $age = $today->diff($dob)->y;
+            if ($age < 18) {
+                header("Location: accountservices.php?error=Invalid+age.+Resident+must+be+at+least+18+years+old.");
+                exit();
+            }
+
+            // Validate foreign key columns
             $fkColumns = [
                 'civil_status_id' => $civil_status_id,
                 'health_status_id' => $health_status_id,
@@ -53,11 +76,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
                     $fkResult = $checkFKQuery->get_result();
 
                     if ($fkResult->num_rows === 0) {
-                        die("Error: Invalid $columnName value '$value'. Please ensure it exists in the categories table.");
+                        header("Location: accountservices.php?error=Invalid+$columnName+value+$value.");
+                        exit();
                     }
                 }
             }
 
+            // Check for duplicate resident_id
             $checkQuery = $conn->prepare("SELECT 1 FROM residents WHERE resident_id = ?");
             $checkQuery->bind_param("s", $resident_id);
             $checkQuery->execute();
@@ -80,11 +105,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
                 $insertQuery->execute();
             }
         }
-      header("Location: accountservices.php?message=File+imported+successfully");
-      exit();
-  } catch (Exception $e) {
-      die("Error loading file: " . $e->getMessage());
-  }
+
+        header("Location: accountservices.php?message=File+imported+successfully");
+        exit();
+    } catch (Exception $e) {
+        header("Location: accountservices.php?error=Error+loading+file:+".urlencode($e->getMessage()));
+        exit();
+    }
 } else {
-  die("No file uploaded.");
+    header("Location: accountservices.php?error=No+file+uploaded.");
+    exit();
 }

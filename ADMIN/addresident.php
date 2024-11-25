@@ -1,7 +1,6 @@
 <?php
 include_once('../adminsidebar.php');
-include_once('../db/connection.php');
-
+include_once('../db/db_conn.php');
 // Fetch options from categories table
 $sexQuery = "SELECT category_id, category_value FROM categories WHERE category_type = 'sex'";
 $sexResult = mysqli_query($conn, $sexQuery);
@@ -16,17 +15,43 @@ $healthStatusQuery = "SELECT category_id, category_value FROM categories WHERE c
 $healthStatusResult = mysqli_query($conn, $healthStatusQuery);
 
 $isResidentAdded = false; 
+$errorMessage = "";
+
 
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $required_fields = ['first_name', 'last_name', 'sex', 'date_of_birth', 'mobile_number', 'email_address', 'civil_status', 'socioeconomic_category', 'health_status', 'house_lot_number', 'street_subdivision_name'];
     $missing_fields = [];
+    $errorMessage = ""; 
 
     foreach ($required_fields as $field) {
         if (empty($_POST[$field])) {
             $missing_fields[] = $field;
         }
     }
+
+      // Mobile number validation
+      $mobile_number = $_POST['mobile_number'];
+      if (!preg_match('/^09\d{9}$/', $mobile_number)) {
+          $errorMessage = "Invalid mobile number. Must be 11 digits and start with 09.";
+      }
+
+        // Email address validation
+        $email_address = $_POST['email_address'];
+        if (!preg_match('/^[a-zA-Z0-9._%+-]+@gmail\.com$/', $email_address)) {
+            $errorMessage = "Invalid email address. Must end with @gmail.com.";
+        }
+
+        // Age validation
+        $date_of_birth = $_POST['date_of_birth'];
+        $dob = new DateTime($date_of_birth);
+        $today = new DateTime();
+        $age = $today->diff($dob)->y;
+
+        if ($age < 18) {
+            $errorMessage = "Invalid age. Resident must be at least 18 years old.";
+        }
+
 
     if (empty($missing_fields)) {
         $first_name = $_POST['first_name'];
@@ -55,8 +80,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "Error uploading profile photo.";
             }
         }
-
-        // Insert new resident's information into the residents table
+        if (empty($errorMessage)) {
+        try {
+        // Insert new resident to residents table
         $sql = "INSERT INTO residents (first_name, middle_name, last_name, suffix, sex_id, date_of_birth, mobile_number, email_address, civil_status_id, socioeconomic_category_id, health_status_id, house_lot_number, street_subdivision_name, barangay, municipality, account_status_id, profile_photo_path)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -64,13 +90,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("ssssissssssssssss", $first_name, $middle_name, $last_name, $suffix, $sex, $date_of_birth, $mobile_number, $email_address, $civil_status, $socioeconomic_category, $health_status, $house_lot_number, $street_subdivision_name, $barangay, $municipality, $account_status, $profile_photo_path);
 
         if ($stmt->execute()) {
-            $isResidentAdded = true; // Set success flag
+            $isResidentAdded = true; 
         } else {
-            echo "Error: " . $stmt->error;
+            throw new Exception($stmt->error);
         }
 
         $stmt->close();
+    } catch (Exception $e) {
+        $errorMessage = $e->getMessage();
     }
+    }
+}
 }
 
 ?>
@@ -241,7 +271,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             fileInput.onchange = function() {
                 if (fileInput.files.length > 0) {
-                    // Display the selected image without submitting the form
                     const previewImage = document.querySelector('.profile-photo img');
                     const fileReader = new FileReader();
                     fileReader.onload = function(event) {
@@ -356,6 +385,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <div class="profile-info">
         <h3>Personal Information</h3>
+      
+        <?php if (!empty($errorMessage)): ?>
+            <div style="color: red; font-weight: bold; margin-bottom: 20px;">
+                <?php echo htmlspecialchars($errorMessage); ?>
+            </div>
+        <?php endif; ?>
+
         <span id="error-message" style="color: red; display: none;">Please fill in all required fields.</span>
 
                 <div class="info-group">
@@ -374,7 +410,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                     <div class="info-item">
                         <label for="suffix">Suffix: (Optional)</label>
-                        <input type="text" name="suffix" placeholder="Enter suffix">
+                        <input type="text" name="suffix" placeholder="Jr Sr II III IV">
                     </div>
 
                     <div class="info-item">
@@ -396,11 +432,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                     <div class="info-item">
                         <label for="mobile_number">Mobile Number:</label>
-                        <input type="text" name="mobile_number"placeholder="Enter mobile number" required>
+                        <input type="text" name="mobile_number" title="Mobile number must be exactly 11 digits" required maxlength="11" placeholder="09_ _ _ _ _ _ _ _ _" required>
                     </div>
                     <div class="info-item">
                         <label for="email_address">Email Address:</label>
-                        <input type="email" name="email_address"  placeholder="Enter email address" required>
+                        <input type="email" name="email_address"  title="Email must be valid" placeholder="example@gmail.com" required>
                     </div>
                     <div class="info-item">
                         <label for="civil_status">Civil Status:</label>
