@@ -378,7 +378,7 @@ button:hover {
         <img class="FPlogo-image" src="../images/FloodPingLogo.png" alt="Description of the image">  
             <h2 class="logo">Floodping</h2>
             <ul class="links">
-                <li><a href="/floodping/HOME/landingpage.php">HOME</a></li>
+                <li><a href="/floodping/HOME/index.php">HOME</a></li>
                 <li><a href="#">LIVESTREAM</a></li>
                 <li><a href="#emergency">ABOUT</a></li>
                 <li><a href="#contact">CONTACT</a></li>
