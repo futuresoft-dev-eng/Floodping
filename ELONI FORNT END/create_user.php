@@ -161,6 +161,9 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="/floodping/images/Floodpinglogo.png" type="image/png">
     <title>Create New User</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -175,12 +178,12 @@ $conn->close();
         }
      
         .title-container h3 {
-            width: 1116px;
+            width: 1220px;
             height: 50px;
             background-color: #4597C0;
             color: #FFFFFF;
             font-size: 20px;
-            margin: 80px 0px 0px 65px;
+            margin: 80px 0px 0px 0px;
             position: a-zA-Z0-9;
             text-transform: uppercase;
             padding: 10px;
@@ -199,7 +202,7 @@ $conn->close();
             cursor: pointer;
             text-decoration: none; 
             z-index: 100;
-            margin: 20px 0px 0px 48px;
+            margin: 20px 0px 0px -17px;
             position: absolute;
         }   
 
@@ -213,8 +216,8 @@ $conn->close();
         }
         
         .profile-info {
-            width: 80%;
-            margin: 290px 0px 0px -225px !important;
+            width: 70%;
+            margin: 70px 0px 0px -290px !important;
             position: absolute;
 
         }
@@ -233,10 +236,31 @@ $conn->close();
             position: absolute;
             width: 90%;
         }
-        .info-item-id {
-            margin: -170px 0px 0px 270px;
+        .info-item-id  {
+            width: 130px;
+            margin: 80px 0px 0px 940px;
             position: absolute;
+            font-size: 14px;
         }
+
+        .info-item-id input  {
+            width: 130px;
+            height: 35px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin: 80px 0px 0px 100px;
+            position: absolute;
+            font-size: 14px;
+        }
+
+        #userID-title {
+            width: 100%;
+            margin: 122px 0px 0px 130px;
+            position: absolute;
+            font-size: 15px;
+            color: black;
+        }
+
 
         #address-title {
             position: absolute;
@@ -245,7 +269,8 @@ $conn->close();
 
         #address {
             margin: 25px 0px 0px -0px;
-            width: 100%; padding: 0px; 
+            width: 100%; 
+            padding: 0px; 
         }
 
         .profile-info h3 {
@@ -264,15 +289,15 @@ $conn->close();
         }
 
         #createUserButton {
-            font-size: 14px;
+            font-size: 18px;
             width: 17%;
-            height: 10%;
+            height: 9%;
             padding: 8px auto;
             border-radius: 5px;
             color: #FFFF;
             background-color: #59C447;
             text-transform: uppercase;
-            margin: 400px 0px 0px 900px;
+            margin: 420px 0px 0px 500px;
             position: absolute;
         }
 
@@ -285,7 +310,7 @@ $conn->close();
             color: white; 
             cursor: pointer;
             font-weight: normal;
-            margin: -65px 0px 0px 90px; 
+            margin: -65px 0px 0px 170px; 
             padding: 50px;
             position: absolute;
             min-width: 1000px !important;
@@ -294,16 +319,17 @@ $conn->close();
         #profilePreview {
             text-align: center; 
             cursor: pointer;
-            width: 250px; 
-            height: 200px; 
+            width: 200px; 
+            height: 150px; 
             border: 2px solid #02476A; 
             overflow: hidden; 
             display: inline-block; 
-            margin: 30px 0px 0px -780px;
+            margin: 100px 0px 0px 160px;
+            position: absolute;
         }
 
         #upload-icon {
-            margin: -20px 0px 0px 100px;
+            margin: -20px 0px 0px 180px;
             position: absolute;
             color: white;
             font-size: 30px;
@@ -317,6 +343,7 @@ $conn->close();
 
         #personal-info-title {
             margin-top: -50px;
+            width: 100%;
         }
 
         .info-group { 
@@ -340,7 +367,11 @@ $conn->close();
              border-radius: 4px; 
              font-size: 12px; 
              position: relative;
-        }  
+        } 
+        
+        .info-item p {
+            font-size: 20px;
+        }
 
         .sex-option {
             display: flex; 
@@ -480,7 +511,8 @@ $conn->close();
 <hr style="color: #ccc; width: 90%; position: absolute; margin: 70px 0px 0px -20px;">
     </div>
     <hr>
-        <div class="container">
+
+    <div class="container">
     <div class="title-container">
         <h3>PROFILE</h3>
         <form id="createUserForm" method="POST" action="" oninput="checkForm()" enctype="multipart/form-data">
@@ -498,7 +530,7 @@ $conn->close();
     <br>
         <div class="info-group">
         <div class="info-item-id">
-        <label>User ID</label>
+        <h3 id="userID-title">User ID</h3>
         <input type="text" value="<?= $user_id ?>" readonly>
         <br>
         </div>
@@ -585,9 +617,8 @@ $conn->close();
         <label for="street_subdivision_name">Street/Subdivision Name:</label>
         <input type="text" name="street_subdivision_name" required placeholder="Street/Subdivision Name" oninput="capitalizeInput(event)">
         </div>
-
+    
         <div class="info-item">
-        
         <p>Job Description</p>
         <label>Role</label>
         <select name="role" required>
