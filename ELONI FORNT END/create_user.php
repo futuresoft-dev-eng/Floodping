@@ -217,7 +217,7 @@ $conn->close();
         
         .profile-info {
             width: 70%;
-            margin: 70px 0px 0px -290px !important;
+            margin: 60px 0px 0px -290px !important;
             position: absolute;
 
         }
