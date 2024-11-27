@@ -1,13 +1,6 @@
 <?php
 session_start();
-include_once('../db/db_conn.php');
-
-
-// get current time, date, and day
-date_default_timezone_set("Asia/Manila"); 
-$current_time = date("h:i A"); 
-$current_date = date("F d, Y");
-$current_day = date("l"); // 
+include 'db_conn.php';
 
 $error = "";
 
@@ -43,9 +36,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['full_name'] = $user['first_name'] . ' ' . $user['last_name'];
                     $_SESSION['role'] = $user['role'];
                     if ($user['role'] === 'Admin') {
-                        header("Location: ../ADMIN/admindashboard.php");
+                        header("Location: add_user.php");
                     } else if ($user['role'] === 'Local Authority') {
-                        header("Location: ../LA/authority_dashboard.php");
+                        header("Location: authority_dashboard.php");
                     }
                     exit();
                 } else {
@@ -82,10 +75,10 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/floodping/images/Floodpinglogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <title>Login</title>
-    <link rel="icon" href="/floodping/images/Floodpinglogo.png" type="image/png">
-
 </head>
 
 <style>
@@ -99,7 +92,7 @@ $conn->close();
 body {
     height: 100vh;
     width: 100%;
-    background-image: url('../images/bg.jpg');
+    background-image: url('images/bg.jpg');
     background-size: cover; 
     background-repeat: no-repeat; 
     background-position: center; 
@@ -337,6 +330,7 @@ button:hover {
     margin: 10px 0px -20px 630px;
     position: absolute;
 }
+
 /* Responsive breakpoints */
 @media screen and (max-width: 768px) {
     .navbar {
@@ -375,10 +369,10 @@ button:hover {
 
 <header class="header">
         <nav class="navbar">
-        <img class="FPlogo-image" src="../images/FloodPingLogo.png" alt="Description of the image">  
+        <img class="FPlogo-image" src="images/FloodPingLogo.png" alt="Description of the image">  
             <h2 class="logo">Floodping</h2>
             <ul class="links">
-                <li><a href="/floodping/HOME/landingpage.php">HOME</a></li>
+                <li><a href="landingpage.php">HOME</a></li>
                 <li><a href="#">LIVESTREAM</a></li>
                 <li><a href="#emergency">ABOUT</a></li>
                 <li><a href="#contact">CONTACT</a></li>
@@ -392,9 +386,9 @@ button:hover {
 <body>
 <div class="login-container">
     <h3>Welcome to FloodPing!</h3>
-    <p id="current-time"> <?= $current_time; ?></p>
-    <p id="current-date"> <?= $current_date; ?></p>
-    <p id="current-day"><?= $current_day; ?></p> 
+    <p id="current-time"></p>
+    <p id="current-date"></p>
+    <p id="current-day"></p>
     <p id="glad-text">Glad to see you again! Login to your account below</p>
     <p id="welcome-text">Stay informed and stay safe as you monitor real-time water levels in your community. With FloodPing, you’re always one step ahead—receive timely alerts, check current flood status, and access essential updates to help protect you and those around you. 
         <br>
@@ -436,6 +430,35 @@ button:hover {
     }
     setInterval(updateTime, 1000);
     updateTime(); 
+
+    // Function to update the current time, date, and day
+    function updateDateTime() {
+        const now = new Date();
+
+        // Get the current time in 12-hour format
+        let hours = now.getHours();
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        const currentTime = `${hours}:${minutes} ${ampm}`;
+
+        // Get the current date in 'Month Day, Year' format
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const currentDate = now.toLocaleDateString('en-US', options);
+
+        // Get the current day in 'long' format
+        const currentDay = now.toLocaleDateString('en-US', { weekday: 'long' });
+
+        // Display the current time and date (with only one day)
+        document.getElementById('current-time').textContent = `${currentTime}`;
+        document.getElementById('current-date').textContent = `${currentDate}`;
+        document.getElementById('current-day').textContent = `${currentDay}`;
+    }
+
+    // Update the date and time immediately and every minute
+    updateDateTime();
+    setInterval(updateDateTime, 60000);
 </script>
 
 
