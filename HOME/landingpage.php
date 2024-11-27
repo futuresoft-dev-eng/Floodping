@@ -2,7 +2,7 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require '../vendor/autoload.php'; 
+require 'vendor/autoload.php'; 
 
 $success = false;
 
@@ -69,13 +69,12 @@ if (isset($error_message)): ?>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" />
-    <link rel="icon" href="/floodping/images/Floodpinglogo.png" type="image/png">
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=mark_email_read" />
 </head>
 
     <header class="header">
         <nav class="navbar">
-        <img class="FPlogo-image" src="../images/FloodPingLogo.png" alt="Description of the image">  
+        <img class="FPlogo-image" src="images/FloodPingLogo.png" alt="Description of the image">  
             <h2 class="logo">Floodping</h2>
             <ul class="links">
                 <li><a href="#landingpage" class="active">HOME</a></li>
@@ -206,7 +205,7 @@ if (isset($error_message)): ?>
 <!-- map section -->
     <div class="map-section" id="map"> 
         <div class = "photo">
-          <img class="map-image" src="../images/map.jpg" alt="Description of the image">   
+          <img class="map-image" src="images/map.jpg" alt="Description of the image">   
     </div> 
 
     <div class="legend-container">
@@ -221,8 +220,8 @@ if (isset($error_message)): ?>
   <div class="partnership-section" id="partnership">
     <div class = "logo">
       <h2>LINKAGES AND PARTNERSHIP WITH:</h2>
-      <img class="brgylogo-image" src="../images/brgy-logo.png" alt="Description of the image">   
-      <img class="qculogo-image" src="../images/QCU-logo.png" alt="Description of the image">
+      <img class="brgylogo-image" src="images/brgy-logo.png" alt="Description of the image">   
+      <img class="qculogo-image" src="images/QCU-logo.png" alt="Description of the image">
     </div>
   </div>
   <br>
@@ -262,8 +261,8 @@ if (isset($error_message)): ?>
 <?php if ($success): ?>
 <div id="successModal" class="modal" style="display: flex;">
     <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Success</h2>
+    <img class="email-photo" src="images/email.png">
+        <h2>Email sent!</h2>
         <p>Your message has been sent successfully!</p>
         <button id="okButton">OK</button>
     </div>
@@ -274,12 +273,12 @@ if (isset($error_message)): ?>
 <footer class="footer">
     <div class="footer-container">
         <div class="footer-logo">
-            <img src="../images/FloodPingLogo.png" alt="FloodPing Logo">
+            <img src="images/FloodPingLogo.png" alt="FloodPing Logo">
         </div>
         <div class="footer-links">
             <ul>
                 <li><a href="privacy-policy.php">Privacy Policy</a></li>
-                <li><a href="terms-conditions.php">Terms & Conditions</a></li>
+                <li><a href="terms">Terms & Conditions</a></li>
                 <li class="faq"><a href="FAQ.php">FAQ</a></li>
             </ul>
         </div>
