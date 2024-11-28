@@ -1,7 +1,7 @@
 
 <?php
 session_start();
-include 'db_conn.php';
+include_once('../db/db_conn.php');
 date_default_timezone_set('Asia/Manila');
 
 $error = $success = "";
