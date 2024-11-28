@@ -345,21 +345,154 @@ include 'adminsidebar.php';
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            width: auto;
+            height: 102%;
+            overflow: auto;
             justify-content: center;
             align-items: center;
+            margin-top: 50px;
+            margin-left: 500px;
+            position: fixed;
+            background-color: transparent;
         }
 
         .modal-content {
-            background: #fff;
+            background-color: #fff;
+            border-radius: 8px !important;
             padding: 20px;
-            border-radius: 8px;
+            text-align: center;
+            min-width: 500px !important;
+            height: 250px;
+            position: relative;
+            font-size: 12px;
+            text-align: justify;
+            border: 2px solid #ccc;
+        }
+
+        .modal-content h2 {
+            width: 55%;
+            font-size: 15px;
+            text-align: center;
+            margin: 30px 0px 0px 140px;
+            position: absolute;
+        }
+
+        .modal-content p {
+            width: 75%;
+            font-size: 13px;
+            margin: 100px 0px 0px 75px;
+            position: absolute;
             text-align: center;
         }
+
+        .warning-sign {
+            width: 90px;
+            height: auto;
+            margin: 0px 0px 0px 40px !important;
+            position: absolute;
+        }
+
+        button#deact-button {
+            background-color: #EA3323;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 160px 0px 0px 110px;
+            width: 130px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        button#close-button {
+            background-color: #4597C0;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: -34px 0px 0px 260px;
+            width: 130px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        
+        .modal-archive { 
+            width: 35%;
+            height: 600px;
+            background-color: transparent; 
+            justify-content: center;
+            align-items: center;
+            margin-top: -700px;
+            margin-left: 300px;
+            position: fixed;
+        }
+
+        #archive-model-content {
+            background-color: white;
+            border-radius: 8px !important;
+            padding: 20px;
+            text-align: center;
+            min-width: 500px !important;
+            height: 250px;
+            position: relative;
+            font-size: 12px;
+            text-align: justify;
+            border: 2px solid #ccc;
+
+        }
+
+        #archive-modal-content h2 {
+            width: 55%;
+            font-size: 15px;
+            text-align: center;
+            margin: 30px 0px 0px 140px;
+            position: absolute;
+        }
+
+        #archive-modal-content p {
+            width: 75%;
+            font-size: 13px;
+            margin: 100px 0px 0px 75px;
+            position: absolute;
+            text-align: center;
+        }
+
+        .warning-sign {
+            width: 90px;
+            height: auto;
+            margin: 0px 0px 0px 40px !important;
+            position: absolute;
+        }
+
+        button#archivebtn {
+            background-color: #EA3323;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 170px 0px 0px 120px;
+            width: 130px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        button#cancelbtn {
+            background-color: #4597C0;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: -35px 0px 0px 270px;
+            width: 130px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+
     </style>
 </head>
 
@@ -532,9 +665,11 @@ include 'adminsidebar.php';
 
 <div id="deactivateModal" class="modal" style="display: none;">
     <div class="modal-content">
-        <p>Are you sure you want to deactivate this account?</p>
-        <button onclick="confirmStatusChange('deactivate')">DEACTIVATE</button>
-        <button onclick="closeModal('deactivateModal')">NO</button>
+    <img class="warning-sign" src="images/warning-sign.png">
+        <h2>Are you sure you want to deactivate this account?</h2>
+        <p>Deactivating this profile will stop SMS alerts and notifications. Reactivate to resume upadates.</p>
+        <button id="deact-button" onclick="confirmStatusChange('deactivate')">deactivate</button>
+        <button id="close-button" onclick="closeModal('deactivateModal')">cancel</button>
     </div>
 </div>
 <div id="reactivateModal" class="modal" style="display: none;">
@@ -565,11 +700,13 @@ include 'adminsidebar.php';
 </form>
 
 <!-- Archive-->
-<div id="archiveModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <p>Are you sure you want to archive this account? This action cannot be undone.</p>
-        <button onclick="confirmArchive()">ARCHIVE</button>
-        <button onclick="closeModal('archiveModal')">CANCEL</button>
+<div id="archiveModal" class="modal-archive" style="display: none;">
+    <div class="modal-content" id="archive-modal-content">
+    <img class="warning-sign" src="images/warning-sign.png">
+    <h2>Are you sure you want to archive this account? This action cannot be undone.</h2>
+    <p>Archiving this account will make it inactive and inaccessible. You can only restore it by contacting support.</p>
+        <button id="archivebtn" onclick="confirmArchive()">ARCHIVE</button>
+        <button id="cancelbtn" onclick="closeModal('archiveModal')">CANCEL</button>
     </div>
 </div>
 
