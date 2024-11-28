@@ -84,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Profile photo upload
         $profile_photo = "";
         if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] == 0) {
-        $target_dir = "../uploads/";
+        $target_dir = "./uploads/";
         $profile_photo_name = time() . "_" . basename($_FILES["profile_photo"]["name"]);
         $target_file = $target_dir . $profile_photo_name;
 
@@ -161,7 +161,6 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" href="/floodping/images/Floodpinglogo.png" type="image/png">
     <title>Create New User</title>
@@ -665,7 +664,8 @@ $conn->close();
         </div>
     </div>
 
-<script> // This script is for the modals
+<script> 
+// This script is for the modals
     // Show Modal
     function showModal() {
         document.getElementById("userModal").style.display = "flex";
