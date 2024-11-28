@@ -1,9 +1,9 @@
 
 <?php
 session_start(); 
-include_once('../db/db_conn.php');
 include 'update_user.php'; 
-include_once('../adminsidebar.php');
+include 'db_conn.php';
+include 'adminsidebar.php';
 ?>
 
 <!DOCTYPE html>
