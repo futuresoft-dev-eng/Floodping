@@ -322,7 +322,7 @@ include 'adminsidebar.php';
         #archiveButton {
             font-size: 14px;
             width: 12%;
-            height: 5.2%;
+            height: 5%;
             padding: 8px auto;
             border: none;
             border-radius: 5px;
@@ -341,7 +341,6 @@ include 'adminsidebar.php';
             text-transform: uppercase;
         }
         
-
         .modal {
             display: none;
             position: fixed;
