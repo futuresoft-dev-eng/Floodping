@@ -1,8 +1,7 @@
 
 <?php
-include_once('../db/db_conn.php');
-include_once('../adminsidebar.php');
-
+include 'db_conn.php';
+include 'adminsidebar.php';
 function generatePassword($len = 12) {
     $lowercase = "abcdefghijklmnopqrstuvwxyz";
     $uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
