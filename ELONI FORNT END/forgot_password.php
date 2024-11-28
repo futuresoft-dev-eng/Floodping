@@ -2,7 +2,7 @@
 <?php
 session_start();
 
-include_once('../db/db_conn.php');
+include 'db_conn.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -478,4 +478,5 @@ $conn->close();
 </script>
 </body>
 </html>
+
 
