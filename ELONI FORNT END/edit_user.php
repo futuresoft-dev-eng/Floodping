@@ -1,9 +1,9 @@
 
 <?php
 session_start(); 
+include_once('../db/db_conn.php');
 include 'update_user.php'; 
-include 'db_conn.php';
-include 'adminsidebar.php';
+include_once('../adminsidebar.php');
 ?>
 
 <!DOCTYPE html>
@@ -350,7 +350,7 @@ include 'adminsidebar.php';
             justify-content: center;
             align-items: center;
             margin-top: 50px;
-            margin-left: 500px;
+            margin-left: 550px;
             position: fixed;
             background-color: transparent;
         }
@@ -808,10 +808,5 @@ function confirmStatusChange(action) {
     }
 </script>
 
-
-
-
-
 </body>
-
 </html>
