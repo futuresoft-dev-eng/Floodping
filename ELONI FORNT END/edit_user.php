@@ -322,7 +322,7 @@ include 'adminsidebar.php';
         #archiveButton {
             font-size: 14px;
             width: 12%;
-            height: 5%;
+            height: 5.2%;
             padding: 8px auto;
             border: none;
             border-radius: 5px;
