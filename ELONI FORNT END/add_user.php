@@ -1,8 +1,8 @@
 
 <?php
 session_start();
-include 'db_conn.php';
-include 'adminsidebar.php';
+include_once('../db/db_conn.php');
+include_once('../adminsidebar.php');
 
 if (isset($_SESSION['full_name']) && isset($_SESSION['role'])) {
     echo "<p class='session-info'>" . htmlspecialchars($_SESSION['full_name']) . "</p>";
